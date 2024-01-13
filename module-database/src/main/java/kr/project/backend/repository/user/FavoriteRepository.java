@@ -1,8 +1,8 @@
-package kr.project.database.repository.user;
+package kr.project.backend.repository.user;
 
-import kr.project.database.entity.coin.StakingInfo;
-import kr.project.database.entity.user.Favorite;
-import kr.project.database.entity.user.User;
+import kr.project.backend.entity.coin.StakingInfo;
+import kr.project.backend.entity.user.Favorite;
+import kr.project.backend.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,37 +1,29 @@
 package kr.project.backend.service.file;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import kr.project.backend.entity.common.CommonFile;
-import kr.project.backend.entity.user.User;
-import kr.project.backend.exception.CommonErrorCode;
-import kr.project.backend.exception.CommonException;
+import kr.project.backend.common.CommonErrorCode;
+import kr.project.backend.common.CommonException;
+import kr.project.backend.common.CommonFile;
 import kr.project.backend.repository.file.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.tomcat.util.file.ConfigurationSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-
-
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 @Service

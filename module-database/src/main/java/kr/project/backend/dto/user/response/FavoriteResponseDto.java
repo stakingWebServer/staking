@@ -1,8 +1,8 @@
-package kr.project.database.dto.user.response;
+package kr.project.backend.dto.user.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.project.database.entity.coin.enumType.CoinMarketType;
-import kr.project.database.entity.user.Favorite;
+import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.entity.user.Favorite;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

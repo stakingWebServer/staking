@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
-public class ModuleApiApplication {
+public class ModuleCrawlingApplication {
 
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
             + "optional:classpath:application-local.yml"
             + ", optional:/app/project/config/application.yml";
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(ModuleApiApplication.class)
+        new SpringApplicationBuilder(ModuleCrawlingApplication.class)
                 .properties(APPLICATION_LOCATIONS)
                 .run(args);
 

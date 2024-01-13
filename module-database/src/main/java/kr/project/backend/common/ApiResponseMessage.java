@@ -1,7 +1,7 @@
-package kr.project.database.common;
+package kr.project.backend.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.project.database.results.ApiResult;
+import kr.project.backend.results.ApiResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

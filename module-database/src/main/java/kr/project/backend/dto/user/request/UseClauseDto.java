@@ -1,4 +1,4 @@
-package kr.project.database.dto.user.request;
+package kr.project.backend.dto.user.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;

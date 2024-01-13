@@ -1,10 +1,10 @@
-package kr.project.database.entity.user;
+package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
-import kr.project.database.common.BaseTimeEntity;
-import kr.project.database.common.Constants;
-import kr.project.database.dto.user.request.UserJoinRequestDto;
-import kr.project.database.dto.user.request.UserLoginRequestDto;
+import kr.project.backend.common.BaseTimeEntity;
+import kr.project.backend.common.Constants;
+import kr.project.backend.dto.user.request.UserJoinRequestDto;
+import kr.project.backend.dto.user.request.UserLoginRequestDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

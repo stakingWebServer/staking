@@ -1,10 +1,9 @@
-package com.craw.crawlingprogram.crawBithumb;
+package kr.project.backend.crawBithumb;
 
-import com.craw.crawlingprogram.Entity.StakingInfo;
-import com.craw.crawlingprogram.Entity.CoinMarketType;
-import com.craw.crawlingprogram.crawKorbit.KorbitResponseDto;
-import com.craw.crawlingprogram.dto.SaveDto;
-import com.craw.crawlingprogram.repository.StakingInfoRepository;
+import kr.project.backend.dto.coin.SaveDto;
+import kr.project.backend.entity.coin.StakingInfo;
+import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.repository.coin.StakingInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -43,11 +42,11 @@ public class Bithumb {
         String url = "https://www.bithumb.com/staking/goods";
 
         //크롬드라이브 세팅
-        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/app/project/chromedriver-linux64/chromedriver")));
-        //System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("classpath:static/chromedriver")));
+        //System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/app/project/chromedriver-linux64/chromedriver")));
+        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("classpath:static/chromedriver")));
         ChromeOptions options = new ChromeOptions();
         //배포할때 주석풀기.
-        options.addArguments("headless","no-sandbox","disable-dev-shm-usage");
+        //options.addArguments("headless","no-sandbox","disable-dev-shm-usage");
         //웹 주소 접속하여 페이지 열기
         WebDriver webDriver = new ChromeDriver(options);
         webDriver.get(url);
@@ -76,7 +75,7 @@ public class Bithumb {
             saveDto.setMaxAnnualRewardRate(values[1]);
             saveDto.setMinimumOrderQuantity(numbers.get(i).getText() + unit.get(i).getText());
             saveDto.setCoinMarketType(CoinMarketType.bithumb);
-            stakingInfoRepository.save(new StakingInfo(saveDto));
+            //stakingInfoRepository.save(new StakingInfo(saveDto));
             System.out.println("saveDto = " + saveDto);
         }
 

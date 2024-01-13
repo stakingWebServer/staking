@@ -1,4 +1,4 @@
-package kr.project.database.common;
+package kr.project.backend.common;
 
 
 public enum CommonErrorCode {

@@ -1,9 +1,9 @@
-package com.craw.crawlingprogram.crawCoinOne;
+package kr.project.backend.crawCoinOne;
 
-import com.craw.crawlingprogram.Entity.CoinMarketType;
-import com.craw.crawlingprogram.dto.SaveDto;
-import com.craw.crawlingprogram.Entity.StakingInfo;
-import com.craw.crawlingprogram.repository.StakingInfoRepository;
+import kr.project.backend.dto.coin.SaveDto;
+import kr.project.backend.entity.coin.StakingInfo;
+import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.repository.coin.StakingInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

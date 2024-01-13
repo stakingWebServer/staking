@@ -44,7 +44,7 @@ subprojects {
 }
 project(':module-database') {
     bootJar { enabled = false }
-    jar { enabled = false }
+    jar { enabled = true }
     dependencies {
     }
 }
@@ -59,6 +59,14 @@ project(':module-admin') {
 }
 
 project(':module-api') {
+    bootJar { enabled = true }
+    jar { enabled = true }
+
+    dependencies {
+        implementation project(':module-database')
+    }
+}
+project(':module-crawling') {
     bootJar { enabled = true }
     jar { enabled = true }
 

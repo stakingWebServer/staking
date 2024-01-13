@@ -1,8 +1,8 @@
-package kr.project.database.entity.user;
+package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import kr.project.database.common.BaseTimeEntity;
+import kr.project.backend.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

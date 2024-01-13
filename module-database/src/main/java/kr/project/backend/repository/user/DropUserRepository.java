@@ -1,7 +1,7 @@
-package kr.project.database.repository.user;
+package kr.project.backend.repository.user;
 
 
-import kr.project.database.entity.user.DropUser;
+import kr.project.backend.entity.user.DropUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

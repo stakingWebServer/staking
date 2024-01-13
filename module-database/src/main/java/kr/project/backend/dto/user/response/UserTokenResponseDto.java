@@ -1,4 +1,4 @@
-package kr.project.database.dto.user.response;
+package kr.project.backend.dto.user.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

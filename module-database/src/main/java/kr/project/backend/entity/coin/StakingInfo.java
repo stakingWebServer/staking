@@ -1,9 +1,10 @@
-package kr.project.database.entity.coin;
+package kr.project.backend.entity.coin;
 
 import jakarta.persistence.*;
-import kr.project.database.entity.coin.enumType.CoinMarketType;
-import kr.project.database.common.BaseTimeEntity;
-import kr.project.database.entity.user.Favorite;
+import kr.project.backend.dto.coin.SaveDto;
+import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.common.BaseTimeEntity;
+import kr.project.backend.entity.user.Favorite;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,4 +50,15 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     @OneToMany(mappedBy = "stakingInfo")
     public List<Favorite> favorites;
 
+    public StakingInfo(SaveDto saveDto){
+        this.coinName = saveDto.getCoinName();
+        this.prevClosingPrice = saveDto.getPrevClosingPrice();
+        this.minAnnualRewardRate = saveDto.getMinAnnualRewardRate();
+        this.maxAnnualRewardRate = saveDto.getMaxAnnualRewardRate();
+        this.stakingStatus = saveDto.getStakingStatus();
+        this.rewardCycle = saveDto.getRewardCycle();
+        this.minimumOrderQuantity = saveDto.getMinimumOrderQuantity();
+        this.verificationFee = saveDto.getVerificationFee();
+        this.coinMarketType = saveDto.getCoinMarketType();
+    }
 }

@@ -1,8 +1,8 @@
-package kr.project.database.repository.user;
+package kr.project.backend.repository.user;
 
 
 
-import kr.project.database.entity.user.UserUseClause;
+import kr.project.backend.entity.user.UserUseClause;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

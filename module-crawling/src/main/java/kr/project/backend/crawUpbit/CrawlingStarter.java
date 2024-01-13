@@ -1,4 +1,4 @@
-package com.craw.crawlingprogram.crawUpbit;
+package kr.project.backend.crawUpbit;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package kr.project.database.converter;
+package kr.project.backend.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

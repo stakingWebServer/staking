@@ -1,4 +1,4 @@
-package kr.project.database.exception;
+package kr.project.backend.exception;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package kr.project.database.common;
+package kr.project.backend.common;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,7 +1,7 @@
-package kr.project.database.results;
+package kr.project.backend.results;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.project.database.common.ApiResponseMessage;
+import kr.project.backend.common.ApiResponseMessage;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Map;

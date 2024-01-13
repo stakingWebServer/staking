@@ -1,11 +1,10 @@
-package kr.project.admin;
+package kr.project.backend;
 
 
 import lombok.Data;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
-//@EnableJpaAuditing
 @SpringBootApplication
 @Data
 public class ModuleAdminApplication {

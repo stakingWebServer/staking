@@ -17,6 +17,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
+
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
@@ -68,7 +69,7 @@ public class ResponsBodyOutPutLoggingFilter implements ResponseBodyAdvice {
                     log.error("result data maxlength change error" ,e);
                 }
 
-                log.info("----> request Header ::: "+HttpRequestDataUtil.requestHeaderData(httpRequest));
+                log.info("----> request Header ::: "+ HttpRequestDataUtil.requestHeaderData(httpRequest));
                 log.info("----> request param ::: "+ mapper.readTree(cachingRequest.getContentAsByteArray()));
                 log.info("----> request logId::: "+logId);
                 log.info("----> request userId::: "+userId);

@@ -1,7 +1,7 @@
-package kr.project.database.common;
+package kr.project.backend.common;
 
 import com.google.gson.Gson;
-import kr.project.database.exception.JwtException;
+import kr.project.backend.exception.JwtException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;

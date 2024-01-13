@@ -1,4 +1,4 @@
-package kr.project.database.entity.coin.enumType;
+package kr.project.backend.entity.coin.enumType;
 
 public enum CoinMarketType {
     upbit,coinone,bithumb,korbit

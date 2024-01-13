@@ -1,6 +1,6 @@
-package kr.project.database.results;
-import kr.project.database.common.ApiResponseMessage;
-import kr.project.database.common.PaginationInfo;
+package kr.project.backend.results;
+import kr.project.backend.common.ApiResponseMessage;
+import kr.project.backend.common.PaginationInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 

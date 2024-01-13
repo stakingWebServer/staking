@@ -1,17 +1,15 @@
-package com.craw.crawlingprogram.crawUpbit;
+package kr.project.backend.crawUpbit;
 
-
-import com.craw.crawlingprogram.Entity.CoinMarketType;
-import com.craw.crawlingprogram.Entity.StakingInfo;
-import com.craw.crawlingprogram.dto.SaveDto;
-import com.craw.crawlingprogram.repository.StakingInfoRepository;
+import kr.project.backend.dto.coin.SaveDto;
+import kr.project.backend.entity.coin.StakingInfo;
+import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.repository.coin.StakingInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -19,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -1,15 +1,14 @@
-package kr.project.database.entity.user;
+package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import kr.project.database.entity.coin.StakingInfo;
-import kr.project.database.common.BaseTimeEntity;
-import kr.project.database.converter.BooleanToYNConverter;
+import kr.project.backend.entity.coin.StakingInfo;
+import kr.project.backend.common.BaseTimeEntity;
+import kr.project.backend.converter.BooleanToYNConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nonapi.io.github.classgraph.json.Id;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;

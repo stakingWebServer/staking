@@ -1,10 +1,10 @@
-package kr.project.database.common;
+package kr.project.backend.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import kr.project.database.entity.user.UseClause;
+import kr.project.backend.entity.user.UseClause;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

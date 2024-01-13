@@ -1,4 +1,4 @@
-package kr.project.database.dto.coin;
+package kr.project.backend.dto.coin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

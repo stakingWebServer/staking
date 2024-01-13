@@ -1,6 +1,6 @@
-package kr.project.database.repository.coin;
+package kr.project.backend.repository.coin;
 
-import kr.project.database.entity.coin.StakingInfo;
+import kr.project.backend.entity.coin.StakingInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

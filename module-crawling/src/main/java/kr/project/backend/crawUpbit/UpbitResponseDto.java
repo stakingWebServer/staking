@@ -1,4 +1,4 @@
-package com.craw.crawlingprogram.crawUpbit;
+package kr.project.backend.crawUpbit;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

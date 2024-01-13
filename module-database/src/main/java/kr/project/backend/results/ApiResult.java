@@ -1,4 +1,4 @@
-package kr.project.database.results;
+package kr.project.backend.results;
 
 import org.springframework.util.Assert;
 

@@ -1,4 +1,4 @@
-package com.craw.crawlingprogram.crawCoinOne;
+package kr.project.backend.crawCoinOne;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

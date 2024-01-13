@@ -1,4 +1,4 @@
-package com.craw.crawlingprogram.crawBithumb;
+package kr.project.backend.crawBithumb;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

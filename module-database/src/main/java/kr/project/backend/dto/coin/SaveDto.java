@@ -1,7 +1,7 @@
-package com.craw.crawlingprogram.dto;
+package kr.project.backend.dto.coin;
 
 
-import com.craw.crawlingprogram.Entity.CoinMarketType;
+import kr.project.backend.entity.coin.enumType.CoinMarketType;
 import lombok.Data;
 
 @Data

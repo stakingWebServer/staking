@@ -1,7 +1,7 @@
-package kr.project.database.dto.coin;
+package kr.project.backend.dto.coin;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.project.database.entity.coin.StakingInfo;
+import kr.project.backend.entity.coin.StakingInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
