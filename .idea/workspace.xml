@@ -90,10 +90,10 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/module-crawling/src/main/resources" />
-      <recent name="$PROJECT_DIR$/module-crawling/src/main/resources/static" />
-      <recent name="$PROJECT_DIR$/module-crawling/src/main/java/kr/project/backend" />
-      <recent name="$PROJECT_DIR$/module-admin/src/main/resources" />
       <recent name="$PROJECT_DIR$/module-api/src/main/resources" />
+      <recent name="$PROJECT_DIR$/module-admin" />
+      <recent name="$PROJECT_DIR$/module-api" />
+      <recent name="$PROJECT_DIR$/module-crawling" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="kr.project.backend.dto.coin" />
@@ -248,7 +248,7 @@
       <option name="presentableId" value="Default" />
       <updated>1705153950790</updated>
       <workItem from="1705153952220" duration="5134000" />
-      <workItem from="1705159110546" duration="7109000" />
+      <workItem from="1705159110546" duration="7458000" />
     </task>
     <servers />
   </component>
