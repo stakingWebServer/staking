@@ -43,3 +43,6 @@ bin/
 
 ### yml ###
 application-local.yml
+
+### xml ###
+workspace.xml
