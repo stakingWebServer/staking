@@ -3,7 +3,7 @@ package kr.project.backend.entity.coin;
 import jakarta.persistence.*;
 import kr.project.backend.dto.coin.SaveDto;
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
-import kr.project.backend.common.BaseTimeEntity;
+import kr.project.backend.entity.common.BaseTimeEntity;
 import kr.project.backend.entity.user.Favorite;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -3,7 +3,7 @@ package kr.project.backend.service.file;
 import jakarta.transaction.Transactional;
 import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
-import kr.project.backend.common.CommonFile;
+import kr.project.backend.entity.common.CommonFile;
 import kr.project.backend.repository.file.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

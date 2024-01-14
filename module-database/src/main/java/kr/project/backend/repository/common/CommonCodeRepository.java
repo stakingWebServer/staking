@@ -1,7 +1,7 @@
 package kr.project.backend.repository.common;
 
 
-import kr.project.backend.common.CommonCode;
+import kr.project.backend.entity.common.CommonCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,9 +1,10 @@
-package kr.project.backend.common;
+package kr.project.backend.entity.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import kr.project.backend.entity.common.BaseTimeEntity;
 import kr.project.backend.entity.user.UseClause;
 import lombok.AccessLevel;
 import lombok.Getter;

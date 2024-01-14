@@ -3,7 +3,7 @@ package kr.project.backend.service.user;
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
 import kr.project.backend.utils.JwtUtil;
-import kr.project.backend.common.CommonCode;
+import kr.project.backend.entity.common.CommonCode;
 import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
 import kr.project.backend.common.Constants;

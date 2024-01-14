@@ -1,8 +1,8 @@
 package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
-import kr.project.backend.common.BaseTimeEntity;
-import kr.project.backend.common.CommonFile;
+import kr.project.backend.entity.common.BaseTimeEntity;
+import kr.project.backend.entity.common.CommonFile;
 import kr.project.backend.converter.BooleanToYNConverter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -2,7 +2,7 @@ package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import kr.project.backend.common.BaseTimeEntity;
+import kr.project.backend.entity.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

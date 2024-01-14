@@ -1,4 +1,4 @@
-package kr.project.backend.common;
+package kr.project.backend.entity.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EntityListeners;
