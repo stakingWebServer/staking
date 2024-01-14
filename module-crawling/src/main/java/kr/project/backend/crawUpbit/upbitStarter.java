@@ -8,7 +8,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-public class CrawlingStarter {
+public class upbitStarter {
 
     private final Upbit upbit;
     @PostMapping("/craw-upbit")

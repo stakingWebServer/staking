@@ -1,4 +1,4 @@
-package kr.project.backend.crawCoinOne;
+package kr.project.backend.crawBithumb;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,12 +8,11 @@ import java.io.FileNotFoundException;
 
 @RestController
 @RequiredArgsConstructor
-public class CrawlingStarter3 {
-    private final Coinone coinone;
+public class BithumbStarter {
+    private final Bithumb bithumb;
 
-    @PostMapping("/craw-coinone")
+    @PostMapping("/craw-bithumb")
     public void post() throws FileNotFoundException, InterruptedException {
-        coinone.craw();
+        bithumb.craw();
     }
-
 }

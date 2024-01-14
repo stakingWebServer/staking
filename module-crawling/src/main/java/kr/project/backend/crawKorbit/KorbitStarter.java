@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 
 @RestController
 @RequiredArgsConstructor
-public class CrawlingStarter4 {
+public class KorbitStarter {
 
     private final Korbit korbit;
 
