@@ -83,5 +83,11 @@ public class UserController {
         return ObjectResult.build(userService.getFavorites(serviceUser));
     }
 
+    @Operation(summary = "이용약관 목록 조회", description = "이용약관 목록을 조회 합니다.")
+    @GetMapping("/useClauses")
+    public ResponseEntity<?> getUseClauses() {
+        return ObjectResult.build(userService.getUseClauses());
+    }
+
 
 }

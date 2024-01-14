@@ -2,16 +2,13 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.dto.user.response.*;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
 import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
 import kr.project.backend.common.Constants;
 import kr.project.backend.dto.user.request.*;
-import kr.project.backend.dto.user.response.AddFavoriteResponseDto;
-import kr.project.backend.dto.user.response.FavoriteResponseDto;
-import kr.project.backend.dto.user.response.UserCheckStateResponseDto;
-import kr.project.backend.dto.user.response.UserTokenResponseDto;
 import kr.project.backend.entity.coin.StakingInfo;
 import kr.project.backend.entity.user.*;
 import kr.project.backend.repository.coin.StakingInfoRepository;
@@ -54,6 +51,7 @@ public class UserService {
     private final StakingInfoRepository stakingInfoRepository;
     private final FavoriteRepository favoriteRepository;
     private final UserUseClauseRepository userUseClauseRepository;
+    private final UseClauseRepository useClauseRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -277,6 +275,15 @@ public class UserService {
         return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
                 .stream()
                 .map(FavoriteResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<UseCaluseResponseDto> getUseClauses() {
+        //이용약관 목록조회
+        return useClauseRepository.findAllByUseClauseState(Constants.USE_CLAUSE_STATE.APPLY)
+                .stream()
+                .map(UseCaluseResponseDto::new)
                 .collect(Collectors.toList());
     }
 }
