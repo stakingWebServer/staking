@@ -1,6 +1,7 @@
 package kr.project.backend.repository.user;
 
 
+import kr.project.backend.dto.user.UseClauseResponseDto;
 import kr.project.backend.entity.user.UseClause;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,7 @@ public interface UseClauseRepository extends JpaRepository<UseClause, UUID> {
 
 
     @Query(value = """
-            select a.useClauseEssentialYn,a.useClauseTitle,a.useClauseKind 
+            select a.useClauseEssentialYn,a.useClauseTitle,a.useClauseKind,b.commonCodeName,c.fileUrl
             from UseClause a 
             left join CommonCode b 
             on b.grpCommonCode = 'USE_CLAUSE_KIND' 
@@ -21,7 +22,7 @@ public interface UseClauseRepository extends JpaRepository<UseClause, UUID> {
             on a.commonFile.fileId = c.fileId 
             where a.useClauseState = '03'
             """)
-    List<UseClause> getUserClauses();
+    List<UseClauseResponseDto> getUserClauses();
 
     List<UseClause> findAllByUseClauseState(String useClauseState);
 }

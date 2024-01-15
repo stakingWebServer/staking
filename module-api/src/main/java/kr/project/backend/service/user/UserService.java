@@ -2,6 +2,7 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.dto.user.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
@@ -279,13 +280,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UseCaluseResponseDto> getUseClauses() {
+    public List<UseClauseResponseDto> getUseClauses() {
         //이용약관 목록조회
-        List<UseClause> userClauselist = useClauseRepository.getUserClauses();
-   /*     return useClauseRepository.findAllByUseClauseState(Constants.USE_CLAUSE_STATE.APPLY)
-                .stream()
-                .map(UseCaluseResponseDto::new)
-                .collect(Collectors.toList());*/
-        return null;
+        return useClauseRepository.getUserClauses();
     }
 }
