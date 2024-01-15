@@ -282,6 +282,6 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UseClauseResponseDto> getUseClauses() {
         //이용약관 목록조회
-        return useClauseRepository.getUserClauses();
+        return useClauseRepository.getUserClauses(Constants.USE_CLAUSE_KIND.CODE,Constants.USE_CLAUSE_STATE.APPLY);
     }
 }
