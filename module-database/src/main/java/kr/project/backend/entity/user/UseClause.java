@@ -38,7 +38,7 @@ public class UseClause extends BaseTimeEntity implements Serializable {
 
     @Comment(value = "이용약관 구분")
     @Column(length = 2)
-    private String useClauseKind;
+    private String useClauseKind; //
 
     @Comment(value = "이용약관 상태")
     @Column(length = 2)

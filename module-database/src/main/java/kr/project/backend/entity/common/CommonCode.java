@@ -25,7 +25,7 @@ public class CommonCode extends BaseTimeEntity implements Serializable {
     private Long commonCodeId;
 
     @Comment(value = "그룹 공통코드")
-    private String grpCommonCode;
+    private String grpCommonCode; //
 
     @Comment(value = "공통코드")
     private String commonCode;

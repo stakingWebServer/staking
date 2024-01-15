@@ -281,9 +281,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UseCaluseResponseDto> getUseClauses() {
         //이용약관 목록조회
-        return useClauseRepository.findAllByUseClauseState(Constants.USE_CLAUSE_STATE.APPLY)
+        List<UseClause> userClauselist = useClauseRepository.getUserClauses();
+   /*     return useClauseRepository.findAllByUseClauseState(Constants.USE_CLAUSE_STATE.APPLY)
                 .stream()
                 .map(UseCaluseResponseDto::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        return null;
     }
 }
