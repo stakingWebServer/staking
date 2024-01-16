@@ -2,7 +2,7 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
-import kr.project.backend.dto.user.UseClauseResponseDto;
+import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
