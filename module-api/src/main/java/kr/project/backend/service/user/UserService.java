@@ -287,9 +287,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public AppVersionResponseDto getAppVersion(AppVersionRequestDto appVersionRequestDto){
+    public AppVersionResponseDto getAppVersion(String appOs, String appVersion){
         //강제업데이트 구분
-        AppVersion appVersion = appVersionRepository.findByAppOsAndMinimumVersionAndHardUpdateYn(appVersionRequestDto.getAppOs(),appVersionRequestDto.getAppVersion(), Boolean.parseBoolean(Constants.YN.Y)).orElse(null);
+        AppVersion appVersionData = appVersionRepository.findByAppOsAndMinimumVersionAndHardUpdateYn(appOs,appVersion, Boolean.parseBoolean(Constants.YN.Y)).orElse(null);
 
         AppVersionResponseDto appVersionResponseDto = new AppVersionResponseDto();
 
