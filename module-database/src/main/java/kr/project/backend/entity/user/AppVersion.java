@@ -1,9 +1,7 @@
 package kr.project.backend.entity.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import kr.project.backend.converter.BooleanToYNConverter;
 import kr.project.backend.entity.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,9 +23,16 @@ public class AppVersion extends BaseTimeEntity implements Serializable {
     private Long appVersionId;
 
     @Comment(value = "앱 OS")
+    @Column(length = 2)
     private String appOs;
 
     @Comment(value = "최소버전")
+    @Column(length = 6)
     private String minimumVersion;
+
+    @Comment(value = "강제업데이트 여부")
+    @Column(columnDefinition = "char default 'N'")
+    @Convert(converter = BooleanToYNConverter.class)
+    private String hardUpdateYn;
 
 }
