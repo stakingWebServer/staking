@@ -53,6 +53,7 @@ public class UserService {
     private final FavoriteRepository favoriteRepository;
     private final UserUseClauseRepository userUseClauseRepository;
     private final UseClauseRepository useClauseRepository;
+    private final AppVersionRepository appVersionRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -283,5 +284,20 @@ public class UserService {
     public List<UseClauseResponseDto> getUseClauses() {
         //이용약관 목록조회
         return useClauseRepository.getUserClauses(Constants.USE_CLAUSE_KIND.CODE,Constants.USE_CLAUSE_STATE.APPLY);
+    }
+
+    @Transactional(readOnly = true)
+    public AppVersionResponseDto getAppVersion(AppVersionRequestDto appVersionRequestDto){
+        //강제업데이트 구분
+        AppVersion appVersion = appVersionRepository.findByAppOsAndMinimumVersionAndHardUpdateYn(appVersionRequestDto.getAppOs(),appVersionRequestDto.getAppVersion(), Boolean.parseBoolean(Constants.YN.Y)).orElse(null);
+
+        AppVersionResponseDto appVersionResponseDto = new AppVersionResponseDto();
+
+        if(appVersion == null){
+            appVersionResponseDto.setHardUpdateYn(Constants.YN.N);
+        }else{
+            appVersionResponseDto.setHardUpdateYn(Constants.YN.Y);
+        }
+        return appVersionResponseDto;
     }
 }

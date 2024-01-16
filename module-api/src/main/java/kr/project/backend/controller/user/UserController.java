@@ -89,5 +89,12 @@ public class UserController {
         return ObjectResult.build(userService.getUseClauses());
     }
 
+    @Operation(summary = "앱 강제 업데이트 조회", description = "앱 버전을 통해 강제 업데이트 유무를 조회 합니다.")
+    @GetMapping("/appVersion")
+    public ResponseEntity<?> getAppVersion(AppVersionRequestDto appVersionRequestDto) {
+        userService.getAppVersion(appVersionRequestDto);
+        return ObjectResult.ok();
+    }
+
 
 }

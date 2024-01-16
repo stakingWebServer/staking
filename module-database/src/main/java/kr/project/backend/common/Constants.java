@@ -70,4 +70,11 @@ public class Constants {
         public static final String ADVERTISEMENT_PUSH = "03"; //광고성푸시
     }
 
+    /** 상수 YN */
+    public static final class YN {
+        public static final String CODE = "YN";
+        public static final String Y = "Y";
+        public static final String N = "N";
+    }
+
 }
