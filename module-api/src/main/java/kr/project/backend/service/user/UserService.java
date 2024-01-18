@@ -289,7 +289,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public AppVersionResponseDto getAppVersion(String appOs, String appVersion){
         //강제업데이트 조회
-        AppVersion appVersionData = appVersionRepository.findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYn(appOs,appVersion, true).orElse(null);
+        AppVersion appVersionData = appVersionRepository.findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYnTrue(appOs,appVersion).orElse(null);
 
         AppVersionResponseDto appVersionResponseDto = new AppVersionResponseDto();
 
