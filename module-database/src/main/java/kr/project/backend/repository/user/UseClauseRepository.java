@@ -1,7 +1,7 @@
 package kr.project.backend.repository.user;
 
 
-import kr.project.backend.dto.user.UseClauseResponseDto;
+import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.entity.user.UseClause;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

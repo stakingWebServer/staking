@@ -2,7 +2,7 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
-import kr.project.backend.dto.user.UseClauseResponseDto;
+import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
@@ -53,6 +53,7 @@ public class UserService {
     private final FavoriteRepository favoriteRepository;
     private final UserUseClauseRepository userUseClauseRepository;
     private final UseClauseRepository useClauseRepository;
+    private final AppVersionRepository appVersionRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -283,5 +284,21 @@ public class UserService {
     public List<UseClauseResponseDto> getUseClauses() {
         //이용약관 목록조회
         return useClauseRepository.getUserClauses(Constants.USE_CLAUSE_KIND.CODE,Constants.USE_CLAUSE_STATE.APPLY);
+    }
+
+    @Transactional(readOnly = true)
+    public AppVersionResponseDto getAppVersion(String appOs, String appVersion){
+        //강제업데이트 조회
+        AppVersion appVersionData = appVersionRepository.findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYnTrue(appOs,appVersion).orElse(null);
+
+        AppVersionResponseDto appVersionResponseDto = new AppVersionResponseDto();
+
+        if(appVersionData == null){
+            appVersionResponseDto.setHardUpdateYn(Constants.YN.N);
+        }else{
+            appVersionResponseDto.setHardUpdateYn(Constants.YN.Y);
+            appVersionResponseDto.setHardUpdateUrl(appVersionData.getHardUpdateUrl());
+        }
+        return appVersionResponseDto;
     }
 }

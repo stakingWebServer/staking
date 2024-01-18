@@ -1,6 +1,7 @@
 package kr.project.backend.controller.user;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kr.project.backend.auth.ServiceUser;
@@ -87,6 +88,14 @@ public class UserController {
     @GetMapping("/useClauses")
     public ResponseEntity<?> getUseClauses() {
         return ObjectResult.build(userService.getUseClauses());
+    }
+
+    @Operation(summary = "앱 강제 업데이트 조회", description = "앱 버전을 통해 강제 업데이트 유무를 조회 합니다.")
+    @GetMapping("/appVersion")
+    public ResponseEntity<?> getAppVersion(@Parameter(description = "앱 OS", example = "01", required = true) @RequestParam String appOs,
+                                           @Parameter(description = "앱 버전", example = "1.1.2", required = true) @RequestParam String appVersion) {
+        userService.getAppVersion(appOs,appVersion);
+        return ObjectResult.ok();
     }
 
 

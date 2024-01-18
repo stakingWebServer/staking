@@ -1,4 +1,4 @@
-package kr.project.backend.dto.user;
+package kr.project.backend.dto.user.response;
 
 import lombok.Data;
 
