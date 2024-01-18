@@ -297,6 +297,7 @@ public class UserService {
             appVersionResponseDto.setHardUpdateYn(Constants.YN.N);
         }else{
             appVersionResponseDto.setHardUpdateYn(Constants.YN.Y);
+            appVersionResponseDto.setHardUpdateUrl(appVersionData.getHardUpdateUrl());
         }
         return appVersionResponseDto;
     }

@@ -35,4 +35,8 @@ public class AppVersion extends BaseTimeEntity implements Serializable {
     @Convert(converter = BooleanToYNConverter.class)
     private boolean hardUpdateYn;
 
+    @Comment(value = "강제업데이트 url")
+    @Column(length = 100)
+    private String hardUpdateUrl;
+
 }
