@@ -33,6 +33,6 @@ public class AppVersion extends BaseTimeEntity implements Serializable {
     @Comment(value = "강제업데이트 여부")
     @Column(columnDefinition = "char default 'N'")
     @Convert(converter = BooleanToYNConverter.class)
-    private String hardUpdateYn;
+    private boolean hardUpdateYn;
 
 }
