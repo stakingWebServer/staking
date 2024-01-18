@@ -11,5 +11,6 @@ import java.util.UUID;
 public interface AppVersionRepository extends JpaRepository<AppVersion, Long> {
 
 
-    Optional<AppVersion> findByAppOsAndMinimumVersionAndHardUpdateYn(String appOs, String minimumVersion, boolean hardUpdateYn);
+
+    Optional<AppVersion> findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYn(String appOs, String appVersion, boolean b);
 }
