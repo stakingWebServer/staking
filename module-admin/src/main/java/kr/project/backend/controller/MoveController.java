@@ -10,4 +10,24 @@ public class MoveController {
     public String index(){
         return "index";
     }
+    @GetMapping("/index")
+    public String index2(){
+        return "index";
+    }
+    @GetMapping("/tables")
+    public String tables(){
+        return "tables";
+    }
+    @GetMapping("/qna")
+    public String qna(){
+        return "qna";
+    }
+    @GetMapping("/push")
+    public String push(){
+        return "push";
+    }
+    @GetMapping("/charts")
+    public String chart(){
+        return "charts";
+    }
 }
