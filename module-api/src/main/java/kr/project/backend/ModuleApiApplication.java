@@ -11,7 +11,7 @@ public class ModuleApiApplication {
 
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
             + "optional:classpath:application-local.yml"
-            + ", optional:/app/project/config/application.yml";
+            + ", optional:/app/project/config/application-prod.yml";
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(ModuleApiApplication.class)
