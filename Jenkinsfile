@@ -67,7 +67,8 @@ pipeline {
                         try {
                         echo '[kill port ${MODULE_ADMIN}]'
                         pid = sh(script: "sudo lsof -t -i :9500 -s TCP:LISTEN",returnStdout: true).trim()
-                        }catch(Exception e){
+                        }
+                        catch(Exception e){
                             echo "오류 내용 : ${e.message}"
                             pid = null
                         }
@@ -79,18 +80,8 @@ pipeline {
                             echo "not exist port"
                         }
                         echo '[deploy start] ${MODULE_ADMIN}'
-                        sh "cd ../"
                         sh "pwd"
-                        sh "cd ../"
-                        sh "pwd"
-                        sh "cd ../"
-                        sh "pwd"
-                        sh "cd ../"
-                        sh "pwd"
-                        sh "cd ../"
-                        sh "cd /app/project"
-                        sh "pwd"
-                        sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9500 -Duser.timezone=Asia/Seoul module-admin-1.0-SNAPSHOT.jar &"
+                        sh "sudo nohup java -jar -Dserver.port=9500 -Duser.timezone=Asia/Seoul /app/project/module-admin-1.0-SNAPSHOT.jar & && JENKINS_NODE_COOKIE=dontKillMe"
                         echo '[deploy end] ${MODULE_ADMIN}'
                         }
                     }
