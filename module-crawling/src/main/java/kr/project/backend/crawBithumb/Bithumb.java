@@ -97,7 +97,7 @@ public class Bithumb {
         while (matcher.find() && index < 2) {
             extractedNumbers[index++] = matcher.group();
         }
-
+//test
         return extractedNumbers;
     }
     private static String extractLetterAfterNumber(String input) {
