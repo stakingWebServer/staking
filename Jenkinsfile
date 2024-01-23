@@ -61,10 +61,17 @@ pipeline {
                         }
                     }
                     steps {
+                        echo '[kill port ${MODULE_ADMIN}]'
+                        def pid = "sudo lsof -t -i :9500 -s TCP:LISTEN";
+                        if(pid != ""){
+                        sh "sudo kill -9 pid"
+                        }
+                        else{
+                            echo "not exist port"
+                        }
                         echo '[deploy start] ${MODULE_ADMIN}'
-                        sh 'pwd'
-                        sh "cd ${CURRENT_LOCATION}/module-admin/"
-                        sh 'pwd'
+                        sh "sudo mv ${CURRENT_LOCATION}/module-admin/build/libs/module-admin-1.0-SNAPSHOT.jar /app/project"
+                        sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9500 -Duser.timezone=Asia/Seoul module-admin-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
                         echo '[deploy end] ${MODULE_ADMIN}'
                     }
                 }
