@@ -80,9 +80,13 @@ pipeline {
                         }
                         echo '[deploy start] ${MODULE_ADMIN}'
                         sh "cd ../"
+                        sh "pwd"
                         sh "cd ../"
+                        sh "pwd"
                         sh "cd ../"
+                        sh "pwd"
                         sh "cd ../"
+                        sh "pwd"
                         sh "cd ../"
                         sh "cd /app/project"
                         sh "pwd"
