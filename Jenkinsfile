@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('build') {
             parallel {
-                stage('build-module-admin') {
+                stage('module-admin(build)') {
                     when {
                         anyOf{
                             changeset "module-database/**/*"
@@ -17,7 +17,76 @@ pipeline {
                         }
                     }
                     steps {
-                        echo 'building module-admin'
+                        echo '[build start] ${MODULE_ADMIN}'
+                        sh './gradlew ${MODULE_ADMIN}:build -x test'
+                        echo '[build end] ${MODULE_ADMIN}'
+                    }
+                }
+                stage('module-api(build)') {
+                    when {
+                        anyOf{
+                            changeset "module-database/**/*"
+                            changeset "module-api/**/*"
+                        }
+                    }
+                    steps {
+                        echo '[build start] ${MODULE_API}'
+                        sh './gradlew ${MODULE_API}:build -x test'
+                        echo '[build end] ${MODULE_API}'
+                    }
+                }
+                stage('module-crawling(build)') {
+                    when {
+                        anyOf{
+                            changeset "module-database/**/*"
+                            changeset "module-crawling/**/*"
+                        }
+                    }
+                    steps {
+                        echo '[build start] ${MODULE_CRAWLING}'
+                        sh './gradlew ${MODULE_CRAWLING}:build -x test'
+                        echo '[build end] ${MODULE_CRAWLING}'
+                    }
+                }
+        stage('deploy') {
+            parallel {
+                stage('module-admin(deploy)') {
+                    when {
+                        anyOf{
+                            changeset "module-database/**/*"
+                            changeset "module-admin/**/*"
+                        }
+                    }
+                    steps {
+                        echo '[deploy start] ${MODULE_ADMIN}'
+                        sh 'pwd'
+                        echo '[deploy end] ${MODULE_ADMIN}'
+                    }
+                }
+                stage('module-api(deploy)') {
+                    when {
+                        anyOf{
+                            changeset "module-database/**/*"
+                            changeset "module-api/**/*"
+                        }
+                    }
+                    steps {
+                        echo '[deploy start] ${MODULE_API}'
+
+                        echo '[deploy end] ${MODULE_API}'
+                    }
+                }
+                stage('module-crawling(deploy)') {
+                    when {
+                        anyOf{
+                            changeset "module-database/**/*"
+                            changeset "module-crawling/**/*"
+                        }
+                    }
+                    steps {
+                        echo '[deploy start] ${MODULE_CRAWLING}'
+
+                        echo '[deploy end] ${MODULE_CRAWLING}'
                     }
                 }
             }
