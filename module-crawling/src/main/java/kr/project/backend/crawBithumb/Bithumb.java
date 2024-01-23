@@ -36,14 +36,14 @@ public class Bithumb {
         System.out.println("response = " + response);
         return response.getData().getClosing_price();
     }
-    @Scheduled(cron = "0 0 2 * * *")
+    //@Scheduled(cron = "0 0 2 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
         SaveDto saveDto = new SaveDto();
         String url = "https://www.bithumb.com/staking/goods";
 
         //크롬드라이브 세팅
-        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/usr/bin/chromedriver")));
-        //System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("classpath:static/chromedriver")));
+        //System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/usr/bin/chromedriver")));
+        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("classpath:static/chromedriver")));
         ChromeOptions options = new ChromeOptions();
         //배포할때 주석풀기.
         options.addArguments("headless","no-sandbox","disable-dev-shm-usage");
@@ -55,8 +55,8 @@ public class Bithumb {
 
 
         //더보기 버튼 클릭
-        WebElement buttonClick = webDriver.findElement(By.className("staking-good-lego-plus__btn-inner"));
-        buttonClick.click();
+        /*WebElement buttonClick = webDriver.findElement(By.id("moreAvailBtn"));
+        buttonClick.click();*/
 
         //각 요소 추출
         List<WebElement> coinName = webDriver.findElements(By.className("staking-good-lego-coin__text"));
@@ -75,7 +75,7 @@ public class Bithumb {
             saveDto.setMaxAnnualRewardRate(values[1]);
             saveDto.setMinimumOrderQuantity(numbers.get(i).getText() + unit.get(i).getText());
             saveDto.setCoinMarketType(CoinMarketType.bithumb);
-            stakingInfoRepository.save(new StakingInfo(saveDto));
+            //stakingInfoRepository.save(new StakingInfo(saveDto));
             System.out.println("saveDto = " + saveDto);
         }
 

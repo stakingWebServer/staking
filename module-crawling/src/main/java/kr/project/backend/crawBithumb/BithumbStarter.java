@@ -11,8 +11,8 @@ import java.io.FileNotFoundException;
 public class BithumbStarter {
     private final Bithumb bithumb;
 
-    @PostMapping("/craw-bithumb")
+  /*  @PostMapping("/craw-bithumb")
     public void post() throws FileNotFoundException, InterruptedException {
         bithumb.craw();
-    }
+    }*/
 }
