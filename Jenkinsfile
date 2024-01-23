@@ -5,6 +5,7 @@ pipeline {
         MODULE_ADMIN = 'module-admin'
         MODULE_API = 'module-api'
         MODULE_CRAWLING = 'module-crawling'
+        CURRENT_LOCATION = '/var/lib/jenkins/workspace/staking';
     }
     stages {
         stage('build') {
@@ -62,6 +63,7 @@ pipeline {
                     steps {
                         echo '[deploy start] ${MODULE_ADMIN}'
                         sh 'pwd'
+                        sh "cd ${CURRENT_LOCATION}/module-admin/"
                         echo '[deploy end] ${MODULE_ADMIN}'
                     }
                 }
