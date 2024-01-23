@@ -62,8 +62,7 @@ pipeline {
                     }
                     steps {
                         echo '[kill port ${MODULE_ADMIN}]'
-                        def pid = "sudo lsof -t -i :9500 -s TCP:LISTEN";
-                        if(pid != ""){
+                        if(sh "sudo lsof -t -i :9500 -s TCP:LISTEN" != ""){
                         sh "sudo kill -9 pid"
                         }
                         else{
