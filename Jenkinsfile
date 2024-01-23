@@ -48,6 +48,8 @@ pipeline {
                         echo '[build end] ${MODULE_CRAWLING}'
                     }
                 }
+    }
+}
         stage('deploy') {
             parallel {
                 stage('module-admin(deploy)') {
@@ -91,7 +93,6 @@ pipeline {
                 }
             }
         }
-    }
-}
-}
+
+           }
 }
