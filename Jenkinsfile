@@ -64,6 +64,7 @@ pipeline {
                         echo '[deploy start] ${MODULE_ADMIN}'
                         sh 'pwd'
                         sh "cd ${CURRENT_LOCATION}/module-admin/"
+                        sh 'pwd'
                         echo '[deploy end] ${MODULE_ADMIN}'
                     }
                 }
