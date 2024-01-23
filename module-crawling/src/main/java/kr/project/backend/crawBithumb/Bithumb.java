@@ -42,16 +42,16 @@ public class Bithumb {
         String url = "https://www.bithumb.com/staking/goods";
 
         //크롬드라이브 세팅
-        //System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/app/project/chromedriver-linux64/chromedriver")));
+        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/usr/bin/chromedriver")));
         System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("classpath:static/chromedriver")));
         ChromeOptions options = new ChromeOptions();
         //배포할때 주석풀기.
-        //options.addArguments("headless","no-sandbox","disable-dev-shm-usage");
+        options.addArguments("headless","no-sandbox","disable-dev-shm-usage");
         //웹 주소 접속하여 페이지 열기
         WebDriver webDriver = new ChromeDriver(options);
         webDriver.get(url);
         //페이지 여는데 1초 텀 두기.
-        Thread.sleep(8000);
+        Thread.sleep(3000);
 
 
         //더보기 버튼 클릭
@@ -68,7 +68,7 @@ public class Bithumb {
         for (int i = 0; i < coinName.size(); i++) {
             System.out.println("value = " + unit.get(i).getText());
             saveDto.setPrevClosingPrice(BithumbApi(unit.get(i).getText()));
-            Thread.sleep(8000);
+            Thread.sleep(5000);
             saveDto.setCoinName(coinName.get(i).getText());
             String[] values = extractNumbers(years.get(i).getText());
             saveDto.setMinAnnualRewardRate(values[0]);
@@ -79,7 +79,7 @@ public class Bithumb {
             System.out.println("saveDto = " + saveDto);
         }
 
-        Thread.sleep(8000);
+        Thread.sleep(3000);
         //웹브라우저 닫기
         webDriver.close();
     }

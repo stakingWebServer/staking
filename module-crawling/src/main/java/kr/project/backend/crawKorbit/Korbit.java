@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +36,7 @@ public class Korbit {
         RestTemplate restTemplate = new RestTemplate();
 
         KorbitResponseDto response = restTemplate.getForObject("https://api.korbit.co.kr/v1/ticker/detailed?currency_pair=" + market + "_krw", KorbitResponseDto.class);
-        return response.getLast();
+        return Objects.requireNonNull(response).getLast();
     }
 
 
@@ -45,7 +46,7 @@ public class Korbit {
         String url = "https://lightning.korbit.co.kr/service/staking/list";
 
         //크롬드라이브 세팅
-        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/app/project/chromedriver-linux64/chromedriver")));
+        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/usr/bin/chromedriver")));
         //System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("classpath:static/chromedriver")));
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless","no-sandbox","disable-dev-shm-usage");
@@ -54,7 +55,7 @@ public class Korbit {
         WebDriver webDriver = new ChromeDriver(options);
         webDriver.get(url);
         //페이지 여는데 1초 텀 두기.
-        Thread.sleep(8000);
+        Thread.sleep(3000);
 
         List<WebElement> clicks = webDriver.findElements(By.className("gaBYEM"));
         for (int i = 0; i < clicks.size(); i++) {
@@ -62,9 +63,9 @@ public class Korbit {
             String market = h3Element.get(i).getText().substring(h3Element.get(i).getText().indexOf("(") + 1, h3Element.get(i).getText().indexOf(")")).trim();
             List<WebElement> clickList = webDriver.findElements(By.className("gaBYEM"));
             clickList.get(i).click();
-            Thread.sleep(8000);
+            Thread.sleep(4000);
             saveDto.setPrevClosingPrice(korbitApi(market.toLowerCase(Locale.ROOT)));
-            Thread.sleep(15000);
+            Thread.sleep(5000);
             List<WebElement> elements = webDriver.findElements(By.cssSelector("div.sc-1ro7n4j-0 span"));
             
             for (int j = 0; j < elements.size(); j++) {
@@ -77,10 +78,10 @@ public class Korbit {
             System.out.println("saveDto = " + saveDto);
             stakingInfoRepository.save(new StakingInfo(saveDto));
 
-            Thread.sleep(8000);
+            Thread.sleep(4000);
 
             webDriver.get(url);
-            Thread.sleep(8000);
+            Thread.sleep(3000);
 
         }
         //웹브라우저 닫기

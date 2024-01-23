@@ -29,7 +29,7 @@ public class Coinone {
         String url = "https://coinone.co.kr/plus";
 
         //크롬드라이브 세팅
-        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/app/project/chromedriver-linux64/chromedriver")));
+        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/usr/bin/chromedriver")));
         //System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("classpath:static/chromedriver")));
         ChromeOptions options = new ChromeOptions();
         //배포할때 주석풀기.
@@ -38,7 +38,7 @@ public class Coinone {
         WebDriver webDriver = new ChromeDriver(options);
         webDriver.get(url);
         //페이지 여는데 1초 텀 두기.
-        Thread.sleep(8000);
+        Thread.sleep(3000);
 
 
         //각 요소 추출
@@ -52,7 +52,7 @@ public class Coinone {
             stakingInfoRepository.save(new StakingInfo(saveDto));
             System.out.println("saveDto = " + saveDto);
         }
-        Thread.sleep(8000);
+        Thread.sleep(4000);
         //웹브라우저 닫기
         webDriver.close();
 

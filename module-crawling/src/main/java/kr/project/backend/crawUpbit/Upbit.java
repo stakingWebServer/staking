@@ -43,7 +43,7 @@ public class Upbit {
         //크롤링할 주소
         String url = "https://upbit.com/staking/items";
         //크롬드라이브 세팅
-        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/app/project/chromedriver-linux64/chromedriver")));
+        System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("/usr/bin/chromedriver")));
         //System.setProperty("webdriver.chrome.driver", String.valueOf(ResourceUtils.getFile("classpath:static/chromedriver")));
         ChromeOptions options = new ChromeOptions();
         //배포할때 주석풀기.
@@ -52,13 +52,13 @@ public class Upbit {
         WebDriver webDriver = new ChromeDriver(options);
         webDriver.get(url);
         //페이지 여는데 1초 텀 두기.
-        Thread.sleep(8000);
+        Thread.sleep(3000);
 
         List<WebElement> addTexts = webDriver.findElements(By.className("css-1j71w0l"));
         for (int i =0; i<addTexts.size(); i++) {
             List<WebElement> addTextList = webDriver.findElements(By.className("css-1j71w0l"));
             addTextList.get(i).click();
-            Thread.sleep(8000);
+            Thread.sleep(3000);
             //코인이름
             WebElement coinName = webDriver.findElement(By.className("ListDetailView__condition__title__text"));
             String market = coinName.getText().substring(coinName.getText().indexOf("(") + 1, coinName.getText().indexOf(")")).trim();
@@ -66,7 +66,7 @@ public class Upbit {
 
             //코인전날 종가 api로 받기
             saveDto.setPrevClosingPrice(upbitApi(market));
-            Thread.sleep(15000);
+            Thread.sleep(5000);
 
             //연 추정 보상률, 스테이킹/언스테이킹 대기, 보상주기
             List<WebElement> values = webDriver.findElements(By.className("infoItem__value"));
@@ -102,11 +102,11 @@ public class Upbit {
             stakingInfoRepository.save(new StakingInfo(saveDto));
             System.out.println("saveDto :::::" + saveDto);
 
-            Thread.sleep(8000);
+            Thread.sleep(4000);
 
             //스테이킹 목록으로 다시들어가기
             webDriver.get(url);
-            Thread.sleep(8000);
+            Thread.sleep(4000);
         }
         //웹브라우저 닫기
         webDriver.close();
