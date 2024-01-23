@@ -34,7 +34,7 @@ pipeline {
                     steps {
                         echo '[build start] ${MODULE_API}'
                         sh './gradlew ${MODULE_API}:build -x test'
-                        sh "sudo mv ${CURRENT_LOCATION}/module-admin/build/libs/module-api-1.0-SNAPSHOT.jar /app/project"
+                        sh "sudo mv ${CURRENT_LOCATION}/module-api/build/libs/module-api-1.0-SNAPSHOT.jar /app/project"
                         echo '[build end] ${MODULE_API}'
                     }
                 }
@@ -48,7 +48,7 @@ pipeline {
                     steps {
                         echo '[build start] ${MODULE_CRAWLING}'
                         sh './gradlew ${MODULE_CRAWLING}:build -x test'
-                        sh "sudo mv ${CURRENT_LOCATION}/module-admin/build/libs/module-crawling-1.0-SNAPSHOT.jar /app/project"
+                        sh "sudo mv ${CURRENT_LOCATION}/module-crawling/build/libs/module-crawling-1.0-SNAPSHOT.jar /app/project"
                         echo '[build end] ${MODULE_CRAWLING}'
                     }
                 }
