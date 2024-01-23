@@ -63,11 +63,15 @@ pipeline {
                     }
                     steps {
                         script {
+                        def pid
                         try {
                         echo '[kill port ${MODULE_ADMIN}]'
-                        def pid = sh(script: "sudo lsof -t -i :9500 -s TCP:LISTEN",returnStdout: true).trim()
-
-                        if(pid != ""){
+                        pid = sh(script: "sudo lsof -t -i :9500 -s TCP:LISTEN",returnStdout: true).trim()
+                        }catch(Exception e){
+                            echo "오류 내용 : ${e.message}"
+                            pid = null
+                        }
+                       if(pid != "" && pid != null){
                         echo '현재 PID : ${pid}'
                         sh "sudo kill -9 ${pid}"
                         }
@@ -78,9 +82,6 @@ pipeline {
                         sh "cd /app/project"
                         sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9500 -Duser.timezone=Asia/Seoul module-admin-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
                         echo '[deploy end] ${MODULE_ADMIN}'
-                        }catch(Exception e){
-                            echo "오류 내용 : ${e.message}"
-                        }
                         }
                     }
                 }
