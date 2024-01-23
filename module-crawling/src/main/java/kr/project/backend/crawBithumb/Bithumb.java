@@ -75,7 +75,7 @@ public class Bithumb {
             saveDto.setMaxAnnualRewardRate(values[1]);
             saveDto.setMinimumOrderQuantity(numbers.get(i).getText() + unit.get(i).getText());
             saveDto.setCoinMarketType(CoinMarketType.bithumb);
-            //stakingInfoRepository.save(new StakingInfo(saveDto));
+            stakingInfoRepository.save(new StakingInfo(saveDto));
             System.out.println("saveDto = " + saveDto);
         }
 
