@@ -63,9 +63,10 @@ pipeline {
                     steps {
                         script {
                         echo '[kill port ${MODULE_ADMIN}]'
-                        def pid = sh(script: "sudo lsof -t -i :9500 -s TCP:LISTEN")
+                        def pid = sh(script: "sudo lsof -t -i :9500 -s TCP:LISTEN",returnStdout: true).trim()
+                        echo '현재 PID : ${pid}'
                         if(pid != ""){
-                        sh "sudo kill -9 pid"
+                        sh "sudo kill -9 ${pid}"
                         }
                         else{
                             echo "not exist port"
