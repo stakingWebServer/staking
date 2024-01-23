@@ -29,13 +29,13 @@ public class StakingInfoService {
     //@Cacheable(value = "stakingInfoList")
     @Transactional(readOnly = true)
     public List<StakingInfoListResponseDto> getStakingInfos() {
-        return stakingInfoRepository.findAll().stream().map(StakingInfoListResponseDto::new).collect(Collectors.toList());
-        /*return stakingInfoRepository.findAllByCreatedDateBetween(
+        //return stakingInfoRepository.findAll().stream().map(StakingInfoListResponseDto::new).collect(Collectors.toList());
+        return stakingInfoRepository.findAllByCreatedDateBetween(
                         LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                         LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .stream()
                 .map(StakingInfoListResponseDto::new)
-                .collect(Collectors.toList());*/
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
