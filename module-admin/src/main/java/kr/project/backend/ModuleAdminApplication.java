@@ -17,7 +17,7 @@ public class ModuleAdminApplication {
         new SpringApplicationBuilder(ModuleAdminApplication.class)
                 .properties(APPLICATION_LOCATIONS)
                 .run(args);
-//testdddtestddddtestddddddggdd
+//testdddtestddddtestddddddggddtes
     }
 
 }

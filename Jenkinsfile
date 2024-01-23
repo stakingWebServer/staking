@@ -20,6 +20,7 @@ pipeline {
                     steps {
                         echo '[build start] ${MODULE_ADMIN}'
                         sh './gradlew ${MODULE_ADMIN}:build -x test'
+                        sh "sudo mv ${CURRENT_LOCATION}/module-admin/build/libs/module-admin-1.0-SNAPSHOT.jar /app/project"
                         echo '[build end] ${MODULE_ADMIN}'
                     }
                 }
@@ -73,7 +74,7 @@ pipeline {
                             echo "not exist port"
                         }
                         echo '[deploy start] ${MODULE_ADMIN}'
-                        sh "sudo mv ${CURRENT_LOCATION}/module-admin/build/libs/module-admin-1.0-SNAPSHOT.jar /app/project"
+                        sh "cd /app/project"
                         sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9500 -Duser.timezone=Asia/Seoul module-admin-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
                         echo '[deploy end] ${MODULE_ADMIN}'
                         }
