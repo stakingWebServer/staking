@@ -80,7 +80,7 @@ pipeline {
                         }
                         echo '[deploy start] ${MODULE_ADMIN}'
                         sh "cd /app/project"
-                        sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9500 -Duser.timezone=Asia/Seoul module-admin-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                        sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9500 -Duser.timezone=Asia/Seoul module-admin-1.0-SNAPSHOT.jar &"
                         echo '[deploy end] ${MODULE_ADMIN}'
                         }
                     }
