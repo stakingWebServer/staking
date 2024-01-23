@@ -35,7 +35,7 @@ public class Bithumb {
         BithumbResponseDto response = restTemplate.getForObject("https://api.bithumb.com/public/ticker/"+market + "_KRW", BithumbResponseDto.class);
         System.out.println("response = " + response);
         return response.getData().getClosing_price();
-    }
+    }//d
     //@Scheduled(cron = "0 0 2 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
         SaveDto saveDto = new SaveDto();
