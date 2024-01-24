@@ -123,7 +123,6 @@ pipeline {
                         echo "10초 대기..."
                         sleep 10
                         }
-                        }
                     }
                     }
                 }
