@@ -134,7 +134,7 @@ pipeline {
                         try {
                         def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://s2it.kro.kr:8080/swagger-ui/index.html", returnStdout: true).trim()
                             if(response != 200) {
-                                throw new RuntimeException("서버 구동중... 잠시 대기중...")
+                                throw new Exception("서버 구동중... 잠시 대기중...")
                             }
                         echo "1번 서버 구동완료..."
                         def pid
@@ -157,7 +157,7 @@ pipeline {
                         sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8081 -Duser.timezone=Asia/Seoul /app/project/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
                         echo '[deploy end] ${MODULE_API}'
                         }
-                        catch(RuntimeException e){
+                        catch(Exception e){
                         echo "Retry: ${e.message}"
                         sleep 5
                         }
