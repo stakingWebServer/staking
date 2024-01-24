@@ -179,7 +179,6 @@ pipeline {
                         try {
                         echo '[kill port ${MODULE_API}]'
                         pid = sh(script: "sudo lsof -t -i :9000 -s TCP:LISTEN",returnStdout: true).trim()
-                        for ATTEMPT in
                         }
                         catch(Exception e){
                             echo "오류 내용 : ${e.message}"
