@@ -87,7 +87,7 @@ pipeline {
                         }
                     }
                 }
-                stage('module-api(deploy)') {
+                stage('module-api-01(deploy)') {
                     when {
                         anyOf{
                             changeset "module-database/**/*"
@@ -118,6 +118,54 @@ pipeline {
                     }
                     }
                 }
+                stage('module-api-02(deploy)') {
+                    when {
+                        anyOf{
+                            changeset "module-database/**/*"
+                            changeset "module-api/**/*"
+                        }
+                    }
+                    steps{
+                    script{
+                        timeout(time: 5, unit: 'MINUTES') {
+                        echo "1번 서버 구동할때까지 대기중..."
+
+                        retry(10) {
+                        try {
+                        def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://s2it.kro.kr:8080/swagger-ui/index.html", returnStdout: true).trim()
+                            if(response != 200) {
+                                throw new RuntimeException("서버 구동중... 잠시 대기중...")
+                            }
+                        echo "1번 서버 구동완료..."
+                        def pid
+                        try {
+                        echo "2번 서버 포트 확인 후 종료..."
+                        pid = sh(script: "sudo lsof -t -i :8081 -s TCP:LISTEN",returnStdout: true).trim()
+                        }
+                        catch(Exception e){
+                            echo "오류 내용 : ${e.message}"
+                            pid = null
+                        }
+                             if(pid != "" && pid != null){
+                                echo '현재 PID : ${pid}'
+                                sh "sudo kill -9 ${pid}"
+                                }
+                                else{
+                                    echo "not exist port"
+                                }
+                        echo '[deploy start] ${MODULE_API}'
+                        sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8081 -Duser.timezone=Asia/Seoul /app/project/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                        echo '[deploy end] ${MODULE_API}'
+                        }
+                        catch(RuntimeException e){
+                        echo "Retry: ${e.message}"
+                        sleep 5
+                        }
+                        }
+                        }
+                    }
+                    }
+                }
                 stage('module-crawling(deploy)') {
                     when {
                         anyOf{
@@ -131,6 +179,7 @@ pipeline {
                         try {
                         echo '[kill port ${MODULE_API}]'
                         pid = sh(script: "sudo lsof -t -i :9000 -s TCP:LISTEN",returnStdout: true).trim()
+                        for ATTEMPT in
                         }
                         catch(Exception e){
                             echo "오류 내용 : ${e.message}"
@@ -151,6 +200,5 @@ pipeline {
                 }
             }
         }
-
-           }
+    }
 }
