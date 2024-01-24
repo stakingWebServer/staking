@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "account", description = "로그인 / 회원가입")
 @Slf4j
 @RestController
-@RequestMapping("/api/" + Environment.API_VERSION + "/" + Environment.API_USER + "/account")
+@RequestMapping("/api/" + Environment.API_VERSION + "/" + Environment.API_USER)
 @RequiredArgsConstructor
 public class UserController {
 
