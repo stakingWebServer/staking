@@ -120,7 +120,7 @@ pipeline {
                         while(status) {
                         response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://s2it.kro.kr:8080/swagger-ui/index.html", returnStatus: true)
                         responseAsString = response.toString().trim()
-                        if(responseAsString == 200){
+                        if(responseAsString == "200"){
                         echo "1번 서버 구동 완료"
                         break
                         }
