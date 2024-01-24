@@ -123,27 +123,11 @@ pipeline {
                         status = false
                         break
                         }
-
                         echo "1번 서버 구동 대기중..."
                         sleep 5
                         }
-                    }
-                    }
-                }
-                stage('module-api-02(deploy)') {
-                    when {
-                        anyOf{
-                            changeset "module-database/**/*"
-                            changeset "module-api/**/*"
-                        }
-                    }
-                    steps {
-                    script{
-                        def pid
-                        def response
-                        def status = true
-                        try {
-                        echo '[kill port ${MODULE_API}]'
+                        echo "2번 서버 구동 중..."
+                        try{
                         pid = sh(script: "sudo lsof -t -i :8081 -s TCP:LISTEN",returnStdout: true).trim()
                         }
                         catch(Exception e){
@@ -166,10 +150,10 @@ pipeline {
                         status = false
                         break
                         }
-
                         echo "2번 서버 구동 대기중..."
                         sleep 5
                         }
+
                     }
                     }
                 }
