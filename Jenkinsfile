@@ -98,7 +98,6 @@ pipeline {
                     script{
                         def pid
                         def response
-                        def status = true
                         try {
                         echo '[kill port ${MODULE_API}]'
                         pid = sh(script: "sudo lsof -t -i :8080 -s TCP:LISTEN",returnStdout: true).trim()
@@ -120,7 +119,7 @@ pipeline {
                         while(status) {
                         if(response == 200){
                         echo "1번 서버 구동 완료"
-                        status = true
+                        break
                         }
                         echo "1번 서버 구동 대기중..."
                         sleep 5
