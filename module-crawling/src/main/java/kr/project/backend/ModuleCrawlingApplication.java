@@ -17,7 +17,7 @@ public class ModuleCrawlingApplication {
         new SpringApplicationBuilder(ModuleCrawlingApplication.class)
                 .properties(APPLICATION_LOCATIONS)
                 .run(args);
-//crawling test
+//crawling testㅇㅇ
     }
 
 }
