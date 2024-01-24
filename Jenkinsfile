@@ -97,9 +97,12 @@ pipeline {
                     steps {
                     script{
                         def pid
+                        def response
+                        def status = true
                         try {
                         echo '[kill port ${MODULE_API}]'
                         pid = sh(script: "sudo lsof -t -i :8080 -s TCP:LISTEN",returnStdout: true).trim()
+                        response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://s2it.kro.kr:8080/swagger-ui/index.html", returnStatus: true).trim()
                         }
                         catch(Exception e){
                             echo "오류 내용 : ${e.message}"
@@ -114,6 +117,14 @@ pipeline {
                         }
                         echo '[deploy start] ${MODULE_API}'
                         sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8080 -Duser.timezone=Asia/Seoul /app/project/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                        while(status) {
+                        if(response == 200){
+                        echo "1번 서버 구동 완료"
+                        status = true
+                        }
+                        echo "1번 서버 구동 대기중..."
+                        sleep 5
+                        }
                     }
                     }
                 }
