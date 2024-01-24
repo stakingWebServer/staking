@@ -125,7 +125,50 @@ pipeline {
                         }
 
                         echo "1번 서버 구동 대기중..."
-                        sleep 3
+                        sleep 5
+                        }
+                    }
+                    }
+                }
+                stage('module-api-02(deploy)') {
+                    when {
+                        anyOf{
+                            changeset "module-database/**/*"
+                            changeset "module-api/**/*"
+                        }
+                    }
+                    steps {
+                    script{
+                        def pid
+                        def response
+                        def status = true
+                        try {
+                        echo '[kill port ${MODULE_API}]'
+                        pid = sh(script: "sudo lsof -t -i :8081 -s TCP:LISTEN",returnStdout: true).trim()
+                        }
+                        catch(Exception e){
+                            echo "오류 내용 : ${e.message}"
+                            pid = null
+                        }
+                       if(pid != "" && pid != null){
+                        echo '현재 PID : ${pid}'
+                        sh "sudo kill -9 ${pid}"
+                        }
+                        else{
+                            echo "not exist port"
+                        }
+                        echo '[deploy start] ${MODULE_API}'
+                        sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8081 -Duser.timezone=Asia/Seoul /app/project/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                        while(status) {
+                        response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://s2it.kro.kr:8081/swagger-ui/index.html", returnStatus: true)
+                        echo "response : ${response}"
+                        if(response == 0){
+                        echo "2번 서버 구동 완료"
+                        break
+                        }
+
+                        echo "2번 서버 구동 대기중..."
+                        sleep 5
                         }
                     }
                     }

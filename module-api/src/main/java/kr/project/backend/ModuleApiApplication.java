@@ -17,7 +17,8 @@ public class ModuleApiApplication {
         new SpringApplicationBuilder(ModuleApiApplication.class)
                 .properties(APPLICATION_LOCATIONS)
                 .run(args);
-//testddddddtestttㅇㅇddtetddㅇㅇd
+
+
     }
 
 }
