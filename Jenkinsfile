@@ -97,8 +97,6 @@ pipeline {
                     steps {
                     script{
                         def pid
-                        def timeoutMillis = 5 * 60 * 1000
-                        def startTime = currentBuild.startTimeInMillis
                         try {
                         echo '[kill port ${MODULE_API}]'
                         pid = sh(script: "sudo lsof -t -i :8080 -s TCP:LISTEN",returnStdout: true).trim()
@@ -116,14 +114,15 @@ pipeline {
                         }
                         echo '[deploy start] ${MODULE_API}'
                         sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=8080 -Duser.timezone=Asia/Seoul /app/project/module-api-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
-                        while (currentBuild.startTimeInMillis - startTime >= timeoutMillis){
                         def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://s1it.kro.kr:8080/swagger-ui/index.html", returnStatus: true).trim()
+                        while (response != 200){
                         if(response == 200){
-                        echo "1번 서버의 상태가 200입니다... 대기 종료"
-                        break
+                        echo "1번서버 구동 완료"
+                        break;
                         }
                         echo "10초 대기..."
                         sleep 10
+                        }
                         }
                     }
                     }
