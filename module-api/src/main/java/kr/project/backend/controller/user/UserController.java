@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.results.ListResult;
 import kr.project.backend.service.user.UserService;
 import kr.project.backend.common.Environment;
 import kr.project.backend.dto.user.request.*;
@@ -81,7 +82,7 @@ public class UserController {
     @Operation(summary = "즐겨찾기 목록 조회", description = "즐겨찾기 목록을 조회 합니다.")
     @GetMapping("/favorites")
     public ResponseEntity<?> getFavorites(@AuthenticationPrincipal ServiceUser serviceUser) {
-        return ObjectResult.build(userService.getFavorites(serviceUser));
+        return ListResult.build(userService.getFavorites(serviceUser));
     }
 
     @Operation(summary = "이용약관 목록 조회", description = "이용약관 목록을 조회 합니다.")
