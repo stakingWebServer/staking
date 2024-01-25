@@ -7,9 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MoveController {
 
     @GetMapping("/")
-    public String index(){
-        return "index";
+    public String login(){
+        return "login";
     }
+//    @GetMapping("/")
+//    public String index(){
+//        return "index";
+//    }
     @GetMapping("/index")
     public String index2(){
         return "index";
