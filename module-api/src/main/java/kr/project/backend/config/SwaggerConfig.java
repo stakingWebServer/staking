@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(title = "STAKING API 명세서",
                 description = "STAKING API 명세서 입니다.",
                 version = "v1"),
-        servers = {@Server(url = "/", description = "default server url set")})
+        servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
+        //servers = {@Server(url = "https://api.s2it.kro.kr")}) //local
 @RequiredArgsConstructor
 @Configuration
 public class SwaggerConfig {

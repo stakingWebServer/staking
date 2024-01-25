@@ -26,7 +26,7 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "varchar(38)")
     @NotNull
     @Comment(value = "즐겨찾기 키값")
     private UUID favoriteId;

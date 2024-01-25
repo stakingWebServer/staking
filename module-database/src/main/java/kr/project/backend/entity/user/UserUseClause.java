@@ -21,6 +21,7 @@ public class UserUseClause extends BaseTimeEntity implements Serializable {
 
     @Id
     @Comment(value = "이용약관ID")
+    @Column(columnDefinition = "varchar(38)")
     private UUID useClauseId;
 
     @Comment(value = "동의여부")

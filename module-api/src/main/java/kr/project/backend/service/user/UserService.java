@@ -269,15 +269,21 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponseDto> getFavorites(ServiceUser serviceUser) {
+    public List<Favorite> getFavorites(ServiceUser serviceUser) {
         //회원정보
         User userInfo = userRepository.findById(UUID.fromString(serviceUser.getUserId()))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
+
+        //List<Favorite> allByUserAndDelYn = favoriteRepository.findAllByUserAndDelYn(userInfo, false);
+        List<Favorite> allByUserAndDelYn = favoriteRepository.findAll();
+        log.info("test : {}",allByUserAndDelYn);
+
+        return allByUserAndDelYn;
+        /*return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
                 .stream()
                 .map(FavoriteResponseDto::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
     }
 
     @Transactional(readOnly = true)
