@@ -24,7 +24,7 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "varchar(38)")
+    @Column(columnDefinition = "varchar(255)")
     @Comment(value = "스테이킹키값")
     private UUID stakingId;
     @Comment(value = "코인이름")
