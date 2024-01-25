@@ -21,7 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class StakingInfo extends BaseTimeEntity implements Serializable {
-    @Id
+    @Id//text
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
