@@ -39,7 +39,7 @@ public class StakingInfoService {
     }
 
     @Transactional(readOnly = true)
-    public StakingInfoDetailResponseDto getStakingInfo(Long stakingId) {
+    public StakingInfoDetailResponseDto getStakingInfo(String stakingId) {
         StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(), CommonErrorCode.NOT_FOUND_COIN.getMessage()));
 

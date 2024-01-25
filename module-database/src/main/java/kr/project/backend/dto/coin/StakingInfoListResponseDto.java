@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class StakingInfoListResponseDto implements Serializable {
     @Schema(description = "키값",example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-    private Long stakingId;
+    private String stakingId;
     @Schema(description = "코인이름",example = "폴리곤 (MATIC)")
     private String coinName;
     @Schema(description = "연 추정 보상률 (최소)",example = "5.3%")

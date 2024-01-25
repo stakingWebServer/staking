@@ -24,10 +24,11 @@ import java.util.UUID;
 public class Favorite extends BaseTimeEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "varchar(38)")
     @Comment(value = "즐겨찾기 키값")
-    private Long favoriteId;
+    private String favoriteId;
     @Comment(value = "총 보유수량")
     private double totalHoldings;
     @Comment(value = "총 보상수량")

@@ -11,5 +11,5 @@ public class UserRefreshTokenRequestDto implements Serializable {
 
     @NotNull
     @Schema(description = "refreshTokenId", example = "1")
-    private Long refreshTokenId;
+    private String refreshTokenId;
 }

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface DropUserRepository extends JpaRepository<DropUser, Long> {
+public interface DropUserRepository extends JpaRepository<DropUser, String> {
 
     Optional<DropUser> existsByUserEmail(String userEmail);
 

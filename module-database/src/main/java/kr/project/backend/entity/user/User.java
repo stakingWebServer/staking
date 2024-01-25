@@ -27,9 +27,11 @@ public class User extends BaseTimeEntity implements Serializable {
 
     /** 회원관리번호 */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "varchar(38)")
     @Comment(value = "유저 키값")
-    private Long userId;
+    private String userId;
 
     @Comment(value = "유저 이메일")
     private String userEmail;

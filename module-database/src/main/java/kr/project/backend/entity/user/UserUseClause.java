@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -20,9 +21,11 @@ import java.util.UUID;
 public class UserUseClause extends BaseTimeEntity implements Serializable {
 
     @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "varchar(38)")
     @Comment(value = "이용약관ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long useClauseId;
+    private String useClauseId;
 
     @Comment(value = "동의여부")
     @Column(columnDefinition = "VARCHAR(1) default 'N'")

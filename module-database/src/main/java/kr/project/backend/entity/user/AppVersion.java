@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 
@@ -18,9 +19,11 @@ import java.io.Serializable;
 public class AppVersion extends BaseTimeEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "varchar(38)")
     @Comment(value = "앱버전키값")
-    private Long appVersionId;
+    private String appVersionId;
 
     @Comment(value = "앱 OS")
     @Column(length = 2)

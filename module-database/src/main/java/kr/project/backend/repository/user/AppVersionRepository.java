@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AppVersionRepository extends JpaRepository<AppVersion, Long> {
+public interface AppVersionRepository extends JpaRepository<AppVersion, String> {
 
     Optional<AppVersion> findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYnTrue(String appOs, String appVersion);
 }

@@ -12,5 +12,5 @@ import java.util.UUID;
 public class UnFavoriteRequestDto implements Serializable {
     @NotNull
     @Schema(description = "favoriteId", example = "1")
-    private Long favoriteId;
+    private String favoriteId;
 }
