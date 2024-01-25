@@ -25,7 +25,7 @@ public class UserUseClause extends BaseTimeEntity implements Serializable {
     private Long useClauseId;
 
     @Comment(value = "동의여부")
-    @Column(columnDefinition = "char default 'N'")
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
     @Convert(converter = BooleanToYNConverter.class)
     private boolean agreeYn;
 

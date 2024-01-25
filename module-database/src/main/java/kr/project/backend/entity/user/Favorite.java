@@ -33,7 +33,7 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     @Comment(value = "총 보상수량")
     private double totalRewards;
 
-    @Column(columnDefinition = "char default 'N'")
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
     @Convert(converter = BooleanToYNConverter.class)
     @Comment(value = "삭제 유무")
     private boolean delYn;

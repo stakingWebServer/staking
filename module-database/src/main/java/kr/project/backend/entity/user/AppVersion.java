@@ -31,7 +31,7 @@ public class AppVersion extends BaseTimeEntity implements Serializable {
     private String minimumVersion;
 
     @Comment(value = "강제업데이트 여부")
-    @Column(columnDefinition = "char default 'N'")
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
     @Convert(converter = BooleanToYNConverter.class)
     private boolean hardUpdateYn;
 

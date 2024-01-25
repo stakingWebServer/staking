@@ -30,7 +30,7 @@ public class UseClause extends BaseTimeEntity implements Serializable {
     private String useClauseTitle;
 
     @Comment(value = "이용약관 필수여부")
-    @Column(columnDefinition = "char default 'N'")
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
     @Convert(converter = BooleanToYNConverter.class)
     private boolean useClauseEssentialYn;
 
