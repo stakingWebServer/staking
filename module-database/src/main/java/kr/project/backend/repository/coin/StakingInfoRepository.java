@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface StakingInfoRepository extends JpaRepository<StakingInfo, UUID> {
+public interface StakingInfoRepository extends JpaRepository<StakingInfo, Long> {
 
     List<StakingInfo> findAllByCreatedDateBetween(String start, String end);
 

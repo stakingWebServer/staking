@@ -22,11 +22,9 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class StakingInfo extends BaseTimeEntity implements Serializable {
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment(value = "스테이킹키값")
-    private UUID stakingId;
+    private Long stakingId;
     @Comment(value = "코인이름")
     private String coinName;
     @Comment(value = "전일종가")

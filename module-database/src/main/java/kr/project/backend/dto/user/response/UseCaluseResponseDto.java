@@ -14,8 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UseCaluseResponseDto implements Serializable {
 
-    @Schema(description = "이용약관ID", example = "05371c03-5439-417b-8009-ff789b417001")
-    private UUID useClauseId;
+    @Schema(description = "이용약관ID", example = "1")
+    private Long useClauseId;
 
     @Schema(description = "이용약관 제목", example = "[2024.01.17] 개인정보처리방침 V2.1")
     private String useClauseTitle;

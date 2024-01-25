@@ -32,7 +32,7 @@ public class StakingInfoController {
 
     @Operation(summary = "코인 스테이킹 상세 조회", description = "코인 스테이킹 상세 조회를 합니다.")
     @GetMapping("/info/{stakingId}")
-    public ResponseEntity<?> stakingInfo(@PathVariable(value = "stakingId") UUID stakingId) {
+    public ResponseEntity<?> stakingInfo(@PathVariable(value = "stakingId") Long stakingId) {
         return ObjectResult.build(stakingInfoService.getStakingInfo(stakingId));
     }
 }

@@ -21,11 +21,9 @@ import java.util.UUID;
 public class UseClause extends BaseTimeEntity implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment(value = "이용약관 키값")
-    private UUID useClauseId;
+    private Long useClauseId;
 
     @Comment(value = "이용약관 제목")
     @Column(length = 50)

@@ -2,6 +2,7 @@ package kr.project.backend.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -14,7 +15,9 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(title = "STAKING API 명세서",
                 description = "STAKING API 명세서 입니다.",
-                version = "v1"))
+                version = "v1"),
+        servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
+        //servers = {@Server(url = "https://api.s2it.kro.kr")}) //local
 @RequiredArgsConstructor
 @Configuration
 public class SwaggerConfig {

@@ -31,7 +31,7 @@ public class JwtUtil {
         return Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token)
                     .getBody().getExpiration().before(new Date());
     }
-    public static String createJwt(UUID userId, String userEmail, String secretKey, Long expiredHs){
+    public static String createJwt(Long userId, String userEmail, String secretKey, Long expiredHs){
         Claims claIms = Jwts.claims();
         claIms.put("userId",userId);
         claIms.put("userEmail",userEmail);

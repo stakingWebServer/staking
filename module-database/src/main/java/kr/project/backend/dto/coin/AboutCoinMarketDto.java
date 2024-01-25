@@ -9,6 +9,6 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class AboutCoinMarketDto implements Serializable {
-    private UUID stakingId;
+    private Long stakingId;
     private String aboutCoinMarketType;
 }

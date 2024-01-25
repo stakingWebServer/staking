@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface UseClauseRepository extends JpaRepository<UseClause, UUID> {
+public interface UseClauseRepository extends JpaRepository<UseClause, Long> {
 
 
     @Query(value = """

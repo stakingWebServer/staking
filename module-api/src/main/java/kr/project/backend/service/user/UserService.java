@@ -125,7 +125,7 @@ public class UserService {
         }
 
         //회원가입
-        UUID userId = userRepository.save(new User(userJoinRequestDto)).getUserId();
+        Long userId = userRepository.save(new User(userJoinRequestDto)).getUserId();
 
         //방금 회원가입 된 유저 정보 가져오기
         User userInfo = userRepository.findById(userId)
@@ -183,7 +183,7 @@ public class UserService {
     public void logout(ServiceUser serviceUser) {
 
         //회원정보
-        User userInfo = userRepository.findById(UUID.fromString(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //로그아웃시간 업데이트
@@ -196,7 +196,7 @@ public class UserService {
     public void dropUser(ServiceUser serviceUser) {
 
         //회원정보
-        User userInfo = userRepository.findById(UUID.fromString(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //탈퇴 중복 처리 방어로직
@@ -223,7 +223,7 @@ public class UserService {
     public UserCheckStateResponseDto userStateCheck(ServiceUser serviceUser) {
 
         //회원정보
-        User userInfo = userRepository.findById(UUID.fromString(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         CommonCode commonCode = commonCodeRepository.findByGrpCommonCodeAndCommonCode(Constants.USER_STATE.CODE, userInfo.getUserState())
@@ -236,7 +236,7 @@ public class UserService {
     @Transactional
     public AddFavoriteResponseDto addFavorite(ServiceUser serviceUser, AddFavoriteRequestDto addFavoriteRequestDto) {
         //회원정보
-        User userInfo = userRepository.findById(UUID.fromString(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
         //코인정보
         StakingInfo stakingInfo = stakingInfoRepository.findById(addFavoriteRequestDto.getStakingId())
@@ -256,7 +256,7 @@ public class UserService {
     @Transactional
     public void unFavorite(ServiceUser serviceUser, UnFavoriteRequestDto unFavoriteRequestDto) {
         //회원정보
-        User userInfo = userRepository.findById(UUID.fromString(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //즐겨찾기 정보
@@ -269,15 +269,21 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponseDto> getFavorites(ServiceUser serviceUser) {
+    public List<Favorite> getFavorites(ServiceUser serviceUser) {
         //회원정보
-        User userInfo = userRepository.findById(UUID.fromString(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
+
+        //List<Favorite> allByUserAndDelYn = favoriteRepository.findAllByUserAndDelYn(userInfo, false);
+        List<Favorite> allByUserAndDelYn = favoriteRepository.findAll();
+        log.info("test : {}",allByUserAndDelYn);
+
+        return allByUserAndDelYn;
+        /*return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
                 .stream()
                 .map(FavoriteResponseDto::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
     }
 
     @Transactional(readOnly = true)

@@ -11,6 +11,6 @@ import java.util.UUID;
 @Data
 public class AddFavoriteRequestDto implements Serializable {
     @NotNull
-    @Schema(description = "stakingId", example = "9854112a-f2a9-4cde-86b5-d54569db7120")
-    private UUID stakingId;
+    @Schema(description = "stakingId", example = "1")
+    private Long stakingId;
 }
