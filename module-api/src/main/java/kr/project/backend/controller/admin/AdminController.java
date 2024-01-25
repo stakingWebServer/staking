@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "관리자", description = "관리자 로그인")
 @Slf4j
 @RestController
-@RequestMapping("/api/" + Environment.API_VERSION + "/" + Environment.API_ADMIN + "/account")
+@RequestMapping("/api/" + Environment.API_VERSION + "/" + Environment.API_ADMIN)
 @RequiredArgsConstructor
 public class AdminController {
 
