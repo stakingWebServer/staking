@@ -30,7 +30,7 @@ public class User extends BaseTimeEntity implements Serializable {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
-    @Comment(value = "유저 키값")
+    @Comment(value = "유저 키값")//t
     private UUID userId;
 
     @Comment(value = "유저 이메일")
