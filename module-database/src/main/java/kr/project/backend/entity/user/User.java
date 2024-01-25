@@ -13,6 +13,7 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -45,6 +46,9 @@ public class User extends BaseTimeEntity implements Serializable {
     @Comment(value = "로그아웃 일시")
     private String userLogoutDttm;
 
+    @Comment(value = "로그인 일시")
+    private String userLoginDttm;
+
     @Comment(value = "회원가입 sns 구분")
     private String userJoinSnsKind;
 
@@ -75,10 +79,15 @@ public class User extends BaseTimeEntity implements Serializable {
         this.userJoinOsKind = userJoinRequestDto.getUserJoinOsKind();
         this.userState = Constants.USER_STATE.ACTIVE_USER;
         this.userLogoutDttm = "";
+        this.userLoginDttm = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public void updateUserLogoutDttm(String userLogoutDttm) {
         this.userLogoutDttm = userLogoutDttm;
+    }
+
+    public void updateUserLoginDttm() {
+        this.userLoginDttm = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public void updateUserDrop() {

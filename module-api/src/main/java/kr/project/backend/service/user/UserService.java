@@ -100,6 +100,11 @@ public class UserService {
             throw new CommonException(CommonErrorCode.ALREADY_JOIN_USER.getCode(), CommonErrorCode.ALREADY_JOIN_USER.getMessage() + "(" + commonCode.getCommonCodeName() + ")");
         }
 
+        //로그인시간 업데이트
+        userInfo.updateUserLoginDttm();
+        userRepository.save(userInfo);
+
+
         String accessToken = JwtUtil.createJwt(userInfo.getUserId(), userInfo.getUserEmail(), jwtSecretKey, expiredHs * accesTokenTime);
         String refreshToken = JwtUtil.createJwt(userInfo.getUserId(), userInfo.getUserEmail(), jwtSecretKey, expiredHs * refreshTokenTime);
 
