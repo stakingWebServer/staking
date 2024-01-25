@@ -54,6 +54,7 @@ public class UserService {
     private final UserUseClauseRepository userUseClauseRepository;
     private final UseClauseRepository useClauseRepository;
     private final AppVersionRepository appVersionRepository;
+    private final MoveViewRepository moveViewRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -100,8 +101,8 @@ public class UserService {
             throw new CommonException(CommonErrorCode.ALREADY_JOIN_USER.getCode(), CommonErrorCode.ALREADY_JOIN_USER.getMessage() + "(" + commonCode.getCommonCodeName() + ")");
         }
 
-        //로그인시간 업데이트
-        userInfo.updateUserLoginDttm();
+        //로그인시간, os, pushToken 업데이트
+        userInfo.updateUserLoginInfo(userLoginRequestDto);
         userRepository.save(userInfo);
 
 
@@ -306,5 +307,15 @@ public class UserService {
             appVersionResponseDto.setHardUpdateUrl(appVersionData.getHardUpdateUrl());
         }
         return appVersionResponseDto;
+    }
+
+    @Transactional
+    public void moveView(ServiceUser serviceUser, MoveViewRequestDto moveViewRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        //화면이동 저장
+        moveViewRepository.save(new MoveView(userInfo,moveViewRequestDto));
     }
 }

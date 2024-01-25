@@ -66,6 +66,10 @@ public class User extends BaseTimeEntity implements Serializable {
 
     @OneToMany(mappedBy = "user")
     private List<UserUseClause> userUseClauses;
+
+    @OneToMany(mappedBy = "user")
+    private List<MoveView> moveViews;
+
     public User(UserLoginRequestDto userLoginRequestDto) {
         this.userEmail = userLoginRequestDto.getUserEmail();
         this.userPushToken = userLoginRequestDto.getUserPushToken();
@@ -86,7 +90,9 @@ public class User extends BaseTimeEntity implements Serializable {
         this.userLogoutDttm = userLogoutDttm;
     }
 
-    public void updateUserLoginDttm() {
+    public void updateUserLoginInfo(UserLoginRequestDto userLoginRequestDto) {
+        this.userJoinOsKind = userLoginRequestDto.getUserJoinOsKind();
+        this.userPushToken = userLoginRequestDto.getUserPushToken();
         this.userLoginDttm = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 

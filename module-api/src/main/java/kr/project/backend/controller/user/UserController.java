@@ -99,5 +99,13 @@ public class UserController {
         return ObjectResult.ok();
     }
 
+    @Operation(summary = "화면 이동", description = "화면 이동시 해당 화면 방문을 저장 합니다.")
+    @PutMapping("/move/view")
+    public ResponseEntity<?> moveView(@AuthenticationPrincipal ServiceUser serviceUser,
+                                      @Valid @RequestBody MoveViewRequestDto moveViewRequestDto) {
+        userService.moveView(serviceUser, moveViewRequestDto);
+        return ObjectResult.ok();
+    }
+
 
 }
