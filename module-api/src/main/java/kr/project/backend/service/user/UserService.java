@@ -54,7 +54,6 @@ public class UserService {
     private final UserUseClauseRepository userUseClauseRepository;
     private final UseClauseRepository useClauseRepository;
     private final AppVersionRepository appVersionRepository;
-    private final TempTestRepository tempTestRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
