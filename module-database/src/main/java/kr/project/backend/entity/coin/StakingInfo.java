@@ -46,7 +46,7 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     private CoinMarketType coinMarketType;
 
     @OneToMany(mappedBy = "stakingInfo")
-    public List<Favorite> favorites;
+    public List<Favorite> favorites;//d
 
     public StakingInfo(SaveDto saveDto){
         this.coinName = saveDto.getCoinName();
