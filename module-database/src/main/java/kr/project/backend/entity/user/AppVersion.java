@@ -23,7 +23,7 @@ public class AppVersion extends BaseTimeEntity implements Serializable {
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "앱버전키값")
-    private String appVersionId;
+    private String appVersionId;   
 
     @Comment(value = "앱 OS")
     @Column(length = 2)
