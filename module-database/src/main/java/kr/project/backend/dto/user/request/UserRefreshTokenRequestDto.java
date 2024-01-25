@@ -10,6 +10,6 @@ import java.util.UUID;
 public class UserRefreshTokenRequestDto implements Serializable {
 
     @NotNull
-    @Schema(description = "refreshTokenId", example = "9854112a-f2a9-4cde-86b5-d54569db7120")
-    private UUID refreshTokenId;
+    @Schema(description = "refreshTokenId", example = "1")
+    private Long refreshTokenId;
 }

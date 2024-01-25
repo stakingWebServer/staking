@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface UserUseClauseRepository extends JpaRepository<UserUseClause, UUID> {
+public interface UserUseClauseRepository extends JpaRepository<UserUseClause, Long> {
 
 }

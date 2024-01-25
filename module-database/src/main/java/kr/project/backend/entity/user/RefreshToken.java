@@ -23,12 +23,10 @@ public class RefreshToken extends BaseTimeEntity implements Serializable {
      * 리프레시토큰 키값
      */
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "varchar(255)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     @Comment(value = "리프레시토큰 키값")
-    private UUID refreshTokenId;
+    private Long refreshTokenId;
 
     @Comment(value = "리프레시토큰값")
     private String refreshToken;

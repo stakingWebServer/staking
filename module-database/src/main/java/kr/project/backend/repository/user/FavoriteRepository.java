@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface FavoriteRepository extends JpaRepository<Favorite, UUID> {
+public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     Optional<Favorite> findByStakingInfoAndUserAndDelYn(StakingInfo stakingInfo, User userInfo, boolean delYn);
 
@@ -20,6 +20,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, UUID> {
 
     boolean existsByStakingInfoAndUserAndDelYn(StakingInfo stakingInfo, User userInfo, boolean delYn);
 
-    Optional<Favorite> findByFavoriteIdAndUserAndDelYn(UUID favoriteId, User userInfo, boolean b);
+    Optional<Favorite> findByFavoriteIdAndUserAndDelYn(Long favoriteId, User userInfo, boolean b);
 
 }

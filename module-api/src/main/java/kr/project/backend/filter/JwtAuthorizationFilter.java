@@ -112,7 +112,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 //jwt decode
                 serviceUser = JwtUtil.decode(token, jwtSecretKey);
 
-                User userInfo = userRepository.findById(UUID.fromString(serviceUser.getUserId()))
+                User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
                         .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
                 simpleGrantedAuthority = USER;
