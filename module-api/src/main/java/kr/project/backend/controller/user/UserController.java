@@ -131,6 +131,14 @@ public class UserController {
                                      @PathVariable(value = "rewardType",required = false) String rewardType) {
         return ObjectResult.build(userService.getMydataStaking(serviceUser, myStakingDataId, rewardType));
     }
-
-
+    @Operation(summary = "마이데이터스테이킹 수량계산", description = "마이데이터스테이킹 수량계산 합니다.")
+    @PostMapping("/staking/{myStakingDataId}")
+    public ResponseEntity<?> calcStaking(
+            @AuthenticationPrincipal ServiceUser serviceUser,
+            @RequestBody CalcStakingRequestDto calcStakingRequestDto,
+            @PathVariable(value = "myStakingDataId") String myStakingDataId
+            ){
+        userService.calcStaking(serviceUser,calcStakingRequestDto,myStakingDataId);
+        return ObjectResult.ok();
+    }
 }

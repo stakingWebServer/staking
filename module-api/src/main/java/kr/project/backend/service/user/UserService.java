@@ -368,5 +368,15 @@ public class UserService {
         return new MyStakingDataDetailResponseDto(myStakingData,list);
     }
 
+    @Transactional
+    public void calcStaking(ServiceUser serviceUser, CalcStakingRequestDto calcStakingRequestDto, String myStakingDataId) {
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
+        MyStakingData myStakingData = myStakingDataRepository.findByMyStakingDataIdAndUser(myStakingDataId,userInfo)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_STAKING_DATA.getCode(), CommonErrorCode.NOT_FOUND_STAKING_DATA.getMessage()));
+
+        myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(calcStakingRequestDto,userInfo,myStakingData));
+    }
 }

@@ -2,6 +2,7 @@ package kr.project.backend.entity.user;
 
 
 import jakarta.persistence.*;
+import kr.project.backend.dto.user.request.CalcStakingRequestDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,4 +33,11 @@ public class MyStakingDataAboutReward {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public MyStakingDataAboutReward(CalcStakingRequestDto calcStakingRequestDto, User userInfo, MyStakingData myStakingData) {
+        this.userRegDate = calcStakingRequestDto.getUserRegDate();
+        this.todayCompensationQuantity = String.valueOf(Double.parseDouble(myStakingData.getMaxAnnualRewardRate()) * Double.parseDouble(calcStakingRequestDto.getInsertAmount()));
+        this.user = userInfo;
+        this.myStakingData = myStakingData;
+    }
 }
