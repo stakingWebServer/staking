@@ -77,7 +77,8 @@ public class UserService {
                     Long dropAndJoinTerm = (nowDate.getTime() - dropDate.getTime()) / 1000 / (24 * 60 * 60);
 
                     if (reJoinTermDate > dropAndJoinTerm.intValue()) {
-                        throw new CommonException(CommonErrorCode.JOIN_TERM_DATE.getCode(), CommonErrorCode.JOIN_TERM_DATE.getMessage());
+                        //한달제한 임시 해제
+                        //throw new CommonException(CommonErrorCode.JOIN_TERM_DATE.getCode(), CommonErrorCode.JOIN_TERM_DATE.getMessage());
                     }
                 } catch (ParseException e) {
                     log.info("date 변환 파싱 error");
