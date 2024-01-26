@@ -29,7 +29,25 @@ public class AdminController {
     @GetMapping("/accessKey/{plainText}")
     public ResponseEntity<?> accessKey(@Parameter(name = "plainText", description = "암호화 할 평문", example = "testText")
                                        @PathVariable(name = "plainText") String plainText) throws Exception{
-        return ObjectResult.build(adminService.adminService(plainText));
+        return ObjectResult.build(adminService.giveApikey(plainText));
     }
-    
+
+    //TODO 대시보드
+    // - 당일 가입 사용자 수 : user -> regDate로 판단
+    // - 당일 로그인 사용자 수 : 칼럼을 추가하여 login할때의 날짜를 확인할수있도록 추가
+    // - 당일 탈퇴 사용자 수 : DropUser 테이블에서 regDate로 판단
+    // - 페이지별 조회 수 : ???
+    @Operation(summary = "당일 가입 사용자 수",description = "당일 가입 사용자 수를 구한다.")
+    @GetMapping("/todayRegister")
+    public ResponseEntity<?> getTodayRegister(){
+        return ObjectResult.build(adminService.getTodayRegister());
+    }
+
+
+
+
+
+
+
+
 }
