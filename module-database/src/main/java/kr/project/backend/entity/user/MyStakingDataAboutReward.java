@@ -36,7 +36,7 @@ public class MyStakingDataAboutReward {
 
     public MyStakingDataAboutReward(CalcStakingRequestDto calcStakingRequestDto, User userInfo, MyStakingData myStakingData) {
         this.userRegDate = calcStakingRequestDto.getUserRegDate();
-        this.todayCompensationQuantity = String.valueOf(Double.parseDouble(myStakingData.getMaxAnnualRewardRate()) * Double.parseDouble(calcStakingRequestDto.getInsertAmount()));
+        this.todayCompensationQuantity = String.valueOf((Double.parseDouble(myStakingData.getMaxAnnualRewardRate()) * Double.parseDouble(calcStakingRequestDto.getInsertAmount()))/365);
         this.user = userInfo;
         this.myStakingData = myStakingData;
     }
