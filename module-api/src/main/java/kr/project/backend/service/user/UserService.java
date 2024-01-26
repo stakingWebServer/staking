@@ -28,9 +28,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +59,8 @@ public class UserService {
     private final AppVersionRepository appVersionRepository;
     private final MoveViewRepository moveViewRepository;
     private final NoticeRepository noticeRepository;
+    private final MyStakingDataRepository myStakingDataRepository;
+    private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -328,4 +330,43 @@ public class UserService {
     public Page<NoticeResponseDto> getNotices(Pageable pageable){
         return noticeRepository.findAllByOrderByCreatedDateDesc(pageable);
     }
+
+    @Transactional(readOnly = true)
+    public List<?> getMydataStakings(ServiceUser serviceUser) {
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        return myStakingDataRepository.findAllByUser(userInfo)
+                .stream()
+                .map(MyStakingDataResponseDto::new)
+                .collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    public MyStakingDataDetailResponseDto getMydataStaking(ServiceUser serviceUser, String myStakingDataId, String rewardType) {
+        log.info("rewardType : {}",rewardType );
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        MyStakingData myStakingData = myStakingDataRepository.findByMyStakingDataIdAndUser(myStakingDataId,userInfo)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_STAKING_DATA.getCode(), CommonErrorCode.NOT_FOUND_STAKING_DATA.getMessage()));
+        LocalDateTime startDate;
+        switch (rewardType) {
+            // oneWeek,oneMonth,sixMonth,all
+            case "oneWeek" -> startDate = LocalDateTime.now().minusWeeks(1);
+            case "oneMonth" -> startDate = LocalDateTime.now().minusMonths(1);
+            case "sixMonth" -> startDate = LocalDateTime.now().minusMonths(6);
+            case  "" -> startDate = LocalDateTime.MIN;
+            default -> throw new CommonException(CommonErrorCode.COMMON_FAIL.getCode(), CommonErrorCode.COMMON_FAIL.getMessage());
+        }
+        List<MyStakingDataAboutReward> values = myStakingDataAboutRewardRepository.findAllByMyStakingDataAndUserAndUserRegDateAfter(myStakingData, userInfo, startDate.format(DateTimeFormatter.ofPattern("dd.MM.yy")));
+        List<MyStakingDataRewardsDto> list = new ArrayList<>();
+        values.forEach(value -> {
+            list.add(new MyStakingDataRewardsDto(value.getUserRegDate(),value.getTodayCompensationQuantity()));
+        });
+        return new MyStakingDataDetailResponseDto(myStakingData,list);
+    }
+
+
 }

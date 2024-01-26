@@ -11,13 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
-
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 
 
 @Getter
@@ -69,6 +66,13 @@ public class User extends BaseTimeEntity implements Serializable {
 
     @OneToMany(mappedBy = "user")
     private List<MoveView> moveViews;
+
+    @OneToMany(mappedBy = "user")
+    private List<MyStakingData> myStakingData;
+
+    @OneToMany(mappedBy = "user")
+    private List<MyStakingDataAboutReward> myStakingDataAboutRewards;
+
 
     public User(UserLoginRequestDto userLoginRequestDto) {
         this.userEmail = userLoginRequestDto.getUserEmail();

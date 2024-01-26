@@ -1,0 +1,24 @@
+package kr.project.backend.dto.user.response;
+
+import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.entity.user.MyStakingData;
+import lombok.Data;
+import java.io.Serializable;
+import java.util.List;
+
+@Data
+public class MyStakingDataDetailResponseDto implements Serializable {
+    private String coinName;
+    private CoinMarketType coinMarketType;
+    private String totalHoldingsQuantity;
+    private String totalCompensationQuantity;
+    private List<MyStakingDataRewardsDto> rewards;
+
+    public MyStakingDataDetailResponseDto(MyStakingData myStakingData, List<MyStakingDataRewardsDto> list){
+        this.coinName = myStakingData.getCoinName();
+        this.coinMarketType = myStakingData.getCoinMarketType();
+        this.totalHoldingsQuantity = myStakingData.getTotalHoldingsQuantity();
+        this.totalCompensationQuantity = myStakingData.getTotalCompensationQuantity();
+        this.rewards = list;
+    }
+}

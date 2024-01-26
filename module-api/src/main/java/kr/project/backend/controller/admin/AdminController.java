@@ -42,12 +42,4 @@ public class AdminController {
     public ResponseEntity<?> getTodayRegister(){
         return ObjectResult.build(adminService.getTodayRegister());
     }
-
-
-
-
-
-
-
-
 }

@@ -35,9 +35,9 @@ public class UserController {
         return ObjectResult.build(userService.userLogin(userLoginRequestDto));
     }
 
-    @Operation(summary = "회원가입",description = "회원가입 입니다.")
+    @Operation(summary = "회원가입", description = "회원가입 입니다.")
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto){
+    public ResponseEntity<?> join(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
         return ObjectResult.build(userService.userJoin(userJoinRequestDto));
     }
 
@@ -98,7 +98,7 @@ public class UserController {
     @GetMapping("/appVersion")
     public ResponseEntity<?> getAppVersion(@Parameter(description = "앱 OS", example = "01", required = true) @RequestParam String appOs,
                                            @Parameter(description = "앱 버전", example = "1.1.2", required = true) @RequestParam String appVersion) {
-        userService.getAppVersion(appOs,appVersion);
+        userService.getAppVersion(appOs, appVersion);
         return ObjectResult.ok();
     }
 
@@ -116,6 +116,20 @@ public class UserController {
         //Pageable pageable = PageRequest.of(pageCountRequestDto.getPageCount(), pageCountRequestDto.getPageSize());
         Pageable pageable = PageRequest.of(1, 3);
         return ListResult.build(userService.getNotices(pageable));
+    }
+
+    @Operation(summary = "마이데이터스테이킹 목록", description = "마이데이터스테이킹 목록을 조회합니다.")
+    @GetMapping("/stakings")
+    public ResponseEntity<?> stakings(@AuthenticationPrincipal ServiceUser serviceUser) {
+        return ListResult.build(userService.getMydataStakings(serviceUser));
+    }
+
+    @Operation(summary = "마이데이터스테이킹 상세조회", description = "마이데이터스테이킹 상세조회 합니다.")
+    @GetMapping("/staking/{myStakingDataId}/{rewardType}")
+    public ResponseEntity<?> staking(@AuthenticationPrincipal ServiceUser serviceUser,
+                                     @PathVariable(value = "myStakingDataId") String myStakingDataId,
+                                     @PathVariable(value = "rewardType",required = false) String rewardType) {
+        return ObjectResult.build(userService.getMydataStaking(serviceUser, myStakingDataId, rewardType));
     }
 
 

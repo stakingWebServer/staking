@@ -23,6 +23,7 @@ public enum CommonErrorCode {
     ALREADY_JOIN_USER("C003","이미 가입된 회원입니다."),
     NOT_FOUND_FAVORITE("C004","없는 즐겨찾기 정보입니다."),
     NOT_JOIN_USER("C005","회원가입이 필요한 회원입니다."),
+    NOT_FOUND_STAKING_DATA("C006","마이 스테이킹 데이터를 찾을수 없습니다."),
 
     // coin
     NOT_FOUND_COIN("D000","없는 코인정보입니다."),
@@ -30,6 +31,7 @@ public enum CommonErrorCode {
     // favorite
     ALREADY_EXIST_FAVORITE("E000","이미 존재하는 즐겨찾기입니다.")
     ;
+
 
 
 
