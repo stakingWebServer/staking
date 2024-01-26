@@ -2,6 +2,7 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.dto.common.PageCountRequestDto;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
 import kr.project.backend.utils.JwtUtil;
@@ -18,9 +19,11 @@ import kr.project.backend.repository.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -55,6 +58,7 @@ public class UserService {
     private final UseClauseRepository useClauseRepository;
     private final AppVersionRepository appVersionRepository;
     private final MoveViewRepository moveViewRepository;
+    private final NoticeRepository noticeRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -86,7 +90,7 @@ public class UserService {
             }
 
             //회원가입 안내 return
-            throw new CommonException(CommonErrorCode.JOIN_TERM_DATE.getCode(),CommonErrorCode.JOIN_TERM_DATE.getMessage());
+            throw new CommonException(CommonErrorCode.NOT_JOIN_USER.getCode(),CommonErrorCode.NOT_JOIN_USER.getMessage());
         }
         //등록되어 있는 유저
 
@@ -318,5 +322,10 @@ public class UserService {
 
         //화면이동 저장
         moveViewRepository.save(new MoveView(userInfo,moveViewRequestDto));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<NoticeResponseDto> getNotices(Pageable pageable){
+        return noticeRepository.findAllByOrderByCreatedDateDesc(pageable);
     }
 }

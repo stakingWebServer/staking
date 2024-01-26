@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.dto.common.PageCountRequestDto;
 import kr.project.backend.results.ListResult;
 import kr.project.backend.service.user.UserService;
 import kr.project.backend.common.Environment;
@@ -12,9 +13,11 @@ import kr.project.backend.dto.user.request.*;
 import kr.project.backend.results.ObjectResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
 
 
 @Tag(name = "account", description = "로그인 / 회원가입")
@@ -105,6 +108,14 @@ public class UserController {
                                       @Valid @RequestBody MoveViewRequestDto moveViewRequestDto) {
         userService.moveView(serviceUser, moveViewRequestDto);
         return ObjectResult.ok();
+    }
+
+    @Operation(summary = "공지사항 조회", description = "[작업중] 공지사항 조회 입니다.")
+    @GetMapping("/notices")
+    public ResponseEntity<?> getNotices(PageCountRequestDto pageCountRequestDto) {
+        //Pageable pageable = PageRequest.of(pageCountRequestDto.getPageCount(), pageCountRequestDto.getPageSize());
+        Pageable pageable = PageRequest.of(1, 3);
+        return ListResult.build(userService.getNotices(pageable));
     }
 
 
