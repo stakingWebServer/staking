@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface StakingInfoRepository extends JpaRepository<StakingInfo, String> {
 
-    List<StakingInfo> findAllByCreatedDateBetween(String start, String end);
+    List<StakingInfo> findAllByCreatedDateBetween(String startDate, String endDate);
 
-    List<StakingInfo> findByCoinNameAndCreatedDateBetween(String coinName, String start, String end);
+    List<StakingInfo> findByCoinNameAndCreatedDateBetween(String coinName, String startDate, String endDate);
 }

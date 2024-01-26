@@ -88,7 +88,7 @@ public class UserController {
     @Operation(summary = "이용약관 목록 조회", description = "이용약관 목록을 조회 합니다.")
     @GetMapping("/useClauses")
     public ResponseEntity<?> getUseClauses() {
-        return ObjectResult.build(userService.getUseClauses());
+        return ListResult.build(userService.getUseClauses());
     }
 
     @Operation(summary = "앱 강제 업데이트 조회", description = "앱 버전을 통해 강제 업데이트 유무를 조회 합니다.")

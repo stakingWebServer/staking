@@ -15,12 +15,12 @@ public interface UseClauseRepository extends JpaRepository<UseClause, String> {
 
     @Query(value = """
             select a.useClauseEssentialYn,a.useClauseTitle,a.useClauseKind,b.commonCodeName,c.fileUrl
-            from UseClause a 
-            left join CommonCode b 
+            from UseClause a
+            left join CommonCode b
             on b.grpCommonCode = :useClauseKind
-            and a.useClauseKind = b.commonCode 
-            left join CommonFile c 
-            on a.commonFile.fileId = c.fileId 
+            and a.useClauseKind = b.commonCode
+            left join CommonFile c
+            on a.commonFile.fileId = c.fileId
             where a.useClauseState = :useClauseState
             """)
     List<UseClauseResponseDto> getUserClauses(@Param(value = "useClauseKind") String useClauseKind,

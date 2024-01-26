@@ -1,5 +1,6 @@
 package kr.project.backend.dto.user.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
