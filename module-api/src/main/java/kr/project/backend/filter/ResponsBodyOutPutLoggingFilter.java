@@ -82,7 +82,7 @@ public class ResponsBodyOutPutLoggingFilter implements ResponseBodyAdvice {
                 }
                 if(param == null){
                     param = uri;
-                }
+                } 
 
                 log.info("----> [REQUEST INFO] userId ::: " + userId +
                          " / Header ::: " + HttpRequestDataUtil.requestHeaderData(httpRequest) +
