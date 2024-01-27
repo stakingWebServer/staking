@@ -328,8 +328,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<NoticeResponseDto> getNotices(Pageable pageable) {
-        return noticeRepository.findAllByOrderByCreatedDateDesc(pageable);
+    public List<NoticeResponseDto> getNotices(Pageable pageable) {
+        return noticeRepository.findAllByOrderByCreatedDateDesc(pageable)
+                .stream()
+                .map(NoticeResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

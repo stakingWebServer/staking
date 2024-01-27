@@ -11,6 +11,6 @@ import java.util.List;
 
 public interface NoticeRepository extends JpaRepository<Notice, String> {
 
-    Page<NoticeResponseDto> findAllByOrderByCreatedDateDesc(Pageable pageable);
+    Page<Notice> findAllByOrderByCreatedDateDesc(Pageable pageable);
 
 }
