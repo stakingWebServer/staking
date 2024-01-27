@@ -80,7 +80,7 @@ public class User extends BaseTimeEntity implements Serializable {
         this.userJoinSnsKind = userLoginRequestDto.getUserJoinSnsKind();
         this.userJoinOsKind = userLoginRequestDto.getUserJoinOsKind();
     }
-    public User(UserJoinRequestDto userJoinRequestDto){
+    public User(UserJoinRequestDto userJoinRequestDto){ 
         this.userEmail = userJoinRequestDto.getUserEmail();
         this.userPushToken = userJoinRequestDto.getUserPushToken();
         this.userJoinSnsKind = userJoinRequestDto.getUserJoinSnsKind();
