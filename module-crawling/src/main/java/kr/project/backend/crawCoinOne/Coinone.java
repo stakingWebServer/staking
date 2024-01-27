@@ -23,7 +23,7 @@ public class Coinone {
 
     private final StakingInfoRepository stakingInfoRepository;
 
-    @Scheduled(cron = "0 30 1 * * *")
+    @Scheduled(cron = "0 50 0 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
         SaveDto saveDto = new SaveDto();
         String url = "https://coinone.co.kr/plus";
