@@ -3,6 +3,8 @@ package kr.project.backend.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.entity.common.InOutLog;
+import kr.project.backend.repository.common.InOutLogRepository;
 import kr.project.backend.utils.HttpRequestDataUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 @Slf4j
 @RestControllerAdvice
@@ -27,6 +30,8 @@ public class ResponsBodyOutPutLoggingFilter implements ResponseBodyAdvice {
     private ObjectMapper mapper = new ObjectMapper();
 
     private int MAX_RESULT_SIZE = 3998;
+
+    private final InOutLogRepository inOutLogRepository;
 
     @Override
     public boolean supports (MethodParameter returnType, Class converterType) {
@@ -69,15 +74,33 @@ public class ResponsBodyOutPutLoggingFilter implements ResponseBodyAdvice {
                     log.error("result data maxlength change error" ,e);
                 }
 
-                log.info("----> request Header ::: "+ HttpRequestDataUtil.requestHeaderData(httpRequest));
-                log.info("----> request param ::: "+ mapper.readTree(cachingRequest.getContentAsByteArray()));
-                log.info("----> request logId::: "+logId);
-                log.info("----> request userId::: "+userId);
-                log.info("----> request uri::: "+uri);
-                log.info("----> request client ip::: "+httpRequest.getRemoteAddr());
-                log.info("<---- response ::: "+result);
+                //httpMethod에 따른 param 저장
+                String param = "";
+                param = String.valueOf(mapper.readTree(cachingRequest.getContentAsByteArray()));
+                if(request.getURI().toString().indexOf("?") > 0){
+                    param = request.getURI().toString().substring(request.getURI().toString().indexOf("?")+1);
+                }
+                if(param == null){
+                    param = uri;
+                }
 
-                //TODO inout 데이터 저장 필요
+                log.info("----> [REQUEST INFO] userId ::: " + userId +
+                         " / Header ::: " + HttpRequestDataUtil.requestHeaderData(httpRequest) +
+                         " / uri ::: " + uri +
+                         " / param ::: " + param +
+                         " / client ip ::: " + httpRequest.getRemoteAddr()
+                );
+                log.info("<---- [RESPONSE INFO] ::: " + result);
+
+                //inout 저장
+                inOutLogRepository.save(new InOutLog(userId ,
+                                                     HttpRequestDataUtil.requestHeaderData(httpRequest),
+                                                     uri,
+                                                     param,
+                                                     httpRequest.getRemoteAddr(),
+                                                     result
+                ));
+
 
             }catch ( Exception e) {
                 log.error("saveInoutLog insert error ",e);
