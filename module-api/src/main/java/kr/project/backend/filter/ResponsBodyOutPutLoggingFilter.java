@@ -82,13 +82,21 @@ public class ResponsBodyOutPutLoggingFilter implements ResponseBodyAdvice {
                 }
                 if(param == null){
                     param = uri;
-                } 
+                }
+
+                String clientIp = httpRequest.getHeader("x-forwarded-for");
+                if(clientIp == null){
+                    clientIp = httpRequest.getHeader("x-real-ip");
+                }
+                if(clientIp == null){
+                    clientIp = httpRequest.getRemoteAddr();
+                }
 
                 log.info("----> [REQUEST INFO] userId ::: " + userId +
                          " / Header ::: " + HttpRequestDataUtil.requestHeaderData(httpRequest) +
                          " / uri ::: " + uri +
                          " / param ::: " + param +
-                         " / client ip ::: " + httpRequest.getRemoteAddr()
+                         " / client ip ::: " + clientIp
                 );
                 log.info("<---- [RESPONSE INFO] ::: " + result);
 
@@ -97,7 +105,7 @@ public class ResponsBodyOutPutLoggingFilter implements ResponseBodyAdvice {
                                                      HttpRequestDataUtil.requestHeaderData(httpRequest),
                                                      uri,
                                                      param,
-                                                     httpRequest.getRemoteAddr(),
+                                                     clientIp,
                                                      result
                 ));
 
