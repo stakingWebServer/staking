@@ -125,10 +125,10 @@ public class UserController {
     }
 
     @Operation(summary = "마이데이터스테이킹 상세조회", description = "마이데이터스테이킹 상세조회 합니다.")
-    @GetMapping("/staking/{myStakingDataId}/{rewardType}")
+    @GetMapping("/staking/{myStakingDataId}")
     public ResponseEntity<?> staking(@AuthenticationPrincipal ServiceUser serviceUser,
                                      @PathVariable(value = "myStakingDataId") String myStakingDataId,
-                                     @PathVariable(value = "rewardType",required = false) String rewardType) {
+                                     @RequestParam(value = "rewardType",required = false) String rewardType) {
         return ObjectResult.build(userService.getMydataStaking(serviceUser, myStakingDataId, rewardType));
     }
     @Operation(summary = "마이데이터스테이킹 수량계산", description = "마이데이터스테이킹 수량계산 합니다.")

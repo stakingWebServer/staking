@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.data.domain.Pageable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -92,7 +93,7 @@ public class UserService {
             }
 
             //회원가입 안내 return
-            throw new CommonException(CommonErrorCode.NOT_JOIN_USER.getCode(),CommonErrorCode.NOT_JOIN_USER.getMessage());
+            throw new CommonException(CommonErrorCode.NOT_JOIN_USER.getCode(), CommonErrorCode.NOT_JOIN_USER.getMessage());
         }
         //등록되어 있는 유저
 
@@ -128,13 +129,13 @@ public class UserService {
     }
 
     @Transactional
-    public UserTokenResponseDto userJoin(UserJoinRequestDto userJoinRequestDto){
+    public UserTokenResponseDto userJoin(UserJoinRequestDto userJoinRequestDto) {
 
         //등록되어 있는 유저인지 아닌지 판단
         boolean checkUserInfo = userRepository.existsByUserEmail(userJoinRequestDto.getUserEmail());
 
-        if(checkUserInfo){
-            throw new CommonException(CommonErrorCode.ALREADY_JOIN_USER.getCode(),CommonErrorCode.ALREADY_JOIN_USER.getMessage());
+        if (checkUserInfo) {
+            throw new CommonException(CommonErrorCode.ALREADY_JOIN_USER.getCode(), CommonErrorCode.ALREADY_JOIN_USER.getMessage());
         }
 
         //회원가입
@@ -145,7 +146,7 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //이용약관 동의 저장
-        for(int i = 0; i<userJoinRequestDto.getUseClauseDtoList().size(); i++ ){
+        for (int i = 0; i < userJoinRequestDto.getUseClauseDtoList().size(); i++) {
             UseClauseDto useClauseDto = userJoinRequestDto.getUseClauseDtoList().get(i);
             userUseClauseRepository.save(new UserUseClause(userInfo, useClauseDto));
         }
@@ -256,8 +257,8 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(), CommonErrorCode.NOT_FOUND_COIN.getMessage()));
 
         //데이터 중복 방지 코드
-        boolean favorite = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false);
-        if(favorite){
+        boolean favorite = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo, userInfo, false);
+        if (favorite) {
             throw new CommonException(CommonErrorCode.ALREADY_EXIST_FAVORITE.getCode(), CommonErrorCode.ALREADY_EXIST_FAVORITE.getMessage());
         }
 
@@ -273,7 +274,7 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //즐겨찾기 정보
-        Favorite favorite = favoriteRepository.findByFavoriteIdAndUserAndDelYn(unFavoriteRequestDto.getFavoriteId(),userInfo,false)
+        Favorite favorite = favoriteRepository.findByFavoriteIdAndUserAndDelYn(unFavoriteRequestDto.getFavoriteId(), userInfo, false)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
 
         //즐겨찾기 헤제.
@@ -288,7 +289,7 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
 
-        return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
+        return favoriteRepository.findAllByUserAndDelYn(userInfo, false)
                 .stream()
                 .map(FavoriteResponseDto::new)
                 .collect(Collectors.toList());
@@ -297,19 +298,19 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UseClauseResponseDto> getUseClauses() {
         //이용약관 목록조회
-        return useClauseRepository.getUserClauses(Constants.USE_CLAUSE_KIND.CODE,Constants.USE_CLAUSE_STATE.APPLY);
+        return useClauseRepository.getUserClauses(Constants.USE_CLAUSE_KIND.CODE, Constants.USE_CLAUSE_STATE.APPLY);
     }
 
     @Transactional(readOnly = true)
-    public AppVersionResponseDto getAppVersion(String appOs, String appVersion){
+    public AppVersionResponseDto getAppVersion(String appOs, String appVersion) {
         //강제업데이트 조회
-        AppVersion appVersionData = appVersionRepository.findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYnTrue(appOs,appVersion).orElse(null);
+        AppVersion appVersionData = appVersionRepository.findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYnTrue(appOs, appVersion).orElse(null);
 
         AppVersionResponseDto appVersionResponseDto = new AppVersionResponseDto();
 
-        if(appVersionData == null){
+        if (appVersionData == null) {
             appVersionResponseDto.setHardUpdateYn(Constants.YN.N);
-        }else{
+        } else {
             appVersionResponseDto.setHardUpdateYn(Constants.YN.Y);
             appVersionResponseDto.setHardUpdateUrl(appVersionData.getHardUpdateUrl());
         }
@@ -317,17 +318,17 @@ public class UserService {
     }
 
     @Transactional
-    public void moveView(ServiceUser serviceUser, MoveViewRequestDto moveViewRequestDto){
+    public void moveView(ServiceUser serviceUser, MoveViewRequestDto moveViewRequestDto) {
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //화면이동 저장
-        moveViewRepository.save(new MoveView(userInfo,moveViewRequestDto));
+        moveViewRepository.save(new MoveView(userInfo, moveViewRequestDto));
     }
 
     @Transactional(readOnly = true)
-    public Page<NoticeResponseDto> getNotices(Pageable pageable){
+    public Page<NoticeResponseDto> getNotices(Pageable pageable) {
         return noticeRepository.findAllByOrderByCreatedDateDesc(pageable);
     }
 
@@ -342,30 +343,34 @@ public class UserService {
                 .map(MyStakingDataResponseDto::new)
                 .collect(Collectors.toList());
     }
+
     @Transactional(readOnly = true)
     public MyStakingDataDetailResponseDto getMydataStaking(ServiceUser serviceUser, String myStakingDataId, String rewardType) {
-        log.info("rewardType : {}",rewardType );
+        log.info("rewardType : {}", rewardType);
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        MyStakingData myStakingData = myStakingDataRepository.findByMyStakingDataIdAndUser(myStakingDataId,userInfo)
+        MyStakingData myStakingData = myStakingDataRepository.findByMyStakingDataIdAndUser(myStakingDataId, userInfo)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_STAKING_DATA.getCode(), CommonErrorCode.NOT_FOUND_STAKING_DATA.getMessage()));
         LocalDateTime startDate;
-        switch (rewardType) {
-            // oneWeek,oneMonth,sixMonth,all
-            case "oneWeek" -> startDate = LocalDateTime.now().minusWeeks(1);
-            case "oneMonth" -> startDate = LocalDateTime.now().minusMonths(1);
-            case "sixMonth" -> startDate = LocalDateTime.now().minusMonths(6);
-            case  "" -> startDate = LocalDateTime.MIN;
-            default -> throw new CommonException(CommonErrorCode.COMMON_FAIL.getCode(), CommonErrorCode.COMMON_FAIL.getMessage());
+        if (rewardType == null) {
+            startDate = LocalDateTime.MIN;
+        } else {
+            switch (rewardType) {
+                case "oneWeek" -> startDate = LocalDateTime.now().minusWeeks(1);
+                case "oneMonth" -> startDate = LocalDateTime.now().minusMonths(1);
+                case "sixMonth" -> startDate = LocalDateTime.now().minusMonths(6);
+                default ->
+                        throw new CommonException(CommonErrorCode.COMMON_FAIL.getCode(), CommonErrorCode.COMMON_FAIL.getMessage());
+            }
         }
-        List<MyStakingDataAboutReward> values = myStakingDataAboutRewardRepository.findAllByMyStakingDataAndUserAndUserRegDateAfter(myStakingData, userInfo, startDate.format(DateTimeFormatter.ofPattern("dd.MM.yy")));
+        List<MyStakingDataAboutReward> values = myStakingDataAboutRewardRepository.findAllByMyStakingDataAndUserAndUserRegDateAfter(myStakingData, userInfo, startDate.format(DateTimeFormatter.ofPattern("yy.MM.dd")));
         List<MyStakingDataRewardsDto> list = new ArrayList<>();
         values.forEach(value -> {
-            list.add(new MyStakingDataRewardsDto(value.getUserRegDate(),value.getTodayCompensationQuantity()));
+            list.add(new MyStakingDataRewardsDto(value.getUserRegDate(), value.getTodayCompensationQuantity()));
         });
-        return new MyStakingDataDetailResponseDto(myStakingData,list);
+        return new MyStakingDataDetailResponseDto(myStakingData, list);
     }
 
     @Transactional
@@ -374,9 +379,9 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        MyStakingData myStakingData = myStakingDataRepository.findByMyStakingDataIdAndUser(myStakingDataId,userInfo)
+        MyStakingData myStakingData = myStakingDataRepository.findByMyStakingDataIdAndUser(myStakingDataId, userInfo)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_STAKING_DATA.getCode(), CommonErrorCode.NOT_FOUND_STAKING_DATA.getMessage()));
 
-        myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(calcStakingRequestDto,userInfo,myStakingData));
+        myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(calcStakingRequestDto, userInfo, myStakingData));
     }
 }
