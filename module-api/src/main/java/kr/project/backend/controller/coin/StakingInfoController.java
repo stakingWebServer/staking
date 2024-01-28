@@ -3,12 +3,13 @@ package kr.project.backend.controller.coin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import kr.project.backend.auth.ServiceUser;
 import kr.project.backend.service.coin.StakingInfoService;
 import kr.project.backend.common.Environment;
-import kr.project.backend.results.ListResult;
 import kr.project.backend.results.ObjectResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +27,8 @@ public class StakingInfoController {
 
     @Operation(summary = "코인 스테이킹 목록 조회", description = "코인 스테이킹 목록 조회를 합니다.")
     @GetMapping("/infos")
-    public ResponseEntity<?> stakingInfos() {
-        return ListResult.build(stakingInfoService.getStakingInfos());
+    public ResponseEntity<?> stakingInfos(@AuthenticationPrincipal ServiceUser serviceUser) {
+        return ObjectResult.build(stakingInfoService.getStakingInfos(serviceUser));
     }
 
     @Operation(summary = "코인 스테이킹 상세 조회", description = "코인 스테이킹 상세 조회를 합니다.")

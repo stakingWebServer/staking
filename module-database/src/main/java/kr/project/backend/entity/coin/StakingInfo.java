@@ -14,14 +14,13 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class StakingInfo extends BaseTimeEntity implements Serializable {
-    @Id//text
+    @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
@@ -53,7 +52,7 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     @OneToMany(mappedBy = "stakingInfo")
     public List<Favorite> favorites;//d
 
-    public StakingInfo(SaveDto saveDto){
+    public StakingInfo(SaveDto saveDto) {
         this.coinName = saveDto.getCoinName();
         this.unit = saveDto.getUnit();
         this.prevClosingPrice = saveDto.getPrevClosingPrice();
