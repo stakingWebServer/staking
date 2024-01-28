@@ -391,10 +391,27 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<AlarmResponseDto> getAlarms(Pageable pageable,ServiceUser serviceUser) {
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
         //TODO findAll -> userId 조회로 바꿔야함
-        return alarmRepository.findAllByOrderByCreatedDateDesc(pageable)
+        return alarmRepository.findByUserOrderByCreatedDateDesc(userInfo,pageable)
                 .stream()
                 .map(AlarmResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void alarmCheck(ServiceUser serviceUser,AlarmCheckRequestDto alarmCheckRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        Alarm alarm = alarmRepository.findByAlarmIdAndUser(alarmCheckRequestDto.getAlarmId(),userInfo)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NULL_DATA.getCode(),CommonErrorCode.NULL_DATA.getMessage()));
+
+        alarm.updateAlarmReadYn();
+        alarmRepository.save(alarm);
     }
 }

@@ -105,7 +105,7 @@ public class UserController {
     }
 
     @Operation(summary = "화면 이동", description = "화면 이동시 해당 화면 방문을 저장 합니다.")
-    @PutMapping("/move/view")
+    @PostMapping("/move/view")
     public ResponseEntity<?> moveView(@AuthenticationPrincipal ServiceUser serviceUser,
                                       @Valid @RequestBody MoveViewRequestDto moveViewRequestDto) {
         userService.moveView(serviceUser, moveViewRequestDto);
@@ -146,5 +146,12 @@ public class UserController {
     @GetMapping("/alarms")
     public ResponseEntity<?> getAlarms(@PageableDefault()Pageable pageable, @AuthenticationPrincipal ServiceUser serviceUser) {
         return ListResult.build(userService.getAlarms(pageable,serviceUser));
+    }
+
+    @Operation(summary = "알림 읽음", description = "알림 읽음 입니다.")
+    @PutMapping("/alarmCheck")
+    public ResponseEntity<?> alarmCheck(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody AlarmCheckRequestDto alarmCheckRequestDto) {
+        userService.alarmCheck(serviceUser,alarmCheckRequestDto);
+        return ObjectResult.ok();
     }
 }
