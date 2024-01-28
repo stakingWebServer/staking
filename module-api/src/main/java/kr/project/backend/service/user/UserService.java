@@ -393,7 +393,6 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        //TODO findAll -> userId 조회로 바꿔야함
         return alarmRepository.findByUserOrderByCreatedDateDesc(userInfo,pageable)
                 .stream()
                 .map(AlarmResponseDto::new)
