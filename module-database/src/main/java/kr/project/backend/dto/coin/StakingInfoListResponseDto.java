@@ -16,6 +16,4 @@ public class StakingInfoListResponseDto implements Serializable {
     private List<StakingListDto> stakingInfoLists;
     @Schema(description = "즐겨찾기목록",example = "즐겨찾기목록")
     private List<FavoriteListDto> favoriteLists;
-
-
 }

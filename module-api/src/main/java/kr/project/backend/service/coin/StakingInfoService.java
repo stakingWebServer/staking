@@ -45,17 +45,12 @@ public class StakingInfoService {
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-        StakingInfoListResponseDto stakingInfoListResponseDto  = new StakingInfoListResponseDto();
 
-        List<StakingListDto> stakingDtos = stakingInfos.stream().map(StakingListDto::new).collect(Collectors.toList());
+        return new StakingInfoListResponseDto(
+                stakingInfos.stream().map(StakingListDto::new).collect(Collectors.toList()),
+                myFavorites.stream().map(FavoriteListDto::new).collect(Collectors.toList()));
 
-        List<FavoriteListDto> favoriteDtos = myFavorites.stream().map(FavoriteListDto::new).collect(Collectors.toList());
-
-        stakingInfoListResponseDto.setStakingInfoLists(stakingDtos);
-        stakingInfoListResponseDto.setFavoriteLists(favoriteDtos);
-
-        return stakingInfoListResponseDto;
-
+        //TODO 혹시몰라서 냅둔 API
 /*
         return stakingInfoRepository.findAllByCreatedDateBetween(
                         LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
