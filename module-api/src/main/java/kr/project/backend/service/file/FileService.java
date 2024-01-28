@@ -3,8 +3,9 @@ package kr.project.backend.service.file;
 import jakarta.transaction.Transactional;
 import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
+import kr.project.backend.dto.common.response.FileResponseDto;
 import kr.project.backend.entity.common.CommonFile;
-import kr.project.backend.repository.file.FileRepository;
+import kr.project.backend.repository.common.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,10 +21,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 @Service
@@ -40,10 +38,13 @@ public class FileService {
     private final FileRepository fileRepository;
 
     @Transactional
-    public void uploadImage(MultipartHttpServletRequest multipartHttpServletRequest) throws Exception{
+    public List<FileResponseDto> uploadImage(MultipartHttpServletRequest multipartHttpServletRequest) throws Exception{
+
+        //응답부
+        List<FileResponseDto> fileResponseDtoList = new ArrayList<>();
 
         //허용 파일
-        List<String> allowFileType = Arrays.asList("gif", "png", "jpeg", "bmp");
+        List<String> allowFileType = Arrays.asList("gif", "png", "jpeg", "bmp", "pdf");
 
         //파라미터 이름을 키로 파라미터에 해당하는 파일 정보를 값으로 하는 Map
         Map<String, MultipartFile> files = multipartHttpServletRequest.getFileMap();
@@ -60,6 +61,9 @@ public class FileService {
         String saveFileName = "";
         String savaFilePath = "";
 
+        //그룹키로 저장될 파일ID(문자숫자 포함 랜덤 문자열 8자리)
+        String groupFileId = RandomStringUtils.randomAlphanumeric(10);
+
         //읽어 올 요소가 있으면 true, 없으면 false를 반환
         while (itr.hasNext()) {
 
@@ -71,8 +75,8 @@ public class FileService {
             //실제 파일명
             String fileName = mFile.getOriginalFilename();
 
-            //키로 저장될 파일명(문자숫자 포함 랜덤 문자열 8자리)
-            String keyFileName = RandomStringUtils.randomAlphanumeric(10);
+            //키로 저장될 파일ID(문자숫자 포함 랜덤 문자열 8자리)
+            String fileId = RandomStringUtils.randomAlphanumeric(10);
 
             //확장자
             String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -128,16 +132,35 @@ public class FileService {
                 mFile.transferTo(new File(savaFilePath));
 
                 //DB저장
-                fileRepository.save(new CommonFile(keyFileName,saveFileName,filePath,fileUrl+File.separator+keyFileName));
+                fileRepository.save(new CommonFile(groupFileId,fileId,saveFileName,filePath,fileUrl+File.separator+fileId));
+
+                //응답부 추가
+                FileResponseDto fileResponseDto = new FileResponseDto();
+                fileResponseDto.setFileId(fileId);
+                fileResponseDto.setGroupFileId(groupFileId);
+                fileResponseDto.setFileName(saveFileName);
+                fileResponseDto.setFilePath(filePath);
+                fileResponseDto.setFileUrl(fileUrl+File.separator+fileId);
+                fileResponseDtoList.add(fileResponseDto);
 
             } else {
                 //생성한 파일 객체를 업로드 처리하지 않으면 임시파일에 저장된 파일이 자동적으로 삭제되기 때문에 transferTo(File f) 메서드를 이용해서 업로드처리
                 mFile.transferTo(saveFile);
 
                 //DB저장
-                fileRepository.save(new CommonFile(keyFileName,fileName,filePath,fileUrl+File.separator+keyFileName));
+                fileRepository.save(new CommonFile(groupFileId,fileId,fileName,filePath,fileUrl+File.separator+fileId));
+
+                //응답부 추가
+                FileResponseDto fileResponseDto = new FileResponseDto();
+                fileResponseDto.setFileId(fileId);
+                fileResponseDto.setGroupFileId(groupFileId);
+                fileResponseDto.setFileName(fileName);
+                fileResponseDto.setFilePath(filePath);
+                fileResponseDto.setFileUrl(fileUrl+File.separator+fileId);
+                fileResponseDtoList.add(fileResponseDto);
             }
         }
+        return fileResponseDtoList;
     }
 
     @Transactional

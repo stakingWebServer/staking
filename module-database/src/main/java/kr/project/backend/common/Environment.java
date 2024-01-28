@@ -7,4 +7,6 @@ public class Environment {
     public static final String API_ADMIN = "admin";
 
     public static final String API_USER = "user";
+
+    public static final String API_COMMON = "common";
 }

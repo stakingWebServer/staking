@@ -42,6 +42,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final AesUtil aesUtil;
     private final String TOKEN_PREFIX = "Bearer ";
     private final String ADMIN_REQUEST_URL = "/api/" + Environment.API_VERSION + "/" + Environment.API_ADMIN;
+
+    private final String USER_REQUEST_URL = "/api/" + Environment.API_VERSION + "/" + Environment.API_USER;
+
+    private final String COMMON_REQUEST_URL = "/api/" + Environment.API_VERSION + "/" + Environment.API_COMMON;
     private final String ADMIN_EMAIL = "ADMIN@staking.com";
     private final String ADMIN = "ADMIN";
     private final String USER = "USER";
@@ -101,7 +105,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 simpleGrantedAuthority = ADMIN;
 
             //사용자
-            } else {
+            } else if(requestUrl.startsWith(USER_REQUEST_URL)) {
 
                 //jwt 유효성검사
                 if (JwtUtil.isExpired(token, jwtSecretKey)) {
@@ -116,6 +120,40 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
                 simpleGrantedAuthority = USER;
+
+            //공통(사용자, 관리자 모두 사용)
+            } else {
+
+                //사용자 검사
+                if(token.length() > 100){
+                    //jwt 유효성검사
+                    if (JwtUtil.isExpired(token, jwtSecretKey)) {
+                        chain.doFilter(request, response);
+                        return;
+                    }
+
+                    //jwt decode
+                    serviceUser = JwtUtil.decode(token, jwtSecretKey);
+
+                    User userInfo = userRepository.findById(serviceUser.getUserId())
+                            .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+                    simpleGrantedAuthority = USER;
+
+                //관리자 검사
+                }else{
+                    //apiKey 검사
+                    String adminCheck = aesUtil.decryptAES256(adminAESKey, adminAESIv, token);
+
+                    if (adminCheck.startsWith(adminApiKeyName)) {
+                        serviceUser = new ServiceUser();
+                        serviceUser.setUserEmail(ADMIN_EMAIL);
+                    } else {
+                        throw new CommonException(CommonErrorCode.WRONG_TOKEN.getCode(), CommonErrorCode.WRONG_TOKEN.getMessage());
+                    }
+
+                    simpleGrantedAuthority = ADMIN;
+                }
             }
 
             //인증
