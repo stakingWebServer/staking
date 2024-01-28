@@ -25,5 +25,4 @@ public interface UseClauseRepository extends JpaRepository<UseClause, String> {
             """)
     List<UseClauseResponseDto> getUserClauses(@Param(value = "useClauseKind") String useClauseKind,
                                               @Param(value = "useClauseState") String useClauseState);
- 
 }
