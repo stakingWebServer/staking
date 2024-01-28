@@ -8,6 +8,12 @@ import java.io.Serializable;
 
 @Data
 public class FavoriteResponseDto implements Serializable {
+    @Schema(description = "즐겨찾기 키값", example = "uuid")
+    private String favoriteId;
+
+    @Schema(description = "스테이킹 키값", example = "uuid")
+    private String stakingId;
+
     @Schema(description = "코인이름", example = "폴리곤 (MATIC)")
     private String coinName;
     @Schema(description = "연 추정 보상률 (최대)", example = "19.3%")
@@ -21,6 +27,8 @@ public class FavoriteResponseDto implements Serializable {
 
 
     public FavoriteResponseDto(Favorite favorite) {
+        this.favoriteId = favorite.getFavoriteId();
+        this.stakingId = favorite.getStakingInfo().getStakingId();
         this.coinName = favorite.getStakingInfo().getCoinName();
         this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate();
         this.totalHoldings = String.valueOf(favorite.getTotalHoldings());
