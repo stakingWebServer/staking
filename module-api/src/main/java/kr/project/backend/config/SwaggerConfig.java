@@ -40,6 +40,15 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi commonGroupApi() {
+        return GroupedOpenApi.builder()
+                .group("3")
+                .displayName("공통")
+                .pathsToMatch("/api/v1/common/**")
+                .build();
+    }
+
+    @Bean
     public OpenAPI initOpenAPI() {
         return new OpenAPI()
                 .info(new io.swagger.v3.oas.models.info.Info().title("TEST API")
