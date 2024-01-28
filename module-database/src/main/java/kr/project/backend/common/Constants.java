@@ -63,11 +63,11 @@ public class Constants {
 
         public static final String CODE = "USE_CLAUSE_KIND";
 
-        public static final String USE_CLAUSE = "01"; //이용약관
+        public static final String USE_CLAUSE = "01"; //서비스 이용약관
 
         public static final String INDIVIDUAL_INFO = "02"; //개인정보처리방침
 
-        public static final String ADVERTISEMENT_PUSH = "03"; //광고성푸시
+        public static final String ADVERTISEMENT_PUSH = "03"; //마케팅 정보 수신 동의
     }
 
     /** 상수 YN */
