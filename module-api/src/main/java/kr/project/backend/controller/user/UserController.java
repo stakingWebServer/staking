@@ -141,4 +141,10 @@ public class UserController {
         userService.calcStaking(serviceUser,calcStakingRequestDto,myStakingDataId);
         return ObjectResult.ok();
     }
+
+    @Operation(summary = "알림 조회", description = "알림 조회 입니다.")
+    @GetMapping("/alarms")
+    public ResponseEntity<?> getAlarms(@PageableDefault()Pageable pageable, @AuthenticationPrincipal ServiceUser serviceUser) {
+        return ListResult.build(userService.getAlarms(pageable,serviceUser));
+    }
 }

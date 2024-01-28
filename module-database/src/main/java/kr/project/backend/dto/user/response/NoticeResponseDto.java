@@ -12,9 +12,12 @@ public class NoticeResponseDto {
 
     private String noticeContent;
 
+    private String noticeDate;
+
     public NoticeResponseDto(Notice notice) {
         this.noticeId = notice.getNoticeId();
         this.noticeTitle = notice.getNoticeTitle();
         this.noticeContent = notice.getNoticeContent();
+        this.noticeDate = notice.getCreatedDate().substring(0,10);
     }
 }

@@ -62,6 +62,7 @@ public class UserService {
     private final NoticeRepository noticeRepository;
     private final MyStakingDataRepository myStakingDataRepository;
     private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
+    private final AlarmRepository alarmRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -386,5 +387,14 @@ public class UserService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_STAKING_DATA.getCode(), CommonErrorCode.NOT_FOUND_STAKING_DATA.getMessage()));
 
         myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(calcStakingRequestDto, userInfo, myStakingData));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AlarmResponseDto> getAlarms(Pageable pageable,ServiceUser serviceUser) {
+        //TODO findAll -> userId 조회로 바꿔야함
+        return alarmRepository.findAllByOrderByCreatedDateDesc(pageable)
+                .stream()
+                .map(AlarmResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
