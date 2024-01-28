@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserUseClause extends BaseTimeEntity implements Serializable {
 
-    @Id
+    @Id//ㅅ
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
