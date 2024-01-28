@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.results.ListResult;
 import kr.project.backend.service.coin.StakingInfoService;
 import kr.project.backend.common.Environment;
 import kr.project.backend.results.ObjectResult;
@@ -26,9 +27,13 @@ public class StakingInfoController {
     private final StakingInfoService stakingInfoService;
 
     @Operation(summary = "코인 스테이킹 목록 조회", description = "코인 스테이킹 목록 조회를 합니다.")
+    @GetMapping("/infos-all")
+    public ResponseEntity<?> stakingInfosAll(@AuthenticationPrincipal ServiceUser serviceUser) {
+        return ObjectResult.build(stakingInfoService.getStakingInfosAll(serviceUser));
+    }
     @GetMapping("/infos")
-    public ResponseEntity<?> stakingInfos(@AuthenticationPrincipal ServiceUser serviceUser) {
-        return ObjectResult.build(stakingInfoService.getStakingInfos(serviceUser));
+    public ResponseEntity<?> stakingInfos() {
+        return ListResult.build(stakingInfoService.getStakingInfos());
     }
 
     @Operation(summary = "코인 스테이킹 상세 조회", description = "코인 스테이킹 상세 조회를 합니다.")

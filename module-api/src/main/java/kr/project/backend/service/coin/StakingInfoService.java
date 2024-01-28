@@ -20,7 +20,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,9 +30,8 @@ public class StakingInfoService {
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
 
-    //@Cacheable(value = "stakingInfoList")
-    @Transactional(readOnly = true)
-    public StakingInfoListResponseDto getStakingInfos(ServiceUser serviceUser) {
+
+    public StakingInfoAndFavoriteListResponseDto getStakingInfosAll(ServiceUser serviceUser) {
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
@@ -46,18 +44,20 @@ public class StakingInfoService {
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
 
-        return new StakingInfoListResponseDto(
+        return new StakingInfoAndFavoriteListResponseDto(
                 stakingInfos.stream().map(StakingListDto::new).collect(Collectors.toList()),
                 myFavorites.stream().map(FavoriteListDto::new).collect(Collectors.toList()));
-
-        //TODO 혹시몰라서 냅둔 API
-/*
+    }
+    //@Cacheable(value = "stakingInfoList")
+    @Transactional(readOnly = true)
+    public List<StakingInfoListResponseDto> getStakingInfos() {
         return stakingInfoRepository.findAllByCreatedDateBetween(
                         LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                         LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .stream()
                 .map(StakingInfoListResponseDto::new)
-                .collect(Collectors.toList());*/
+                .collect(Collectors.toList());
+
     }
 
     @Transactional(readOnly = true)
@@ -75,5 +75,7 @@ public class StakingInfoService {
 
         return new StakingInfoDetailResponseDto(stakingInfo, aboutCoinMarketDtos);
     }
+
+
 }
 

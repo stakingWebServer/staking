@@ -1,9 +1,7 @@
 package kr.project.backend.service.admin;
 
 import kr.project.backend.dto.admin.response.TodayRegisterResponseDto;
-import kr.project.backend.dto.coin.StakingInfoListResponseDto;
 import kr.project.backend.repository.user.UserRepository;
-import kr.project.backend.utils.AesUtil;
 import kr.project.backend.dto.admin.response.AccessKeyResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
 
 import static kr.project.backend.utils.AesUtil.encryptAES256;
 
