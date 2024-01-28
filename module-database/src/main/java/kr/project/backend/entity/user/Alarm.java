@@ -1,6 +1,7 @@
 package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
+import kr.project.backend.converter.BooleanToYNConverter;
 import kr.project.backend.entity.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,10 @@ public class Alarm extends BaseTimeEntity implements Serializable {
     @Comment(value = "알람 내용")
     @Column(columnDefinition = "TEXT")
     private String alarmContent;
+
+    @Comment(value = "읽음 여부")
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
+    private String alarmReadYn;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
