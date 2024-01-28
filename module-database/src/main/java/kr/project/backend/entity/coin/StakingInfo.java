@@ -55,6 +55,7 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
 
     public StakingInfo(SaveDto saveDto){
         this.coinName = saveDto.getCoinName();
+        this.unit = saveDto.getUnit();
         this.prevClosingPrice = saveDto.getPrevClosingPrice();
         this.minAnnualRewardRate = saveDto.getMinAnnualRewardRate();
         this.maxAnnualRewardRate = saveDto.getMaxAnnualRewardRate();
