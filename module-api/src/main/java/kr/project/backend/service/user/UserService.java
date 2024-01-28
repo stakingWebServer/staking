@@ -69,7 +69,7 @@ public class UserService {
 
         //등록되어 있는 유저인지 아닌지 판단
         boolean checkUserInfo = userRepository.existsByUserEmail(userLoginRequestDto.getUserEmail());
-
+ 
         //등록되어 있지 않는 유저
         if (!checkUserInfo) {
 
