@@ -18,10 +18,12 @@ import kr.project.backend.repository.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -71,13 +73,13 @@ public class UserService {
         //등록되어 있지 않는 유저
         if (!checkUserInfo) {
 
-            //회원가입 1달 제한 정책 체크
-            DropUser dropCheck = dropUserRepository.findByUserEmail(userLoginRequestDto.getUserEmail()).orElse(null);
+            //회원가입 1달 제한 정책 체크(탈퇴 테이블 조회)
+            Page<DropUser> dropCheck = dropUserRepository.findByUserEmail(userLoginRequestDto.getUserEmail(), PageRequest.of(0, 1));
 
-            if (dropCheck != null) {
+            if (dropCheck.getContent().size() != 0) {
                 try {
                     SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Date dropDate = transFormat.parse(dropCheck.getDropDttm());
+                    Date dropDate = transFormat.parse(String.valueOf(dropCheck.getContent().get(0)));
                     Date nowDate = transFormat.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
                     Long dropAndJoinTerm = (nowDate.getTime() - dropDate.getTime()) / 1000 / (24 * 60 * 60);
