@@ -14,6 +14,9 @@ import java.util.List;
 public class StakingInfoDetailResponseDto implements Serializable {
     @Schema(description = "코인이름",example = "폴리곤 (MATIC)")
     private String coinName;
+
+    @Schema(description = "단위",example = "MATIC")
+    private String unit;
     @Schema(description = "전일종가",example = "1111")
     private String prevClosingPrice;
     @Schema(description = "연 추정 보상률 (최소)",example = "5.3%")
@@ -36,6 +39,7 @@ public class StakingInfoDetailResponseDto implements Serializable {
 
     public StakingInfoDetailResponseDto(StakingInfo stakingInfo, List<AboutCoinMarketDto> aboutCoinMarketDtos){
         this.coinName = stakingInfo.getCoinName();
+        this.unit = stakingInfo.getUnit();
         this.prevClosingPrice = stakingInfo.getPrevClosingPrice();
         this.minAnnualRewardRate = stakingInfo.getMinAnnualRewardRate();
         this.maxAnnualRewardRate = stakingInfo.getMaxAnnualRewardRate();

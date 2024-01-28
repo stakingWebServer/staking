@@ -29,6 +29,9 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     private String stakingId;
     @Comment(value = "코인이름")
     private String coinName;
+
+    @Comment(value = "단위")
+    private String unit;
     @Comment(value = "전일종가")
     private String  prevClosingPrice;
     @Comment(value = "연 추정 보상률 (최소)")

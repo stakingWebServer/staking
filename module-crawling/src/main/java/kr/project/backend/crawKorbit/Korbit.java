@@ -72,6 +72,7 @@ public class Korbit {
                 saveDto.setCoinName(removeNonKorean(elements.get(0).getText()));
                 saveDto.setMaxAnnualRewardRate(extractNumber(elements.get(3).getText()) + "%");
                 saveDto.setMinimumOrderQuantity(elements.get(5).getText());
+                saveDto.setUnit(elements.get(5).getText().trim().replaceAll("[^a-zA-Z]", ""));
                 saveDto.setStakingStatus(elements.get(7).getText());
                 saveDto.setCoinMarketType(CoinMarketType.korbit);
             }

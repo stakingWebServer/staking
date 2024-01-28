@@ -63,7 +63,10 @@ public class Upbit {
             WebElement coinName = webDriver.findElement(By.className("ListDetailView__condition__title__text"));
             String market = coinName.getText().substring(coinName.getText().indexOf("(") + 1, coinName.getText().indexOf(")")).trim();
             saveDto.setCoinName(removeNonKorean(coinName.getText()));
-
+            //unit
+            WebElement rawUnit = webDriver.findElement(By.className("ListDetailView__condition__title__unit"));
+            String unit = rawUnit.getText().replaceAll("[^a-zA-Z]", "");
+            saveDto.setUnit(unit);
             //코인전날 종가 api로 받기
             saveDto.setPrevClosingPrice(upbitApi(market));
             Thread.sleep(5000);
