@@ -180,6 +180,8 @@ pipeline {
                     steps {
                     script{
                         def pid
+                        def response
+                        def status = true
                         try {
                         echo '[kill port ${MODULE_API}]'
                         pid = sh(script: "sudo lsof -t -i :9000 -s TCP:LISTEN",returnStdout: true).trim()
