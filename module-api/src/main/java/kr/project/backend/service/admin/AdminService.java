@@ -1,6 +1,9 @@
 package kr.project.backend.service.admin;
 
+import kr.project.backend.dto.admin.response.TodayDropUserResponseDto;
+import kr.project.backend.dto.admin.response.TodayLoginUserResponseDto;
 import kr.project.backend.dto.admin.response.TodayRegisterResponseDto;
+import kr.project.backend.repository.user.DropUserRepository;
 import kr.project.backend.repository.user.UserRepository;
 import kr.project.backend.dto.admin.response.AccessKeyResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ public class AdminService {
     private String adminAESIv;
 
     private final UserRepository userRepository;
+    private final DropUserRepository dropUserRepository;
 
     public AccessKeyResponseDto giveApikey(String plainText) throws Exception{
         return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, plainText+System.currentTimeMillis()));
@@ -42,4 +46,20 @@ public class AdminService {
         return new TodayRegisterResponseDto(todayRegister);
     }
 
+    @Transactional(readOnly = true)
+    public TodayLoginUserResponseDto getTodayLoginUser() {
+        int todayLoginUser = userRepository.countByUserLoginDttmBetween(
+                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        return new TodayLoginUserResponseDto(todayLoginUser);
+    }
+
+    public TodayDropUserResponseDto getTodayDropUser() {
+        int todayDropUser = dropUserRepository.countByDropDttmBetween(
+                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        return new TodayDropUserResponseDto(todayDropUser);
+    }
 }

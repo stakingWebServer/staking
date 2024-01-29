@@ -22,4 +22,6 @@ public interface DropUserRepository extends JpaRepository<DropUser, String> {
       order by m.dropDttm desc
             """)
     Page<DropUser> findByUserEmail(@Param(value = "userEmail") String userEmail, Pageable pageable);
+
+    int countByDropDttmBetween(String startDate, String endDate);
 }

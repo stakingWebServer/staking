@@ -13,5 +13,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     boolean existsByUserEmail(String userEmail);
 
-    int countByCreatedDateBetween(String format, String format1);
+    int countByCreatedDateBetween(String startDate, String endDate);
+
+    int countByUserLoginDttmBetween(String startDate, String endDate);
 }

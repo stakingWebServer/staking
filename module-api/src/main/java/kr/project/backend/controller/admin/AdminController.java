@@ -31,15 +31,20 @@ public class AdminController {
                                        @PathVariable(name = "plainText") String plainText) throws Exception{
         return ObjectResult.build(adminService.giveApikey(plainText));
     }
-
-    //TODO 대시보드
-    // - 당일 가입 사용자 수 : user -> regDate로 판단
-    // - 당일 로그인 사용자 수 : 칼럼을 추가하여 login할때의 날짜를 확인할수있도록 추가
-    // - 당일 탈퇴 사용자 수 : DropUser 테이블에서 regDate로 판단
-    // - 페이지별 조회 수 : ???
     @Operation(summary = "당일 가입 사용자 수",description = "당일 가입 사용자 수를 구한다.")
-    @GetMapping("/todayRegister")
+    @GetMapping("/today-register")
     public ResponseEntity<?> getTodayRegister(){
         return ObjectResult.build(adminService.getTodayRegister());
+    }
+
+    @Operation(summary = "당일 로그인 사용자 수",description = "당일 로그인 사용자 수를 구한다.")
+    @GetMapping("/today-loginUser")
+    public ResponseEntity<?> getTodayLoginUser(){
+        return ObjectResult.build(adminService.getTodayLoginUser());
+    }
+    @Operation(summary = "당일 탈퇴 사용자 수",description = "당일 탈토ㅚ 사용자 수를 구한다.")
+    @GetMapping("/today-dropUser")
+    public ResponseEntity<?> getTodayDropUser(){
+        return ObjectResult.build(adminService.getTodayDropUser());
     }
 }
