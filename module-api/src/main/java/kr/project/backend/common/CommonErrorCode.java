@@ -29,7 +29,7 @@ public enum CommonErrorCode {
     NOT_FOUND_COIN("D000","없는 코인정보입니다."),
 
     // favorite
-    ALREADY_EXIST_FAVORITE("E000","이미 존재하는 즐겨찾기입니다.")
+    ALREADY_EXIST_STAKING_DATA("E000","이미 존재하는 마이스테이킹데이터 입니다.")
     ;
 
 

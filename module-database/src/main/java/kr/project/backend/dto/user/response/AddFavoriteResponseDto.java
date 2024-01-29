@@ -9,6 +9,4 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AddFavoriteResponseDto {
     private String favoriteId;
-
-
 }

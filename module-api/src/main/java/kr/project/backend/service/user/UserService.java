@@ -249,7 +249,7 @@ public class UserService {
     }
 
     @Transactional
-    public AddFavoriteResponseDto addFavorite(ServiceUser serviceUser, AddFavoriteRequestDto addFavoriteRequestDto) {
+    public void addFavorite(ServiceUser serviceUser, AddFavoriteRequestDto addFavoriteRequestDto) {
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
@@ -260,12 +260,9 @@ public class UserService {
         //데이터 중복 방지 코드
         boolean favorite = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo, userInfo, false);
         if (favorite) {
-            throw new CommonException(CommonErrorCode.ALREADY_EXIST_FAVORITE.getCode(), CommonErrorCode.ALREADY_EXIST_FAVORITE.getMessage());
+            throw new CommonException(CommonErrorCode.ALREADY_EXIST_STAKING_DATA.getCode(), CommonErrorCode.ALREADY_EXIST_STAKING_DATA.getMessage());
         }
-
-        Favorite favoriteInfo = favoriteRepository.save(new Favorite(userInfo, stakingInfo));
-        //favorite 키값 반환
-        return new AddFavoriteResponseDto(favoriteInfo.getFavoriteId());
+        favoriteRepository.save(new Favorite(userInfo, stakingInfo));
     }
 
     @Transactional
@@ -342,52 +339,12 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        return myStakingDataRepository.findAllByUser(userInfo)
+        return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
                 .stream()
                 .map(MyStakingDataResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public MyStakingDataDetailResponseDto getMydataStaking(ServiceUser serviceUser, String myStakingDataId, String rewardType) {
-        log.info("rewardType : {}", rewardType);
-        //회원정보
-        User userInfo = userRepository.findById(serviceUser.getUserId())
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
-
-        MyStakingData myStakingData = myStakingDataRepository.findByMyStakingDataIdAndUser(myStakingDataId, userInfo)
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_STAKING_DATA.getCode(), CommonErrorCode.NOT_FOUND_STAKING_DATA.getMessage()));
-        LocalDateTime startDate;
-        if (rewardType == null) {
-            startDate = LocalDateTime.MIN;
-        } else {
-            switch (rewardType) {
-                case "oneWeek" -> startDate = LocalDateTime.now().minusWeeks(1);
-                case "oneMonth" -> startDate = LocalDateTime.now().minusMonths(1);
-                case "sixMonth" -> startDate = LocalDateTime.now().minusMonths(6);
-                default ->
-                        throw new CommonException(CommonErrorCode.COMMON_FAIL.getCode(), CommonErrorCode.COMMON_FAIL.getMessage());
-            }
-        }
-        List<MyStakingDataAboutReward> values = myStakingDataAboutRewardRepository.findAllByMyStakingDataAndUserAndUserRegDateAfter(myStakingData, userInfo, startDate.format(DateTimeFormatter.ofPattern("yy.MM.dd")));
-        List<MyStakingDataRewardsDto> list = new ArrayList<>();
-        values.forEach(value -> {
-            list.add(new MyStakingDataRewardsDto(value.getUserRegDate(), value.getTodayCompensationQuantity()));
-        });
-        return new MyStakingDataDetailResponseDto(myStakingData, list);
-    }
-
-    @Transactional
-    public void calcStaking(ServiceUser serviceUser, CalcStakingRequestDto calcStakingRequestDto, String myStakingDataId) {
-        //회원정보
-        User userInfo = userRepository.findById(serviceUser.getUserId())
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
-
-        MyStakingData myStakingData = myStakingDataRepository.findByMyStakingDataIdAndUser(myStakingDataId, userInfo)
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_STAKING_DATA.getCode(), CommonErrorCode.NOT_FOUND_STAKING_DATA.getMessage()));
-
-        myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(calcStakingRequestDto, userInfo, myStakingData));
-    }
 
     @Transactional(readOnly = true)
     public List<AlarmResponseDto> getAlarms(Pageable pageable,ServiceUser serviceUser) {

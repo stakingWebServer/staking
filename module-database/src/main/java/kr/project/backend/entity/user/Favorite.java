@@ -14,6 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -46,6 +47,9 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "favorite")
+    private List<MyStakingDataAboutReward> myStakingDataAboutRewardList;
 
 
     public Favorite(User userInfo, StakingInfo stakingInfo) {

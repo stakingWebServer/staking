@@ -70,7 +70,8 @@ public class UserController {
     @PostMapping("/favorite")
     public ResponseEntity<?> addFavorite(@AuthenticationPrincipal ServiceUser serviceUser,
                                          @RequestBody AddFavoriteRequestDto addFavoriteRequestDto) {
-        return ObjectResult.build(userService.addFavorite(serviceUser, addFavoriteRequestDto));
+        userService.addFavorite(serviceUser, addFavoriteRequestDto);
+        return ObjectResult.ok();
     }
 
     @Operation(summary = "즐겨찾기해제", description = "즐겨찾기 했던 항목을 해제 합니다.")
@@ -80,13 +81,6 @@ public class UserController {
         userService.unFavorite(serviceUser, favoriteRequestDto);
         return ObjectResult.ok();
     }
-
-    @Operation(summary = "즐겨찾기 목록 조회", description = "즐겨찾기 목록을 조회 합니다.")
-    @GetMapping("/favorites")
-    public ResponseEntity<?> getFavorites(@AuthenticationPrincipal ServiceUser serviceUser) {
-        return ListResult.build(userService.getFavorites(serviceUser));
-    }
-
     @Operation(summary = "이용약관 목록 조회", description = "이용약관 목록을 조회 합니다.")
     @GetMapping("/useClauses")
     public ResponseEntity<?> getUseClauses() {
@@ -115,30 +109,11 @@ public class UserController {
         return ListResult.build(userService.getNotices(pageable));
     }
 
-    @Operation(summary = "마이데이터스테이킹 목록", description = "마이데이터스테이킹 목록을 조회합니다.")
+    @Operation(summary = "마이데이터스테이킹 목록 조회", description = "마이데이터스테이킹 목록을 조회합니다.")
     @GetMapping("/stakings")
     public ResponseEntity<?> stakings(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ListResult.build(userService.getMydataStakings(serviceUser));
     }
-
-    @Operation(summary = "마이데이터스테이킹 상세조회", description = "마이데이터스테이킹 상세조회 합니다.")
-    @GetMapping("/staking/{myStakingDataId}")
-    public ResponseEntity<?> staking(@AuthenticationPrincipal ServiceUser serviceUser,
-                                     @PathVariable(value = "myStakingDataId") String myStakingDataId,
-                                     @RequestParam(value = "rewardType",required = false) String rewardType) {
-        return ObjectResult.build(userService.getMydataStaking(serviceUser, myStakingDataId, rewardType));
-    }
-    @Operation(summary = "마이데이터스테이킹 수량계산", description = "마이데이터스테이킹 수량계산 합니다.")
-    @PostMapping("/staking/{myStakingDataId}")
-    public ResponseEntity<?> calcStaking(
-            @AuthenticationPrincipal ServiceUser serviceUser,
-            @RequestBody CalcStakingRequestDto calcStakingRequestDto,
-            @PathVariable(value = "myStakingDataId") String myStakingDataId
-            ){
-        userService.calcStaking(serviceUser,calcStakingRequestDto,myStakingDataId);
-        return ObjectResult.ok();
-    }
-
     @Operation(summary = "알림 조회", description = "알림 조회 입니다.")
     @GetMapping("/alarms")
     public ResponseEntity<?> getAlarms(@PageableDefault()Pageable pageable, @AuthenticationPrincipal ServiceUser serviceUser) {

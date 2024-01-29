@@ -1,6 +1,7 @@
 package kr.project.backend.dto.user.response;
 
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.entity.user.Favorite;
 import kr.project.backend.entity.user.MyStakingData;
 import lombok.Data;
 import java.io.Serializable;
@@ -13,12 +14,12 @@ public class MyStakingDataDetailResponseDto implements Serializable {
     private String totalHoldingsQuantity;
     private String totalCompensationQuantity;
     private List<MyStakingDataRewardsDto> rewards;
-
-    public MyStakingDataDetailResponseDto(MyStakingData myStakingData, List<MyStakingDataRewardsDto> list){
-        this.coinName = myStakingData.getCoinName();
-        this.coinMarketType = myStakingData.getCoinMarketType();
-        this.totalHoldingsQuantity = myStakingData.getTotalHoldingsQuantity();
+/*
+    public MyStakingDataDetailResponseDto(Favorite favorite, List<MyStakingDataRewardsDto> list){
+        this.coinName = favorite.getStakingInfo().getCoinName();
+        this.coinMarketType = favorite.getStakingInfo().getCoinMarketType();
+        this.totalHoldingsQuantity =
         this.totalCompensationQuantity = myStakingData.getTotalCompensationQuantity();
         this.rewards = list;
-    }
+    }*/
 }

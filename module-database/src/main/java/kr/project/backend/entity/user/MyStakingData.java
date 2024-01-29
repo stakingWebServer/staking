@@ -35,7 +35,4 @@ public class MyStakingData implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToMany(mappedBy = "myStakingData")
-    private List<MyStakingDataAboutReward> myStakingDataList;
 }

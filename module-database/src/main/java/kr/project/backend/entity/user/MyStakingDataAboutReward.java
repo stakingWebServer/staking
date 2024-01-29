@@ -27,17 +27,11 @@ public class MyStakingDataAboutReward {
     private String todayCompensationQuantity;
 
     @ManyToOne
-    @JoinColumn(name = "myStakingData_id")
-    private MyStakingData myStakingData;
+    @JoinColumn(name = "favorite_id")
+    private Favorite favorite;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public MyStakingDataAboutReward(CalcStakingRequestDto calcStakingRequestDto, User userInfo, MyStakingData myStakingData) {
-        this.userRegDate = calcStakingRequestDto.getUserRegDate();
-        this.todayCompensationQuantity = String.valueOf((Double.parseDouble(myStakingData.getMaxAnnualRewardRate()) * Double.parseDouble(calcStakingRequestDto.getInsertAmount()))/365);
-        this.user = userInfo;
-        this.myStakingData = myStakingData;
-    }
 }

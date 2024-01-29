@@ -31,8 +31,8 @@ public class FavoriteResponseDto implements Serializable {
         this.stakingId = favorite.getStakingInfo().getStakingId();
         this.coinName = favorite.getStakingInfo().getCoinName();
         this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate();
-        this.totalHoldings = String.valueOf(favorite.getTotalHoldings());
-        this.totalRewards = String.valueOf(favorite.getTotalRewards());
+/*        this.totalHoldings = String.valueOf(favorite.getTotalHoldings());
+        this.totalRewards = String.valueOf(favorite.getTotalRewards());*/
         this.coinMarketType = favorite.getStakingInfo().getCoinMarketType();
 
     }
