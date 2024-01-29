@@ -5,6 +5,8 @@ import kr.project.backend.entity.coin.enumType.CoinMarketType;
 import kr.project.backend.entity.user.Favorite;
 import lombok.Data;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 @Data
 public class MyStakingDataResponseDto implements Serializable {
@@ -23,11 +25,12 @@ public class MyStakingDataResponseDto implements Serializable {
 
 
     public MyStakingDataResponseDto(Favorite favorite) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##################");
         this.favoriteId = favorite.getFavoriteId();
         this.coinName = favorite.getStakingInfo().getCoinName();
         this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate();
-        this.totalHoldings = String.valueOf(favorite.getTotalHoldings());
-        this.totalRewards = String.valueOf(favorite.getTotalRewards());
+        this.totalHoldings = decimalFormat.format(favorite.getTotalHoldings());
+        this.totalRewards = decimalFormat.format(favorite.getTotalRewards());
         this.coinMarketType = favorite.getStakingInfo().getCoinMarketType();
 
     }

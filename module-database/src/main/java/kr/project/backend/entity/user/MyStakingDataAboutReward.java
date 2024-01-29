@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,7 +26,8 @@ public class MyStakingDataAboutReward {
     @Comment(value = "일자")
     private String userRegDate;
     @Comment(value = "보상수량")
-    private String todayCompensationQuantity;
+    @Column(nullable = false, precision = 27, scale = 15)
+    private BigDecimal todayCompensationQuantity;
 
     @ManyToOne
     @JoinColumn(name = "favorite_id")

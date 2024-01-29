@@ -14,6 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,9 +32,11 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     @Comment(value = "즐겨찾기 키값")
     private String favoriteId;
     @Comment(value = "총 보유수량")
-    private double totalHoldings;
+    @Column(nullable = false, precision = 27, scale = 15)
+    private BigDecimal totalHoldings;
     @Comment(value = "총 보상수량")
-    private double totalRewards;
+    @Column(nullable = false, precision = 27, scale = 15)
+    private BigDecimal totalRewards;
 
     @Column(columnDefinition = "VARCHAR(1) default 'N'")
     @Convert(converter = BooleanToYNConverter.class)
