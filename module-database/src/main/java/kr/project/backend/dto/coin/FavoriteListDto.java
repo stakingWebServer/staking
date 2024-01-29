@@ -8,6 +8,9 @@ import lombok.Data;
 public class FavoriteListDto {
     @Schema(description = "즐겨찾기 키값",example = "즐겨찾기 키값")
     private String favoriteId;
+
+    @Schema(description = "스테이킹 키값",example = "스테이킹 키값")
+    private String stakingId;
     @Schema(description = "코인이름",example = "폴리곤 (MATIC)")
     private String coinName;
     @Schema(description = "연 추정 보상률 (최소)",example = "5.3%")
@@ -17,6 +20,7 @@ public class FavoriteListDto {
 
     public FavoriteListDto(Favorite favorite){
         this.favoriteId = favorite.getFavoriteId();
+        this.stakingId = favorite.getStakingInfo().getStakingId();
         this.coinName = favorite.getStakingInfo().getCoinName();
         this.minAnnualRewardRate = favorite.getStakingInfo().getMinAnnualRewardRate();
         this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate();
