@@ -40,7 +40,7 @@ public class Korbit {
     }
 
 
-    @Scheduled(cron = "0 40 0 * * *")
+    @Scheduled(cron = "0 7 0 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
         SaveDto saveDto = new SaveDto();
         String url = "https://lightning.korbit.co.kr/service/staking/list";

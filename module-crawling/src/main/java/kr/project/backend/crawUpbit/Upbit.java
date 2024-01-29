@@ -36,7 +36,7 @@ public class Upbit {
             UpbitResponseDto[] response = restTemplate.getForObject("https://api.upbit.com/v1/ticker?markets=KRW-" + market, UpbitResponseDto[].class);
             return String.valueOf(response[0].getPrev_closing_price());
     }
-    @Scheduled(cron = "0 30 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void craw() throws IOException, InterruptedException {
         SaveDto saveDto = new SaveDto();
 
