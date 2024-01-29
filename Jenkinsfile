@@ -200,7 +200,7 @@ pipeline {
                         while(status) {
                         echo "crawling 서버 구동 중..."
                         response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:9000", returnStatus: true)
-                        echo "response : ${response}"
+                        echo 'response : ${response}'
                         if(response == 404){
                         echo "crawling 서버 구동 완료"
                         sleep 5
