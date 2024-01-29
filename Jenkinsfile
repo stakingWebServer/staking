@@ -199,11 +199,9 @@ pipeline {
                         }
                         echo '[deploy start] ${MODULE_CRAWLING}'
                         sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9000 -Duser.timezone=Asia/Seoul /app/project/module-crawling-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
-                        while(status) {
-                        echo "crawling 서버 구동 중..."
                         response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:9000", returnStatus: true)
                         echo "response : ${response}"
-
+                        echo '[deploy end] ${MODULE_CRAWLING}'
                     }
                     }
                 }
