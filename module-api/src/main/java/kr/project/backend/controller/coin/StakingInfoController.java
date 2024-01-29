@@ -31,10 +31,6 @@ public class StakingInfoController {
     public ResponseEntity<?> stakingInfosAll(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ObjectResult.build(stakingInfoService.getStakingInfosAll(serviceUser));
     }
-    @GetMapping("/infos")
-    public ResponseEntity<?> stakingInfos() {
-        return ListResult.build(stakingInfoService.getStakingInfos());
-    }
 
     @Operation(summary = "코인 스테이킹 상세 조회", description = "코인 스테이킹 상세 조회를 합니다.")
     @GetMapping("/info/{stakingId}")

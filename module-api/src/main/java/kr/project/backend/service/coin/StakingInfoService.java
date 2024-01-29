@@ -30,7 +30,7 @@ public class StakingInfoService {
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
 
-
+    //@Cacheable(value = "stakingInfoList")
     public StakingInfoAndFavoriteListResponseDto getStakingInfosAll(ServiceUser serviceUser) {
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
@@ -48,18 +48,6 @@ public class StakingInfoService {
                 stakingInfos.stream().map(StakingListDto::new).collect(Collectors.toList()),
                 myFavorites.stream().map(FavoriteListDto::new).collect(Collectors.toList()));
     }
-    //@Cacheable(value = "stakingInfoList")
-    @Transactional(readOnly = true)
-    public List<StakingInfoListResponseDto> getStakingInfos() {
-        return stakingInfoRepository.findAllByCreatedDateBetween(
-                        LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                        LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .stream()
-                .map(StakingInfoListResponseDto::new)
-                .collect(Collectors.toList());
-
-    }
-
     @Transactional(readOnly = true)
     public StakingInfoDetailResponseDto getStakingInfo(String stakingId) {
         StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId)
