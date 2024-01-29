@@ -3,7 +3,9 @@ package kr.project.backend.crawCoinOne;
 import kr.project.backend.dto.coin.SaveDto;
 import kr.project.backend.entity.coin.StakingInfo;
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.entity.user.Favorite;
 import kr.project.backend.repository.coin.StakingInfoRepository;
+import kr.project.backend.repository.user.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
 public class Coinone {
 
     private final StakingInfoRepository stakingInfoRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Scheduled(cron = "0 14 0 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
@@ -63,14 +66,24 @@ public class Coinone {
         //각 요소 추출
         List<WebElement> coinNames = webDriver.findElements(By.className("ProductsBrowseList_coin-name__bSWTj"));
         List<WebElement> years = webDriver.findElements(By.className("ProductsBrowseList_column-reward__mKBuy"));
-
+        List<Favorite> favorites = favoriteRepository.findAllByDelYn(false);
         for (int i = 0; i < coinNames.size(); i++) {
             saveDto.setCoinName(coinNames.get(i).getText());
             saveDto.setMaxAnnualRewardRate(years.get(i+1).getText());
             saveDto.setCoinMarketType(CoinMarketType.coinone);
             saveDto.setUnit(unit.get(i));
-            stakingInfoRepository.save(new StakingInfo(saveDto));
+            String stakingId = stakingInfoRepository.save(new StakingInfo(saveDto)).getStakingId();
             System.out.println("saveDto = " + saveDto);
+
+            StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId).orElse(null);
+            favorites.forEach(favorite -> {
+                if(favorite.getStakingInfo().getCoinName().equals(stakingInfo.getCoinName()) &&
+                        favorite.getStakingInfo().getCoinMarketType().equals(stakingInfo.getCoinMarketType())
+                ){
+                    favorite.updateStakingId(stakingInfo);
+                    favoriteRepository.save(favorite);
+                }
+            });
         }
         Thread.sleep(4000);
         //웹브라우저 닫기

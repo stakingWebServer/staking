@@ -49,9 +49,16 @@ public class StakingInfoService {
                 myFavorites.stream().map(FavoriteListDto::new).collect(Collectors.toList()));
     }
     @Transactional(readOnly = true)
-    public StakingInfoDetailResponseDto getStakingInfo(String stakingId) {
+    public StakingInfoDetailResponseDto getStakingInfo(String stakingId,ServiceUser serviceUser) {
+
         StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(), CommonErrorCode.NOT_FOUND_COIN.getMessage()));
+
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        //즐겨찾기 인 스테이킹인지 확인
+        boolean favoriteCheck = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false);
 
         List<StakingInfo> stakingInfos = stakingInfoRepository.findByCoinNameAndCreatedDateBetween(stakingInfo.getCoinName(),
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
@@ -61,7 +68,7 @@ public class StakingInfoService {
             aboutCoinMarketDtos.add(new AboutCoinMarketDto(aboutCoinMarket.getStakingId(), String.valueOf(aboutCoinMarket.getCoinMarketType())));
         });
 
-        return new StakingInfoDetailResponseDto(stakingInfo, aboutCoinMarketDtos);
+        return new StakingInfoDetailResponseDto(stakingInfo, aboutCoinMarketDtos,favoriteCheck);
     }
 
 

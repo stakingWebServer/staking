@@ -63,4 +63,8 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     public void unFavorite() {
         this.delYn = true;
     }
+
+    public void updateStakingId(StakingInfo stakingInfo) {
+        this.stakingInfo = stakingInfo;
+    }
 }

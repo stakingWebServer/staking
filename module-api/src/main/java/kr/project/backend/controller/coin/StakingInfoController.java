@@ -34,7 +34,9 @@ public class StakingInfoController {
 
     @Operation(summary = "코인 스테이킹 상세 조회", description = "코인 스테이킹 상세 조회를 합니다.")
     @GetMapping("/info/{stakingId}")
-    public ResponseEntity<?> stakingInfo(@PathVariable(value = "stakingId") String stakingId) {
-        return ObjectResult.build(stakingInfoService.getStakingInfo(stakingId));
+    public ResponseEntity<?> stakingInfo(
+            @AuthenticationPrincipal ServiceUser serviceUser,
+            @PathVariable(value = "stakingId") String stakingId) {
+        return ObjectResult.build(stakingInfoService.getStakingInfo(stakingId,serviceUser));
     }
 }

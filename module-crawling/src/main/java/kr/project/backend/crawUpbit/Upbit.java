@@ -3,7 +3,9 @@ package kr.project.backend.crawUpbit;
 import kr.project.backend.dto.coin.SaveDto;
 import kr.project.backend.entity.coin.StakingInfo;
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.entity.user.Favorite;
 import kr.project.backend.repository.coin.StakingInfoRepository;
+import kr.project.backend.repository.user.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +28,7 @@ import java.util.regex.Pattern;
 @Service
 public class Upbit {
     private final StakingInfoRepository stakingInfoRepository;
+    private final FavoriteRepository favoriteRepository;
 
     public static String upbitApi(String market) {
 
@@ -55,6 +59,7 @@ public class Upbit {
         Thread.sleep(3000);
 
         List<WebElement> addTexts = webDriver.findElements(By.className("css-1j71w0l"));
+        List<Favorite> favorites = favoriteRepository.findAllByDelYn(false);
         for (int i =0; i<addTexts.size(); i++) {
             List<WebElement> addTextList = webDriver.findElements(By.className("css-1j71w0l"));
             addTextList.get(i).click();
@@ -102,15 +107,30 @@ public class Upbit {
             }
             //거래소 저장
             saveDto.setCoinMarketType(CoinMarketType.upbit);
-            stakingInfoRepository.save(new StakingInfo(saveDto));
+            String stakingId = stakingInfoRepository.save(new StakingInfo(saveDto)).getStakingId();
             System.out.println("saveDto :::::" + saveDto);
 
             Thread.sleep(4000);
 
             //스테이킹 목록으로 다시들어가기
             webDriver.get(url);
+
+            StakingInfo stakingInfo  = stakingInfoRepository.findById(stakingId).orElse(null);
+            favorites.forEach(favorite -> {
+                if(favorite.getStakingInfo().getCoinName().equals(stakingInfo.getCoinName()) &&
+                   favorite.getStakingInfo().getCoinMarketType().equals(stakingInfo.getCoinMarketType())
+                ){
+                    favorite.updateStakingId(stakingInfo);
+                    //업데이트
+                    favoriteRepository.save(favorite);
+                }
+            });
+
             Thread.sleep(4000);
         }
+
+
+
         //웹브라우저 닫기
         webDriver.close();
 
