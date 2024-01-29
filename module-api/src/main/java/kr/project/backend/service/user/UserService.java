@@ -274,13 +274,14 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
+        StakingInfo stakingInfo = stakingInfoRepository.findById(unFavoriteRequestDto.getStakingId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(), CommonErrorCode.NOT_FOUND_COIN.getMessage()));
         //즐겨찾기 정보
-        Favorite favorite = favoriteRepository.findByFavoriteIdAndUserAndDelYn(unFavoriteRequestDto.getFavoriteId(), userInfo, false)
+        Favorite favorite = favoriteRepository.findByStakingInfoAndUserAndDelYn(stakingInfo, userInfo, false)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
 
         //즐겨찾기 헤제.
         favorite.unFavorite();
-
     }
 
     @Transactional(readOnly = true)
