@@ -1,8 +1,6 @@
 package kr.project.backend.dto.user.response;
 
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
-import kr.project.backend.entity.user.Favorite;
-import kr.project.backend.entity.user.MyStakingData;
 import lombok.Data;
 import java.io.Serializable;
 import java.util.List;

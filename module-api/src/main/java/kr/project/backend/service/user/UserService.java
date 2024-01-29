@@ -60,8 +60,6 @@ public class UserService {
     private final AppVersionRepository appVersionRepository;
     private final MoveViewRepository moveViewRepository;
     private final NoticeRepository noticeRepository;
-    private final MyStakingDataRepository myStakingDataRepository;
-    private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
     private final AlarmRepository alarmRepository;
 
     @Transactional

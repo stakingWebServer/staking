@@ -1,7 +1,6 @@
 package kr.project.backend.repository.user;
 
 import kr.project.backend.entity.user.Favorite;
-import kr.project.backend.entity.user.MyStakingData;
 import kr.project.backend.entity.user.MyStakingDataAboutReward;
 import kr.project.backend.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

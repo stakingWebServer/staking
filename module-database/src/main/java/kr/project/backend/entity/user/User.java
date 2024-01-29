@@ -67,8 +67,7 @@ public class User extends BaseTimeEntity implements Serializable {
     @OneToMany(mappedBy = "user")
     private List<MoveView> moveViews;
 
-    @OneToMany(mappedBy = "user")
-    private List<MyStakingData> myStakingData;
+
 
     @OneToMany(mappedBy = "user")
     private List<MyStakingDataAboutReward> myStakingDataAboutRewards;
