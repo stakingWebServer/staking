@@ -10,7 +10,10 @@ pipeline {
     }
     stages {
         stage('database build') {
+            steps {
             sh './gradlew ${MODULE_DATABASE}:build -x test'
+
+            }
         }
         stage('build') {
             parallel {
