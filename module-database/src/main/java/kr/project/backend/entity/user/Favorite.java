@@ -33,7 +33,7 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     private String favoriteId;
     @Comment(value = "총 보유수량")
     @Column(nullable = false, precision = 27, scale = 15)
-    private BigDecimal totalHoldings;
+    private BigDecimal totalHoldings; 
     @Comment(value = "총 보상수량")
     @Column(nullable = false, precision = 27, scale = 15)
     private BigDecimal totalRewards;
