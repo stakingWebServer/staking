@@ -1,10 +1,14 @@
 package kr.project.backend.dto.coin;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import kr.project.backend.converter.BooleanToYNConverter;
 import kr.project.backend.entity.coin.StakingInfo;
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,6 +18,9 @@ import java.util.List;
 public class StakingInfoDetailResponseDto implements Serializable {
     @Schema(description = "코인이름",example = "폴리곤 (MATIC)")
     private String coinName;
+
+    @Schema(description = "단위",example = "MATIC")
+    private String unit;
     @Schema(description = "전일종가",example = "1111")
     private String prevClosingPrice;
     @Schema(description = "연 추정 보상률 (최소)",example = "5.3%")
@@ -31,11 +38,15 @@ public class StakingInfoDetailResponseDto implements Serializable {
     @Schema(description = "검증인 수수료",example = "보상의 10% 공제 후 분배")
     private String verificationFee;
 
+    @Comment(value = "즐겨찾기 유무 'Y' or 'N' ")
+    private String favoriteYn;
+
     @Schema(description = "관련 거래소 리스트",example = "업비트,코인원, etc...")
     private List<AboutCoinMarketDto> coinMarketTypes;
 
-    public StakingInfoDetailResponseDto(StakingInfo stakingInfo, List<AboutCoinMarketDto> aboutCoinMarketDtos){
+    public StakingInfoDetailResponseDto(StakingInfo stakingInfo, List<AboutCoinMarketDto> aboutCoinMarketDtos, boolean favoriteCheck){
         this.coinName = stakingInfo.getCoinName();
+        this.unit = stakingInfo.getUnit();
         this.prevClosingPrice = stakingInfo.getPrevClosingPrice();
         this.minAnnualRewardRate = stakingInfo.getMinAnnualRewardRate();
         this.maxAnnualRewardRate = stakingInfo.getMaxAnnualRewardRate();
@@ -45,5 +56,6 @@ public class StakingInfoDetailResponseDto implements Serializable {
         this.minimumOrderQuantity = stakingInfo.getMinimumOrderQuantity();
         this.verificationFee = stakingInfo.getVerificationFee();
         this.coinMarketTypes = aboutCoinMarketDtos;
+        this.favoriteYn = favoriteCheck ? "Y" : "N";
     }
 }

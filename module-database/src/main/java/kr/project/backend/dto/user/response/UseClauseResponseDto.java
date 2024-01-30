@@ -1,12 +1,25 @@
 package kr.project.backend.dto.user.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+
+@NoArgsConstructor
 public class UseClauseResponseDto {
-    private boolean useClauseEssentialYn;
-    private String useClauseTitle;
-    private String useClauseKind;
-    private String commonCodeName;
+    private String useClauseId;
+    private String useClauseEssentialYn;
+    private String useClauseFullTitle;
+    private String useClauseBeforeYn;
     private String fileUrl;
+
+    public UseClauseResponseDto(String useClauseId, String useClauseEssentialYn, String fileUrl, String useClauseFullTitle, String useClauseBeforeYn){
+        this.useClauseId = useClauseId;
+        this.useClauseEssentialYn = useClauseEssentialYn;
+        this.fileUrl = fileUrl;
+        this.useClauseFullTitle = useClauseFullTitle;
+        this.useClauseBeforeYn = useClauseBeforeYn;
+    }
+
 }

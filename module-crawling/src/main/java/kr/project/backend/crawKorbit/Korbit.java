@@ -4,7 +4,9 @@ package kr.project.backend.crawKorbit;
 import kr.project.backend.dto.coin.SaveDto;
 import kr.project.backend.entity.coin.StakingInfo;
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.entity.user.Favorite;
 import kr.project.backend.repository.coin.StakingInfoRepository;
+import kr.project.backend.repository.user.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -29,6 +31,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class Korbit {
     private final StakingInfoRepository stakingInfoRepository;
+    private final FavoriteRepository favoriteRepository;
 
     public static String korbitApi(String market) {
 
@@ -40,7 +43,7 @@ public class Korbit {
     }
 
 
-    @Scheduled(cron = "0 0 1 * * *")
+    @Scheduled(cron = "0 7 0 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
         SaveDto saveDto = new SaveDto();
         String url = "https://lightning.korbit.co.kr/service/staking/list";
@@ -67,20 +70,32 @@ public class Korbit {
             saveDto.setPrevClosingPrice(korbitApi(market.toLowerCase(Locale.ROOT)));
             Thread.sleep(5000);
             List<WebElement> elements = webDriver.findElements(By.cssSelector("div.sc-1ro7n4j-0 span"));
-            
+            List<Favorite> favorites = favoriteRepository.findAllByDelYn(false);
             for (int j = 0; j < elements.size(); j++) {
                 saveDto.setCoinName(removeNonKorean(elements.get(0).getText()));
                 saveDto.setMaxAnnualRewardRate(extractNumber(elements.get(3).getText()) + "%");
                 saveDto.setMinimumOrderQuantity(elements.get(5).getText());
+                saveDto.setUnit(elements.get(5).getText().trim().replaceAll("[^a-zA-Z]", ""));
                 saveDto.setStakingStatus(elements.get(7).getText());
                 saveDto.setCoinMarketType(CoinMarketType.korbit);
             }
             System.out.println("saveDto = " + saveDto);
-            stakingInfoRepository.save(new StakingInfo(saveDto));
+            String stakingId = stakingInfoRepository.save(new StakingInfo(saveDto)).getStakingId();
 
             Thread.sleep(4000);
 
             webDriver.get(url);
+
+            StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId).orElse(null);
+            favorites.forEach(favorite -> {
+                if(favorite.getStakingInfo().getCoinName().equals(stakingInfo.getCoinName()) &&
+                   favorite.getStakingInfo().getCoinMarketType().equals(stakingInfo.getCoinMarketType())
+                ){
+                    favorite.updateStakingId(stakingInfo);
+                    favoriteRepository.save(favorite);
+                }
+            });
+
             Thread.sleep(3000);
 
         }

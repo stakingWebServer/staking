@@ -14,7 +14,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -22,11 +21,16 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class StakingInfo extends BaseTimeEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "varchar(38)")
     @Comment(value = "스테이킹키값")
-    private Long stakingId;
+    private String stakingId;
     @Comment(value = "코인이름")
     private String coinName;
+
+    @Comment(value = "단위")
+    private String unit;
     @Comment(value = "전일종가")
     private String  prevClosingPrice;
     @Comment(value = "연 추정 보상률 (최소)")
@@ -48,8 +52,9 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     @OneToMany(mappedBy = "stakingInfo")
     public List<Favorite> favorites;
 
-    public StakingInfo(SaveDto saveDto){
+    public StakingInfo(SaveDto saveDto) {
         this.coinName = saveDto.getCoinName();
+        this.unit = saveDto.getUnit();
         this.prevClosingPrice = saveDto.getPrevClosingPrice();
         this.minAnnualRewardRate = saveDto.getMinAnnualRewardRate();
         this.maxAnnualRewardRate = saveDto.getMaxAnnualRewardRate();

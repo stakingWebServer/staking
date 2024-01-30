@@ -23,6 +23,10 @@ public class CommonFile extends BaseTimeEntity implements Serializable {
     @Column(length = 10)
     private String fileId;
 
+    @Comment(value = "그룹 파일키값")
+    @Column(length = 10)
+    private String groupFileId;
+
     @Comment(value = "파일명")
     @Column(length = 50)
     private String fileName;
@@ -38,7 +42,8 @@ public class CommonFile extends BaseTimeEntity implements Serializable {
     @OneToOne(mappedBy = "commonFile")
     private UseClause useClause;
 
-    public CommonFile(String fileId, String fileName, String filePath, String fileUrl){
+    public CommonFile(String groupFileId, String fileId, String fileName, String filePath, String fileUrl){
+        this.groupFileId = groupFileId;
         this.fileId = fileId;
         this.fileName = fileName;
         this.filePath = filePath;

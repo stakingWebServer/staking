@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -20,22 +21,27 @@ import java.util.UUID;
 public class UserUseClause extends BaseTimeEntity implements Serializable {
 
     @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "varchar(38)")
     @Comment(value = "이용약관ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long useClauseId;
+    private String userUseClauseId;
 
     @Comment(value = "동의여부")
-    @Column(columnDefinition = "char default 'N'")
-    @Convert(converter = BooleanToYNConverter.class)
-    private boolean agreeYn;
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
+    private String agreeYn;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public UserUseClause(User user, UseClauseDto useClauseDto){
-        this.useClauseId = useClauseDto.getUseClauseId();
-        this.agreeYn = Boolean.parseBoolean(useClauseDto.getUseClauseAgreeYN());
+    @ManyToOne
+    @JoinColumn(name = "use_clause_id")
+    private UseClause useClause;
+
+    public UserUseClause(User user, UseClause useClause, UseClauseDto useClauseDto){
+        this.agreeYn = useClauseDto.getUseClauseAgreeYN();
         this.user = user;
+        this.useClause = useClause;
     }
 }

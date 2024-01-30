@@ -5,6 +5,7 @@ import kr.project.backend.results.ApiResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -44,5 +45,11 @@ public class ApiResponseMessage {
     public void setError(CommonErrorCode errorCode) {
         this.errorCode = errorCode.getCode();
         this.errorMessage = errorCode.getMessage();
+    }
+
+    public ApiResponseMessage(Page<?> result){
+        this.status = CommonErrorCode.SUCCESS.getCode();
+        this.message = CommonErrorCode.SUCCESS.getMessage();
+        this.result = result;
     }
 }

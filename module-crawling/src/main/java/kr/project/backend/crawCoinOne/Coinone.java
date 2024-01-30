@@ -3,8 +3,11 @@ package kr.project.backend.crawCoinOne;
 import kr.project.backend.dto.coin.SaveDto;
 import kr.project.backend.entity.coin.StakingInfo;
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
+import kr.project.backend.entity.user.Favorite;
 import kr.project.backend.repository.coin.StakingInfoRepository;
+import kr.project.backend.repository.user.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,15 +18,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class Coinone {
 
     private final StakingInfoRepository stakingInfoRepository;
+    private final FavoriteRepository favoriteRepository;
 
-    @Scheduled(cron = "0 30 1 * * *")
+    @Scheduled(cron = "0 14 0 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
         SaveDto saveDto = new SaveDto();
         String url = "https://coinone.co.kr/plus";
@@ -40,17 +48,42 @@ public class Coinone {
         //페이지 여는데 1초 텀 두기.
         Thread.sleep(3000);
 
+        List<WebElement> elements = webDriver.findElements(By.cssSelector("[class^='glyph-coin-']"));
+
+        List<String> unit = new ArrayList<>();
+        // 정규 표현식을 사용하여 클래스 이름에서 값을 추출
+        Pattern pattern = Pattern.compile("glyph-coin-(.*)");
+        for (WebElement element : elements) {
+            String className = element.getAttribute("class");
+            Matcher matcher = pattern.matcher(className);
+
+            // 매칭된 부분이 있는 경우 값을 출력
+            if (matcher.find()) {
+                unit.add(matcher.group(1).toUpperCase());
+            }
+        }
 
         //각 요소 추출
         List<WebElement> coinNames = webDriver.findElements(By.className("ProductsBrowseList_coin-name__bSWTj"));
         List<WebElement> years = webDriver.findElements(By.className("ProductsBrowseList_column-reward__mKBuy"));
-
+        List<Favorite> favorites = favoriteRepository.findAllByDelYn(false);
         for (int i = 0; i < coinNames.size(); i++) {
             saveDto.setCoinName(coinNames.get(i).getText());
             saveDto.setMaxAnnualRewardRate(years.get(i+1).getText());
             saveDto.setCoinMarketType(CoinMarketType.coinone);
-            stakingInfoRepository.save(new StakingInfo(saveDto));
+            saveDto.setUnit(unit.get(i));
+            String stakingId = stakingInfoRepository.save(new StakingInfo(saveDto)).getStakingId();
             System.out.println("saveDto = " + saveDto);
+
+            StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId).orElse(null);
+            favorites.forEach(favorite -> {
+                if(favorite.getStakingInfo().getCoinName().equals(stakingInfo.getCoinName()) &&
+                        favorite.getStakingInfo().getCoinMarketType().equals(stakingInfo.getCoinMarketType())
+                ){
+                    favorite.updateStakingId(stakingInfo);
+                    favoriteRepository.save(favorite);
+                }
+            });
         }
         Thread.sleep(4000);
         //웹브라우저 닫기

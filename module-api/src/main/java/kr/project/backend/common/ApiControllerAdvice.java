@@ -44,7 +44,7 @@ public class ApiControllerAdvice {
         apiResponseMessage.setMessage(CommonErrorCode.FAIL.getMessage());
         apiResponseMessage.setErrorCode(ex.getCode());
         apiResponseMessage.setErrorMessage(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponseMessage);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponseMessage);
     }
 
     @ExceptionHandler(JwtException.class)
@@ -54,7 +54,7 @@ public class ApiControllerAdvice {
         apiResponseMessage.setMessage(CommonErrorCode.FAIL.getMessage());
         apiResponseMessage.setErrorCode(ex.getCode());
         apiResponseMessage.setErrorMessage(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponseMessage);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponseMessage);
     }
 
     @ExceptionHandler(NullPointerException.class)

@@ -1,4 +1,4 @@
-package kr.project.backend.repository.file;
+package kr.project.backend.repository.common;
 
 
 import kr.project.backend.entity.common.CommonFile;

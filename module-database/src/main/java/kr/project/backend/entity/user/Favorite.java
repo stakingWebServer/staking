@@ -14,6 +14,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -24,16 +26,19 @@ import java.util.UUID;
 public class Favorite extends BaseTimeEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "varchar(38)")
     @Comment(value = "즐겨찾기 키값")
-    private Long favoriteId;
+    private String favoriteId;
     @Comment(value = "총 보유수량")
-    private double totalHoldings;
+    @Column(nullable = false, precision = 27, scale = 15)
+    private BigDecimal totalHoldings;
     @Comment(value = "총 보상수량")
-    private double totalRewards;
+    @Column(nullable = false, precision = 27, scale = 15)
+    private BigDecimal totalRewards;
 
-    @Column(columnDefinition = "char default 'N'")
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
     @Convert(converter = BooleanToYNConverter.class)
     @Comment(value = "삭제 유무")
     private boolean delYn;
@@ -46,6 +51,9 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "favorite")
+    private List<MyStakingDataAboutReward> myStakingDataAboutRewardList;
+
 
     public Favorite(User userInfo, StakingInfo stakingInfo) {
         this.stakingInfo = stakingInfo;
@@ -54,5 +62,9 @@ public class Favorite extends BaseTimeEntity implements Serializable {
 
     public void unFavorite() {
         this.delYn = true;
+    }
+
+    public void updateStakingId(StakingInfo stakingInfo) {
+        this.stakingInfo = stakingInfo;
     }
 }

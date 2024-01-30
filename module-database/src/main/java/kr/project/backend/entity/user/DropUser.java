@@ -25,10 +25,11 @@ public class DropUser extends BaseTimeEntity implements Serializable {
      * 탈퇴키값
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "varchar(38)")
     @Comment(value = "탈퇴유저 키값")
-    private Long dropId;
+    private String dropId;
 
     @Comment(value = "유저 이메일")
     private String userEmail;

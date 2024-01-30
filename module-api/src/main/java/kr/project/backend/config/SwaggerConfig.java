@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
                 description = "STAKING API 명세서 입니다.",
                 version = "v1"),
         servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
-        //servers = {@Server(url = "https://api.s2it.kro.kr")}) //local
+        //servers = {@Server(url = "/")}) //local
 @RequiredArgsConstructor
 @Configuration
 public class SwaggerConfig {
@@ -36,6 +36,15 @@ public class SwaggerConfig {
                 .group("2")
                 .displayName("관리자")
                 .pathsToMatch("/api/v1/admin/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi commonGroupApi() {
+        return GroupedOpenApi.builder()
+                .group("3")
+                .displayName("공통")
+                .pathsToMatch("/api/v1/common/**")
                 .build();
     }
 

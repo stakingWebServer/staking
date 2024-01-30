@@ -1,25 +1,24 @@
 package kr.project.backend.controller.admin;
 
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.project.backend.dto.common.request.PushRequestDto;
+import kr.project.backend.results.ListResult;
 import kr.project.backend.service.admin.AdminService;
 import kr.project.backend.common.Environment;
 import kr.project.backend.results.ObjectResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "관리자", description = "관리자 로그인")
 @Slf4j
 @RestController
-@RequestMapping("/api/" + Environment.API_VERSION + "/" + Environment.API_ADMIN + "/account")
+@RequestMapping("/api/" + Environment.API_VERSION + "/" + Environment.API_ADMIN)
 @RequiredArgsConstructor
 public class AdminController {
 
@@ -29,7 +28,34 @@ public class AdminController {
     @GetMapping("/accessKey/{plainText}")
     public ResponseEntity<?> accessKey(@Parameter(name = "plainText", description = "암호화 할 평문", example = "testText")
                                        @PathVariable(name = "plainText") String plainText) throws Exception{
-        return ObjectResult.build(adminService.adminService(plainText));
+        return ObjectResult.build(adminService.giveApikey(plainText));
     }
-    
+    @Operation(summary = "당일 가입 사용자 수",description = "당일 가입 사용자 수를 구한다.")
+    @GetMapping("/today-register")
+    public ResponseEntity<?> getTodayRegister(){
+        return ObjectResult.build(adminService.getTodayRegister());
+    }
+
+    @Operation(summary = "당일 로그인 사용자 수",description = "당일 로그인 사용자 수를 구한다.")
+    @GetMapping("/today-loginUser")
+    public ResponseEntity<?> getTodayLoginUser(){
+        return ObjectResult.build(adminService.getTodayLoginUser());
+    }
+    @Operation(summary = "당일 탈퇴 사용자 수",description = "당일 탈토ㅚ 사용자 수를 구한다.")
+    @GetMapping("/today-dropUser")
+    public ResponseEntity<?> getTodayDropUser(){
+        return ObjectResult.build(adminService.getTodayDropUser());
+    }
+
+    @Operation(summary = "페이지 별 조회 수",description = "패아자 별 조회 수를 구한다.")
+    @GetMapping("/page-view")
+    public ResponseEntity<?> getPageView(){
+        return ListResult.build(adminService.getPageView());
+    }
+    @Operation(summary = "푸시 토큰 발송",description = "푸시 토큰 발송을 한다.")
+    @PostMapping("/send-push")
+    public ResponseEntity<?> push(@RequestBody PushRequestDto pushRequestDto) throws FirebaseMessagingException{
+        adminService.sendPush(pushRequestDto);
+        return ObjectResult.ok();
+    }
 }

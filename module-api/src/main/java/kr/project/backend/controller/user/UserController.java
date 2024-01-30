@@ -5,15 +5,18 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.results.ListResult;
 import kr.project.backend.service.user.UserService;
 import kr.project.backend.common.Environment;
 import kr.project.backend.dto.user.request.*;
 import kr.project.backend.results.ObjectResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
 
 
 @Tag(name = "account", description = "로그인 / 회원가입")
@@ -31,9 +34,9 @@ public class UserController {
         return ObjectResult.build(userService.userLogin(userLoginRequestDto));
     }
 
-    @Operation(summary = "회원가입",description = "회원가입 입니다.")
+    @Operation(summary = "회원가입", description = "회원가입 입니다.")
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto){
+    public ResponseEntity<?> join(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
         return ObjectResult.build(userService.userJoin(userJoinRequestDto));
     }
 
@@ -67,7 +70,8 @@ public class UserController {
     @PostMapping("/favorite")
     public ResponseEntity<?> addFavorite(@AuthenticationPrincipal ServiceUser serviceUser,
                                          @RequestBody AddFavoriteRequestDto addFavoriteRequestDto) {
-        return ObjectResult.build(userService.addFavorite(serviceUser, addFavoriteRequestDto));
+        userService.addFavorite(serviceUser, addFavoriteRequestDto);
+        return ObjectResult.ok();
     }
 
     @Operation(summary = "즐겨찾기해제", description = "즐겨찾기 했던 항목을 해제 합니다.")
@@ -77,26 +81,49 @@ public class UserController {
         userService.unFavorite(serviceUser, favoriteRequestDto);
         return ObjectResult.ok();
     }
-
-    @Operation(summary = "즐겨찾기 목록 조회", description = "즐겨찾기 목록을 조회 합니다.")
-    @GetMapping("/favorites")
-    public ResponseEntity<?> getFavorites(@AuthenticationPrincipal ServiceUser serviceUser) {
-        return ObjectResult.build(userService.getFavorites(serviceUser));
-    }
-
     @Operation(summary = "이용약관 목록 조회", description = "이용약관 목록을 조회 합니다.")
     @GetMapping("/useClauses")
     public ResponseEntity<?> getUseClauses() {
-        return ObjectResult.build(userService.getUseClauses());
+        return ListResult.build(userService.getUseClauses());
     }
 
     @Operation(summary = "앱 강제 업데이트 조회", description = "앱 버전을 통해 강제 업데이트 유무를 조회 합니다.")
     @GetMapping("/appVersion")
     public ResponseEntity<?> getAppVersion(@Parameter(description = "앱 OS", example = "01", required = true) @RequestParam String appOs,
                                            @Parameter(description = "앱 버전", example = "1.1.2", required = true) @RequestParam String appVersion) {
-        userService.getAppVersion(appOs,appVersion);
+        userService.getAppVersion(appOs, appVersion);
         return ObjectResult.ok();
     }
 
+    @Operation(summary = "화면 이동", description = "화면 이동시 해당 화면 방문을 저장 합니다.")
+    @PostMapping("/move/view")
+    public ResponseEntity<?> moveView(@AuthenticationPrincipal ServiceUser serviceUser,
+                                      @Valid @RequestBody MoveViewRequestDto moveViewRequestDto) {
+        userService.moveView(serviceUser, moveViewRequestDto);
+        return ObjectResult.ok();
+    }
 
+    @Operation(summary = "공지사항 조회", description = "공지사항 조회 입니다.")
+    @GetMapping("/notices")
+    public ResponseEntity<?> getNotices(@PageableDefault()Pageable pageable) {
+        return ListResult.build(userService.getNotices(pageable));
+    }
+
+    @Operation(summary = "마이데이터스테이킹 목록 조회", description = "마이데이터스테이킹 목록을 조회합니다.")
+    @GetMapping("/stakings")
+    public ResponseEntity<?> stakings(@AuthenticationPrincipal ServiceUser serviceUser) {
+        return ListResult.build(userService.getMydataStakings(serviceUser));
+    }
+    @Operation(summary = "알림 조회", description = "알림 조회 입니다.")
+    @GetMapping("/alarms")
+    public ResponseEntity<?> getAlarms(@PageableDefault()Pageable pageable, @AuthenticationPrincipal ServiceUser serviceUser) {
+        return ListResult.build(userService.getAlarms(pageable,serviceUser));
+    }
+
+    @Operation(summary = "알림 읽음", description = "알림 읽음 입니다.")
+    @PutMapping("/alarmCheck")
+    public ResponseEntity<?> alarmCheck(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody AlarmCheckRequestDto alarmCheckRequestDto) {
+        userService.alarmCheck(serviceUser,alarmCheckRequestDto);
+        return ObjectResult.ok();
+    }
 }

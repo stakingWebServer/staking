@@ -18,16 +18,24 @@ import kr.project.backend.repository.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,29 +62,34 @@ public class UserService {
     private final UserUseClauseRepository userUseClauseRepository;
     private final UseClauseRepository useClauseRepository;
     private final AppVersionRepository appVersionRepository;
+    private final MoveViewRepository moveViewRepository;
+    private final NoticeRepository noticeRepository;
+    private final AlarmRepository alarmRepository;
+    private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
 
         //등록되어 있는 유저인지 아닌지 판단
         boolean checkUserInfo = userRepository.existsByUserEmail(userLoginRequestDto.getUserEmail());
-
+ 
         //등록되어 있지 않는 유저
         if (!checkUserInfo) {
 
-            //회원가입 1달 제한 정책 체크
-            DropUser dropCheck = dropUserRepository.findByUserEmail(userLoginRequestDto.getUserEmail()).orElse(null);
+            //회원가입 1달 제한 정책 체크(탈퇴 테이블 조회)
+            Page<DropUser> dropCheck = dropUserRepository.findByUserEmail(userLoginRequestDto.getUserEmail(), PageRequest.of(0, 1));
 
-            if (dropCheck != null) {
+            if (dropCheck.getContent().size() != 0) {
                 try {
                     SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Date dropDate = transFormat.parse(dropCheck.getDropDttm());
+                    Date dropDate = transFormat.parse(String.valueOf(dropCheck.getContent().get(0)));
                     Date nowDate = transFormat.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
                     Long dropAndJoinTerm = (nowDate.getTime() - dropDate.getTime()) / 1000 / (24 * 60 * 60);
 
                     if (reJoinTermDate > dropAndJoinTerm.intValue()) {
-                        throw new CommonException(CommonErrorCode.JOIN_TERM_DATE.getCode(), CommonErrorCode.JOIN_TERM_DATE.getMessage());
+                        //한달제한 임시 해제
+                        //throw new CommonException(CommonErrorCode.JOIN_TERM_DATE.getCode(), CommonErrorCode.JOIN_TERM_DATE.getMessage());
                     }
                 } catch (ParseException e) {
                     log.info("date 변환 파싱 error");
@@ -84,7 +97,7 @@ public class UserService {
             }
 
             //회원가입 안내 return
-            throw new CommonException(CommonErrorCode.JOIN_TERM_DATE.getCode(),CommonErrorCode.JOIN_TERM_DATE.getMessage());
+            throw new CommonException(CommonErrorCode.NOT_JOIN_USER.getCode(), CommonErrorCode.NOT_JOIN_USER.getMessage());
         }
         //등록되어 있는 유저
 
@@ -99,6 +112,11 @@ public class UserService {
             ;
             throw new CommonException(CommonErrorCode.ALREADY_JOIN_USER.getCode(), CommonErrorCode.ALREADY_JOIN_USER.getMessage() + "(" + commonCode.getCommonCodeName() + ")");
         }
+
+        //로그인시간, os, pushToken 업데이트
+        userInfo.updateUserLoginInfo(userLoginRequestDto);
+        userRepository.save(userInfo);
+
 
         String accessToken = JwtUtil.createJwt(userInfo.getUserId(), userInfo.getUserEmail(), jwtSecretKey, expiredHs * accesTokenTime);
         String refreshToken = JwtUtil.createJwt(userInfo.getUserId(), userInfo.getUserEmail(), jwtSecretKey, expiredHs * refreshTokenTime);
@@ -115,26 +133,32 @@ public class UserService {
     }
 
     @Transactional
-    public UserTokenResponseDto userJoin(UserJoinRequestDto userJoinRequestDto){
+    public UserTokenResponseDto userJoin(UserJoinRequestDto userJoinRequestDto) {
 
         //등록되어 있는 유저인지 아닌지 판단
         boolean checkUserInfo = userRepository.existsByUserEmail(userJoinRequestDto.getUserEmail());
 
-        if(checkUserInfo){
-            throw new CommonException(CommonErrorCode.ALREADY_JOIN_USER.getCode(),CommonErrorCode.ALREADY_JOIN_USER.getMessage());
+        if (checkUserInfo) {
+            throw new CommonException(CommonErrorCode.ALREADY_JOIN_USER.getCode(), CommonErrorCode.ALREADY_JOIN_USER.getMessage());
         }
 
         //회원가입
-        Long userId = userRepository.save(new User(userJoinRequestDto)).getUserId();
+        String userId = userRepository.save(new User(userJoinRequestDto)).getUserId();
 
         //방금 회원가입 된 유저 정보 가져오기
         User userInfo = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //이용약관 동의 저장
-        for(int i = 0; i<userJoinRequestDto.getUseClauseDtoList().size(); i++ ){
+        for (int i = 0; i < userJoinRequestDto.getUseClauseDtoList().size(); i++) {
             UseClauseDto useClauseDto = userJoinRequestDto.getUseClauseDtoList().get(i);
-            userUseClauseRepository.save(new UserUseClause(userInfo, useClauseDto));
+            UseClause useClause = useClauseRepository.findById(useClauseDto.getUseClauseId())
+                    .orElseThrow(()->new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE_DATA.getCode(),CommonErrorCode.NOT_FOUND_USE_CLAUSE_DATA.getMessage()));
+            //필수약관이지만 동의여부가 N으로 요청왔을때
+            if(useClause.getUseClauseEssentialYn().equals(Constants.YN.Y) && useClauseDto.getUseClauseAgreeYN().equals(Constants.YN.N)){
+                throw new CommonException(CommonErrorCode.NOT_AGREE_ESSENTIAL_USE_CLAUSE.getCode(),CommonErrorCode.NOT_AGREE_ESSENTIAL_USE_CLAUSE.getMessage());
+            }
+            userUseClauseRepository.save(new UserUseClause(userInfo, useClause, useClauseDto));
         }
 
         //응답 토큰 세팅(리스레시 토큰은 키값으로 응답)
@@ -183,7 +207,7 @@ public class UserService {
     public void logout(ServiceUser serviceUser) {
 
         //회원정보
-        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //로그아웃시간 업데이트
@@ -196,7 +220,7 @@ public class UserService {
     public void dropUser(ServiceUser serviceUser) {
 
         //회원정보
-        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //탈퇴 중복 처리 방어로직
@@ -223,7 +247,7 @@ public class UserService {
     public UserCheckStateResponseDto userStateCheck(ServiceUser serviceUser) {
 
         //회원정보
-        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         CommonCode commonCode = commonCodeRepository.findByGrpCommonCodeAndCommonCode(Constants.USER_STATE.CODE, userInfo.getUserState())
@@ -234,77 +258,164 @@ public class UserService {
     }
 
     @Transactional
-    public AddFavoriteResponseDto addFavorite(ServiceUser serviceUser, AddFavoriteRequestDto addFavoriteRequestDto) {
+    public void addFavorite(ServiceUser serviceUser, AddFavoriteRequestDto addFavoriteRequestDto) {
         //회원정보
-        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
         //코인정보
         StakingInfo stakingInfo = stakingInfoRepository.findById(addFavoriteRequestDto.getStakingId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(), CommonErrorCode.NOT_FOUND_COIN.getMessage()));
 
         //데이터 중복 방지 코드
-        boolean favorite = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false);
-        if(favorite){
-            throw new CommonException(CommonErrorCode.ALREADY_EXIST_FAVORITE.getCode(), CommonErrorCode.ALREADY_EXIST_FAVORITE.getMessage());
+        boolean favorite = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo, userInfo, false);
+        if (favorite) {
+            throw new CommonException(CommonErrorCode.ALREADY_EXIST_STAKING_DATA.getCode(), CommonErrorCode.ALREADY_EXIST_STAKING_DATA.getMessage());
         }
-
-        Favorite favoriteInfo = favoriteRepository.save(new Favorite(userInfo, stakingInfo));
-        //favorite 키값 반환
-        return new AddFavoriteResponseDto(favoriteInfo.getFavoriteId());
+        favoriteRepository.save(new Favorite(userInfo, stakingInfo));
     }
 
     @Transactional
     public void unFavorite(ServiceUser serviceUser, UnFavoriteRequestDto unFavoriteRequestDto) {
         //회원정보
-        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
+        StakingInfo stakingInfo = stakingInfoRepository.findById(unFavoriteRequestDto.getStakingId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(), CommonErrorCode.NOT_FOUND_COIN.getMessage()));
         //즐겨찾기 정보
-        Favorite favorite = favoriteRepository.findByFavoriteIdAndUserAndDelYn(unFavoriteRequestDto.getFavoriteId(),userInfo,false)
+        Favorite favorite = favoriteRepository.findByStakingInfoAndUserAndDelYn(stakingInfo, userInfo, false)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
 
         //즐겨찾기 헤제.
         favorite.unFavorite();
-
     }
 
     @Transactional(readOnly = true)
-    public List<Favorite> getFavorites(ServiceUser serviceUser) {
+    public List<FavoriteResponseDto> getFavorites(ServiceUser serviceUser) {
         //회원정보
-        User userInfo = userRepository.findById(Long.valueOf(serviceUser.getUserId()))
+        User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
 
-        //List<Favorite> allByUserAndDelYn = favoriteRepository.findAllByUserAndDelYn(userInfo, false);
-        List<Favorite> allByUserAndDelYn = favoriteRepository.findAll();
-        log.info("test : {}",allByUserAndDelYn);
-
-        return allByUserAndDelYn;
-        /*return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
+        return favoriteRepository.findAllByUserAndDelYn(userInfo, false)
                 .stream()
                 .map(FavoriteResponseDto::new)
-                .collect(Collectors.toList());*/
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<UseClauseResponseDto> getUseClauses() {
         //이용약관 목록조회
-        return useClauseRepository.getUserClauses(Constants.USE_CLAUSE_KIND.CODE,Constants.USE_CLAUSE_STATE.APPLY);
+        return useClauseRepository.getUseClauses(Constants.USE_CLAUSE_KIND.CODE, Constants.USE_CLAUSE_STATE.APPLY);
     }
 
     @Transactional(readOnly = true)
-    public AppVersionResponseDto getAppVersion(String appOs, String appVersion){
+    public AppVersionResponseDto getAppVersion(String appOs, String appVersion) {
         //강제업데이트 조회
-        AppVersion appVersionData = appVersionRepository.findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYnTrue(appOs,appVersion).orElse(null);
+        AppVersion appVersionData = appVersionRepository.findByAppOsAndMinimumVersionGreaterThanAndHardUpdateYnTrue(appOs, appVersion).orElse(null);
 
         AppVersionResponseDto appVersionResponseDto = new AppVersionResponseDto();
 
-        if(appVersionData == null){
+        if (appVersionData == null) {
             appVersionResponseDto.setHardUpdateYn(Constants.YN.N);
-        }else{
+        } else {
             appVersionResponseDto.setHardUpdateYn(Constants.YN.Y);
             appVersionResponseDto.setHardUpdateUrl(appVersionData.getHardUpdateUrl());
         }
         return appVersionResponseDto;
+    }
+
+    @Transactional
+    public void moveView(ServiceUser serviceUser, MoveViewRequestDto moveViewRequestDto) {
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        //화면이동 저장
+        moveViewRepository.save(new MoveView(userInfo, moveViewRequestDto));
+    }
+
+    @Transactional(readOnly = true)
+    public List<NoticeResponseDto> getNotices(Pageable pageable) {
+        return noticeRepository.findAllByOrderByCreatedDateDesc(pageable)
+                .stream()
+                .map(NoticeResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<?> getMydataStakings(ServiceUser serviceUser) {
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        //즐겨찾기 조회
+        List<Favorite> favorite = favoriteRepository.findAllByUserAndDelYn(userInfo,false);
+
+        //즐겨찾기 항목이 있다면
+        if(favorite.size() > 0){
+            for(Favorite data : favorite){
+
+                //보상수량이 입력된 상태라면
+                if(data.getTotalHoldings().compareTo(BigDecimal.ZERO) > 0){
+
+                    //가장 최근에 저장된 보상내역 조회
+                    Page<MyStakingDataAboutReward> myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavorite(data,PageRequest.of(0, 1));
+
+                    //보상내역이 있고
+                    if(myStakingDataAboutReward.getContent().size() > 0){
+                        //24시간이 지났다면 현재날짜의 이율로 계산하여 보상내역 new insert
+                        LocalDateTime inputDateTime = LocalDateTime.parse(myStakingDataAboutReward.getContent().get(0).getUserRegDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                        LocalDateTime currentDateTime = LocalDateTime.now();
+                        long hoursBetween = ChronoUnit.HOURS.between(inputDateTime, currentDateTime);
+                        if(hoursBetween >= 24){
+                            //TODO 보상내역 insert
+                            StakingInfo stakingInfo = stakingInfoRepository.findByCoinMarketTypeAndCoinNameAndCreatedDateBetween
+                                    (data.getStakingInfo().getCoinMarketType(),
+                                     data.getStakingInfo().getCoinName(),
+                                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                                    ).orElse(null);
+
+                            if(stakingInfo != null){
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
+                .stream()
+                .map(MyStakingDataResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<AlarmResponseDto> getAlarms(Pageable pageable,ServiceUser serviceUser) {
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        return alarmRepository.findByUserOrderByCreatedDateDesc(userInfo,pageable)
+                .stream()
+                .map(AlarmResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void alarmCheck(ServiceUser serviceUser,AlarmCheckRequestDto alarmCheckRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        Alarm alarm = alarmRepository.findByAlarmIdAndUser(alarmCheckRequestDto.getAlarmId(),userInfo)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NULL_DATA.getCode(),CommonErrorCode.NULL_DATA.getMessage()));
+
+        alarm.updateAlarmReadYn();
+        alarmRepository.save(alarm);
     }
 }

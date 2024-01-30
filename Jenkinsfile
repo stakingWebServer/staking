@@ -5,9 +5,15 @@ pipeline {
         MODULE_ADMIN = 'module-admin'
         MODULE_API = 'module-api'
         MODULE_CRAWLING = 'module-crawling'
+        MODULE_DATABASE = 'module-database'
         CURRENT_LOCATION = '/var/lib/jenkins/workspace/staking';
     }
     stages {
+        stage('database build') {
+            steps {
+            sh './gradlew ${MODULE_DATABASE}:build -x test'
+            }
+        }
         stage('build') {
             parallel {
                 stage('module-admin(build)') {
@@ -66,6 +72,8 @@ pipeline {
                     steps {
                         script {
                         def pid
+                        def response
+                        def status = true
                         try {
                         echo '[kill port ${MODULE_ADMIN}]'
                         pid = sh(script: "sudo lsof -t -i :9500 -s TCP:LISTEN",returnStdout: true).trim()
@@ -83,6 +91,17 @@ pipeline {
                         }
                         echo '[deploy start] ${MODULE_ADMIN}'
                         sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9500 -Duser.timezone=Asia/Seoul /app/project/module-admin-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                        while(status) {
+                        echo "admin번 서버 구동 중..."
+                        response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://admin.s2it.kro.kr:9500", returnStatus: true)
+                        if(response == 0){
+                        echo "admin 서버 구동 완료"
+                        sleep 5
+                        break
+                        }
+                        echo "admin 서버 구동 대기중..."
+                        sleep 5
+                        }
                         echo '[deploy end] ${MODULE_ADMIN}'
                         }
                     }
@@ -121,6 +140,7 @@ pipeline {
                         response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://s2it.kro.kr:8080/swagger-ui/index.html", returnStatus: true)
                         if(response == 0){
                         echo "1번 서버 구동 완료"
+                        sleep 5
                         break
                         }
                         echo "1번 서버 구동 대기중..."
@@ -166,6 +186,8 @@ pipeline {
                     steps {
                     script{
                         def pid
+                        def response
+                        def status = true
                         try {
                         echo '[kill port ${MODULE_API}]'
                         pid = sh(script: "sudo lsof -t -i :9000 -s TCP:LISTEN",returnStdout: true).trim()
@@ -183,6 +205,18 @@ pipeline {
                         }
                         echo '[deploy start] ${MODULE_CRAWLING}'
                         sh "JENKINS_NODE_COOKIE=dontKillMe && sudo nohup java -jar -Dserver.port=9000 -Duser.timezone=Asia/Seoul /app/project/module-crawling-1.0-SNAPSHOT.jar 1>/dev/null 2>&1 &"
+                        while(status) {
+                        echo "crawling 서버 구동 중..."
+                        response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:9000", returnStatus: true)
+                        echo "response : ${response}"
+                        if(response == 0){
+                        echo "crawling 서버 구동 완료"
+                        sleep 5
+                        break
+                        }
+                        echo "crawling 서버 구동 대기중..."
+                        sleep 5
+                        }
                         echo '[deploy end] ${MODULE_CRAWLING}'
                     }
                     }

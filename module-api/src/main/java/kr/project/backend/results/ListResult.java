@@ -2,6 +2,7 @@ package kr.project.backend.results;
 import kr.project.backend.common.ApiResponseMessage;
 import kr.project.backend.common.PaginationInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -51,6 +52,15 @@ public class ListResult {
      * @return ResponseEntity
      */
     public static ResponseEntity<?> build(List<?> resultList) {
+        return Result.ok(new ApiResponseMessage(resultList));
+    }
+
+    /**
+     * 리스트 타입 ApiResult
+     * @param resultList 리스트 객체
+     * @return ResponseEntity
+     */
+    public static ResponseEntity<?> build(Page<?> resultList) {
         return Result.ok(new ApiResponseMessage(resultList));
     }
 }
