@@ -32,7 +32,7 @@ public class MoveView extends BaseTimeEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user; 
 
     public MoveView(User userInfo, MoveViewRequestDto moveViewRequestDto){
         this.viewName = moveViewRequestDto.getViewName();
