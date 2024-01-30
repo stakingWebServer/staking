@@ -1,11 +1,9 @@
 package kr.project.backend.service.admin;
 
-import kr.project.backend.dto.admin.response.TodayDropUserResponseDto;
-import kr.project.backend.dto.admin.response.TodayLoginUserResponseDto;
-import kr.project.backend.dto.admin.response.TodayRegisterResponseDto;
+import kr.project.backend.dto.admin.response.*;
 import kr.project.backend.repository.user.DropUserRepository;
+import kr.project.backend.repository.user.MoveViewRepository;
 import kr.project.backend.repository.user.UserRepository;
-import kr.project.backend.dto.admin.response.AccessKeyResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static kr.project.backend.utils.AesUtil.encryptAES256;
 
@@ -32,6 +31,7 @@ public class AdminService {
 
     private final UserRepository userRepository;
     private final DropUserRepository dropUserRepository;
+    private final MoveViewRepository moveViewRepository;
 
     public AccessKeyResponseDto giveApikey(String plainText) throws Exception{
         return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, plainText+System.currentTimeMillis()));
@@ -54,12 +54,16 @@ public class AdminService {
 
         return new TodayLoginUserResponseDto(todayLoginUser);
     }
-
+    @Transactional(readOnly = true)
     public TodayDropUserResponseDto getTodayDropUser() {
         int todayDropUser = dropUserRepository.countByDropDttmBetween(
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         return new TodayDropUserResponseDto(todayDropUser);
+    }
+    @Transactional(readOnly = true)
+    public List<PageViewDto> getPageView() {
+        return moveViewRepository.getPageViewInfo();
     }
 }
