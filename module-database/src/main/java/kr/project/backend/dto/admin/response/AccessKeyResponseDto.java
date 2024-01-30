@@ -10,5 +10,5 @@ import java.io.Serializable;
 public class AccessKeyResponseDto implements Serializable {
 
     /** accessKey */
-    private String accessKey;
+    private String accessKey;//ㅇ
 }
