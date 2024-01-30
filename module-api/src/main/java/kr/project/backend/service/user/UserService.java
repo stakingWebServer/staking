@@ -36,6 +36,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -379,5 +381,45 @@ public class UserService {
 
         alarm.updateAlarmReadYn();
         alarmRepository.save(alarm);
+    }
+
+    @Transactional
+    public void ownCoin(ServiceUser serviceUser, OwnCoinRequestDto ownCoinRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+
+        StakingInfo stakingInfo = stakingInfoRepository.findById(ownCoinRequestDto.getStakingId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(),CommonErrorCode.NOT_FOUND_COIN.getMessage()));
+
+        //보상주기 없으면 return
+        if(stakingInfo.getRewardCycle() == null){
+            throw new CommonException(CommonErrorCode.NOT_INPUT_COIN.getCode(),CommonErrorCode.NOT_INPUT_COIN.getMessage());
+        }
+
+        //최소신청수량 return
+        //최소신청수량에서 숫자랑 소수점만 추출
+        String regex = "[0-9.]+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(stakingInfo.getMinimumOrderQuantity());
+        String regexTotalHoldings = "";
+        while (matcher.find()) {
+            regexTotalHoldings = matcher.group();
+        }
+        BigDecimal minimumOrderQuantity = new BigDecimal(regexTotalHoldings);
+        BigDecimal totalHoldings = new BigDecimal(ownCoinRequestDto.getTotalHoldings());
+        if(totalHoldings.compareTo(minimumOrderQuantity) < 0){
+            throw new CommonException(CommonErrorCode.CHECK_MIN_INPUT_COIN.getCode(),CommonErrorCode.CHECK_MIN_INPUT_COIN.getMessage());
+        }
+
+        Favorite favorite = favoriteRepository.findByStakingInfoAndUser(stakingInfo, userInfo)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
+
+        favorite.updateTotalHoldings(new BigDecimal(ownCoinRequestDto.getTotalHoldings()));
+        //총보유수량 업데이트
+        favoriteRepository.save(favorite);
+        //보상내역 저장
+        myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(favorite,userInfo,new BigDecimal("0"), new BigDecimal(ownCoinRequestDto.getTotalHoldings())));
     }
 }

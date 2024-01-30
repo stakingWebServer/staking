@@ -58,6 +58,8 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     public Favorite(User userInfo, StakingInfo stakingInfo) {
         this.stakingInfo = stakingInfo;
         this.user = userInfo;
+        this.totalHoldings = BigDecimal.ZERO;
+        this.totalRewards = BigDecimal.ZERO;
     }
 
     public void unFavorite() {
@@ -71,5 +73,9 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     public void updateTotalHoldingsAndRewards(BigDecimal totalHoldings, BigDecimal totalRewards){
         this.totalHoldings = totalHoldings;
         this.totalRewards = totalRewards;
+    }
+
+    public void updateTotalHoldings(BigDecimal totalHoldings){
+        this.totalHoldings = totalHoldings;
     }
 }

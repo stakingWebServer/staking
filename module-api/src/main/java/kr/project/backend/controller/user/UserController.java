@@ -126,4 +126,11 @@ public class UserController {
         userService.alarmCheck(serviceUser,alarmCheckRequestDto);
         return ObjectResult.ok();
     }
+
+    @Operation(summary = "보유수량 입력", description = "보유수량 입력 입니다.")
+    @PostMapping("/ownCoin")
+    public ResponseEntity<?> ownCoin(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody OwnCoinRequestDto coinRequestDto) {
+        userService.ownCoin(serviceUser,coinRequestDto);
+        return ObjectResult.ok();
+    }
 }

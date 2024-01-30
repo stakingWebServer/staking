@@ -107,7 +107,7 @@ public class schedule {
                         maxAnnualRewardRate = matcher.group();
                     }
                     //보상률 계산
-                    BigDecimal todayCompensationQuantity = favorite.getTotalHoldings().multiply(new BigDecimal(String.valueOf(maxAnnualRewardRate))).divide(new BigDecimal("365"), RoundingMode.HALF_UP);
+                    BigDecimal todayCompensationQuantity = favorite.getTotalHoldings().multiply(new BigDecimal(maxAnnualRewardRate)).divide(new BigDecimal("365"), RoundingMode.HALF_UP);
                     //보상내역에 추가 저장
                     myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(favorite,user,todayCompensationQuantity,favorite.getTotalHoldings()));
                 }
