@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity implements Serializable {
-//d
+
     /** 회원관리번호 */
     @Id
     @GeneratedValue(generator = "uuid2")
