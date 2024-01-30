@@ -8,14 +8,13 @@ pipeline {
         MODULE_DATABASE = 'module-database'
         CURRENT_LOCATION = '/var/lib/jenkins/workspace/staking';
     }
-    stages {
-        stage('database build') {
-            steps {
-            sh './gradlew ${MODULE_DATABASE}:build -x test'
 
-            }
-        }
         stage('build') {
+            stage('module-database build') {
+                steps {
+                sh './gradlew ${MODULE_DATABASE}:build -x test'
+
+                }
             parallel {
                 stage('module-admin(build)') {
                     when {
