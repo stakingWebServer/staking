@@ -1,9 +1,11 @@
 package kr.project.backend.controller.admin;
 
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.project.backend.dto.common.request.PushRequestDto;
 import kr.project.backend.results.ListResult;
 import kr.project.backend.service.admin.AdminService;
 import kr.project.backend.common.Environment;
@@ -11,13 +13,7 @@ import kr.project.backend.results.ObjectResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "관리자", description = "관리자 로그인")
 @Slf4j
@@ -55,5 +51,11 @@ public class AdminController {
     @GetMapping("/page-view")
     public ResponseEntity<?> getPageView(){
         return ListResult.build(adminService.getPageView());
+    }
+    @Operation(summary = "푸시 토큰 발송",description = "푸시 토큰 발송을 한다.")
+    @PostMapping("/send-push")
+    public ResponseEntity<?> push(@RequestBody PushRequestDto pushRequestDto) throws FirebaseMessagingException{
+        adminService.sendPush(pushRequestDto);
+        return ObjectResult.ok();
     }
 }

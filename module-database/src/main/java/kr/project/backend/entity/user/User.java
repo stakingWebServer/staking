@@ -76,6 +76,7 @@ public class User extends BaseTimeEntity implements Serializable {
     private List<Alarm> alarms;
 
 
+
     public User(UserLoginRequestDto userLoginRequestDto) {
         this.userEmail = userLoginRequestDto.getUserEmail();
         this.userPushToken = userLoginRequestDto.getUserPushToken();
