@@ -35,6 +35,9 @@ public class MyStakingDataAboutReward extends BaseTimeEntity implements Serializ
     @Comment(value = "총 보유수량")
     @Column(nullable = false, precision = 27, scale = 15)
     private BigDecimal totalHoldings;
+    @Comment(value = "보상여부")
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
+    private String compensationYn;
 
     @ManyToOne
     @JoinColumn(name = "favorite_id")
