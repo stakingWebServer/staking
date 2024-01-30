@@ -349,44 +349,6 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        //즐겨찾기 조회
-        List<Favorite> favorite = favoriteRepository.findAllByUserAndDelYn(userInfo,false);
-
-        //즐겨찾기 항목이 있다면
-        if(favorite.size() > 0){
-            for(Favorite data : favorite){
-
-                //보상수량이 입력된 상태라면
-                if(data.getTotalHoldings().compareTo(BigDecimal.ZERO) > 0){
-
-                    //가장 최근에 저장된 보상내역 조회
-                    Page<MyStakingDataAboutReward> myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavorite(data,PageRequest.of(0, 1));
-
-                    //보상내역이 있고
-                    if(myStakingDataAboutReward.getContent().size() > 0){
-                        //24시간이 지났다면 현재날짜의 이율로 계산하여 보상내역 new insert
-                        LocalDateTime inputDateTime = LocalDateTime.parse(myStakingDataAboutReward.getContent().get(0).getUserRegDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                        LocalDateTime currentDateTime = LocalDateTime.now();
-                        long hoursBetween = ChronoUnit.HOURS.between(inputDateTime, currentDateTime);
-                        if(hoursBetween >= 24){
-                            //TODO 보상내역 insert
-                            StakingInfo stakingInfo = stakingInfoRepository.findByCoinMarketTypeAndCoinNameAndCreatedDateBetween
-                                    (data.getStakingInfo().getCoinMarketType(),
-                                     data.getStakingInfo().getCoinName(),
-                                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                                    ).orElse(null);
-
-                            if(stakingInfo != null){
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
         return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
                 .stream()
                 .map(MyStakingDataResponseDto::new)
