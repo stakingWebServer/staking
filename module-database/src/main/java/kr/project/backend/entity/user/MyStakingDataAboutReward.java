@@ -55,4 +55,8 @@ public class MyStakingDataAboutReward extends BaseTimeEntity implements Serializ
         this.user = user;
     }
 
+    public void updateCompensationYn(String compensationYn){
+        this.compensationYn = compensationYn;
+    }
+
 }

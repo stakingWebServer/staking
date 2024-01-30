@@ -25,4 +25,6 @@ public interface MyStakingDataAboutRewardRepository extends JpaRepository<MyStak
             "LEFT JOIN Favorite b ON b.favoriteId = a.favorite.favoriteId AND b.delYn = false " +
             "LEFT JOIN StakingInfo c ON b.stakingInfo.stakingId = c.stakingId ")
     List<RewadScheduledDto> getLatestStakingData();
+
+    List<MyStakingDataAboutReward> findByCompensationYn(String compensation);
 }

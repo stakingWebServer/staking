@@ -67,4 +67,9 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     public void updateStakingId(StakingInfo stakingInfo) {
         this.stakingInfo = stakingInfo;
     }
+
+    public void updateTotalHoldingsAndRewards(BigDecimal totalHoldings, BigDecimal totalRewards){
+        this.totalHoldings = totalHoldings;
+        this.totalRewards = totalRewards;
+    }
 }
