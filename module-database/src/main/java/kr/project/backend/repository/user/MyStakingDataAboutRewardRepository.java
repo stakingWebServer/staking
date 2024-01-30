@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MyStakingDataAboutRewardRepository extends JpaRepository<MyStakingDataAboutReward,String> {
@@ -29,4 +30,6 @@ public interface MyStakingDataAboutRewardRepository extends JpaRepository<MyStak
     List<MyStakingDataAboutReward> findByCompensationYn(String compensation);
 
     List<MyStakingDataAboutReward> findByFavoriteAndUser(Favorite favorite, User user);
+
+    List<MyStakingDataAboutReward> findByFavoriteAndUserAndCreatedDateBetween(Favorite favorite, User user, String start, String end);
 }

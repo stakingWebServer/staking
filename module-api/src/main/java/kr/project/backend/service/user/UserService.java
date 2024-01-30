@@ -426,7 +426,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public StakingsDetailResponseDto stakingsDetail(ServiceUser serviceUser, String stakingId){
+    public StakingsDetailResponseDto stakingsDetail(ServiceUser serviceUser, String stakingId, String historyDate){
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
@@ -437,9 +437,24 @@ public class UserService {
         Favorite favorite = favoriteRepository.findByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
 
-        List<MyStakingDataAboutReward> myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavoriteAndUser(favorite,userInfo);
+        List<MyStakingDataAboutReward> myStakingDataAboutReward = new ArrayList<>();
 
-        StakingsDetailResponseDto stakingsDetailResponseDto = new StakingsDetailResponseDto();
+        if(historyDate != null && !historyDate.equals("04")){
+            LocalDateTime past = LocalDateTime.now();
+            if(historyDate.equals("01")){
+                past = LocalDateTime.now().minusWeeks(1);
+            }else if(historyDate.equals("02")){
+                past = LocalDateTime.now().minusMonths(1);
+            }else if(historyDate.equals("03")){
+                past = LocalDateTime.now().minusMonths(6);
+            }
+            String startDate = LocalDateTime.of(past.toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String endDate = LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavoriteAndUserAndCreatedDateBetween(favorite,userInfo,startDate,endDate);
+        }else{
+            myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavoriteAndUser(favorite,userInfo);
+        }
+
         DecimalFormat decimalFormat = new DecimalFormat("#.##################");
 
         return new StakingsDetailResponseDto(stakingInfo.getCoinName(),decimalFormat.format(favorite.getTotalHoldings()),decimalFormat.format(favorite.getTotalRewards()),
