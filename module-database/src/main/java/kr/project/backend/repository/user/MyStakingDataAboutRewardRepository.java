@@ -27,4 +27,6 @@ public interface MyStakingDataAboutRewardRepository extends JpaRepository<MyStak
     List<RewadScheduledDto> getLatestStakingData();
 
     List<MyStakingDataAboutReward> findByCompensationYn(String compensation);
+
+    List<MyStakingDataAboutReward> findByFavoriteAndUser(Favorite favorite, User user);
 }

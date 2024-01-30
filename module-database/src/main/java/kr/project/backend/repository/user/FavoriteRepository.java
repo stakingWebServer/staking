@@ -25,6 +25,4 @@ public interface FavoriteRepository extends JpaRepository<Favorite, String> {
     List<Favorite> findAllByDelYn(boolean delYn);
 
     Optional<Favorite> findByFavoriteIdAndDelYn(String favoriteId, boolean delYn);
-
-    Optional<Favorite> findByStakingInfoAndUser(StakingInfo stakingInfo, User user);
 }

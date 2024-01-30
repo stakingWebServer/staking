@@ -2,6 +2,7 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.dto.coin.StakingListDto;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
 import kr.project.backend.utils.JwtUtil;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -413,7 +415,7 @@ public class UserService {
             throw new CommonException(CommonErrorCode.CHECK_MIN_INPUT_COIN.getCode(),CommonErrorCode.CHECK_MIN_INPUT_COIN.getMessage());
         }
 
-        Favorite favorite = favoriteRepository.findByStakingInfoAndUser(stakingInfo, userInfo)
+        Favorite favorite = favoriteRepository.findByStakingInfoAndUserAndDelYn(stakingInfo, userInfo,false)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
 
         favorite.updateTotalHoldings(new BigDecimal(ownCoinRequestDto.getTotalHoldings()));
@@ -421,5 +423,27 @@ public class UserService {
         favoriteRepository.save(favorite);
         //보상내역 저장
         myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(favorite,userInfo,new BigDecimal("0"), new BigDecimal(ownCoinRequestDto.getTotalHoldings())));
+    }
+
+    @Transactional(readOnly = true)
+    public StakingsDetailResponseDto stakingsDetail(ServiceUser serviceUser, String stakingId){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(),CommonErrorCode.NOT_FOUND_COIN.getMessage()));
+
+        Favorite favorite = favoriteRepository.findByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
+
+        List<MyStakingDataAboutReward> myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavoriteAndUser(favorite,userInfo);
+
+        StakingsDetailResponseDto stakingsDetailResponseDto = new StakingsDetailResponseDto();
+        DecimalFormat decimalFormat = new DecimalFormat("#.##################");
+
+        return new StakingsDetailResponseDto(stakingInfo.getCoinName(),decimalFormat.format(favorite.getTotalHoldings()),decimalFormat.format(favorite.getTotalRewards()),
+                myStakingDataAboutReward.stream().map(MyStakingDataAboutRewardHistoryDto::new).collect(Collectors.toList())
+                );
     }
 }

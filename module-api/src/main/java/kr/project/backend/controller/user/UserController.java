@@ -133,4 +133,11 @@ public class UserController {
         userService.ownCoin(serviceUser,coinRequestDto);
         return ObjectResult.ok();
     }
+
+    @Operation(summary = "마이데이터스테이킹 디테일 조회", description = "마이데이터스테이킹 디테일 조회입니다.")
+    @GetMapping("/stakingsDetail")
+    public ResponseEntity<?> stakingsDetail(@AuthenticationPrincipal ServiceUser serviceUser,
+                                            @Parameter(description = "스태이킹키값", example = "528271d4-7711-43fe-849f-da9227f25ee7", required = true) @RequestParam String stakingId) {
+        return ObjectResult.build(userService.stakingsDetail(serviceUser,stakingId));
+    }
 }
