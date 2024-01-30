@@ -24,7 +24,7 @@ import java.util.List;
 public class User extends BaseTimeEntity implements Serializable {
 
     /** 회원관리번호 */
-    @Id //d
+    @Id //dd
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")

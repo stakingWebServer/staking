@@ -10,10 +10,8 @@ pipeline {
     }
 
         stage('build') {
-            stage('module-database build') {
                 steps {
                 sh './gradlew ${MODULE_DATABASE}:build -x test'
-
                 }
             parallel {
                 stage('module-admin(build)') {
