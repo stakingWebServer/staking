@@ -5,9 +5,13 @@ pipeline {
         MODULE_ADMIN = 'module-admin'
         MODULE_API = 'module-api'
         MODULE_CRAWLING = 'module-crawling'
+        MODULE-DATABASE = 'module-database'
         CURRENT_LOCATION = '/var/lib/jenkins/workspace/staking';
     }
     stages {
+        stage('database build') {
+            sh './gradlew ${MODULE-DATABASE}:build -x test'
+        }
         stage('build') {
             parallel {
                 stage('module-admin(build)') {

@@ -18,7 +18,7 @@ import java.io.Serializable;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Alarm extends BaseTimeEntity implements Serializable {
 
-    @Id
+    @Id//D
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
