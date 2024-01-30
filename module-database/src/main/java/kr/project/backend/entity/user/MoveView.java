@@ -28,11 +28,11 @@ public class MoveView extends BaseTimeEntity implements Serializable {
 
     @Column(length = 2)
     @Comment(value = "회원가입 os 구분")
-    private String userJoinOsKind;
+    private String userJoinOsKind;  
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user; 
+    private User user;
 
     public MoveView(User userInfo, MoveViewRequestDto moveViewRequestDto){
         this.viewName = moveViewRequestDto.getViewName();
