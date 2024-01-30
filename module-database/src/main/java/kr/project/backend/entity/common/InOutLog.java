@@ -33,6 +33,7 @@ public class InOutLog extends BaseTimeEntity implements Serializable {
     private String uri;
 
     @Comment(value = "요청 파라미터")
+    @Column(columnDefinition = "TEXT")
     private String param;
 
     @Comment(value = "ip")

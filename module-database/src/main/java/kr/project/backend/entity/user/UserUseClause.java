@@ -29,8 +29,7 @@ public class UserUseClause extends BaseTimeEntity implements Serializable {
 
     @Comment(value = "동의여부")
     @Column(columnDefinition = "VARCHAR(1) default 'N'")
-    @Convert(converter = BooleanToYNConverter.class)
-    private boolean agreeYn;
+    private String agreeYn;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -41,7 +40,7 @@ public class UserUseClause extends BaseTimeEntity implements Serializable {
     private UseClause useClause;
 
     public UserUseClause(User user, UseClause useClause, UseClauseDto useClauseDto){
-        this.agreeYn = Boolean.parseBoolean(useClauseDto.getUseClauseAgreeYN());
+        this.agreeYn = useClauseDto.getUseClauseAgreeYN();
         this.user = user;
         this.useClause = useClause;
     }

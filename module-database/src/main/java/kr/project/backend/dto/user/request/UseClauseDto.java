@@ -10,7 +10,7 @@ import java.util.UUID;
 public class UseClauseDto {
 
     @NotEmpty(message = "이용약관ID를 넣어주세요")
-    @Schema(description = "이용약관ID", example = "2a946a4c-tt66-4818-a09b-5ff111505ab6")
+    @Schema(description = "이용약관ID", example = "5709285c-bdfd-11ee-85d0-02001701d75b")
     private String useClauseId;
 
     @NotEmpty(message = "이용약관 동의여부")
