@@ -24,6 +24,8 @@ public enum CommonErrorCode {
     NOT_FOUND_FAVORITE("C004","없는 즐겨찾기 정보입니다."),
     NOT_JOIN_USER("C005","회원가입이 필요한 회원입니다."),
     NOT_FOUND_STAKING_DATA("C006","마이 스테이킹 데이터를 찾을수 없습니다."),
+    NOT_FOUND_USE_CLAUSE_DATA("C007","이용약관을 찾을 수 없습니다. 약관ID를 확인해주세요."),
+    NOT_AGREE_ESSENTIAL_USE_CLAUSE("C008","필수 이용약관은 반드시 동의해야 합니다."),
 
     // coin
     NOT_FOUND_COIN("D000","없는 코인정보입니다."),

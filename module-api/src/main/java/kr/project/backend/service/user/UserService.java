@@ -152,7 +152,13 @@ public class UserService {
         //이용약관 동의 저장
         for (int i = 0; i < userJoinRequestDto.getUseClauseDtoList().size(); i++) {
             UseClauseDto useClauseDto = userJoinRequestDto.getUseClauseDtoList().get(i);
-            userUseClauseRepository.save(new UserUseClause(userInfo, useClauseDto));
+            UseClause useClause = useClauseRepository.findById(useClauseDto.getUseClauseId())
+                    .orElseThrow(()->new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE_DATA.getCode(),CommonErrorCode.NOT_FOUND_USE_CLAUSE_DATA.getMessage()));
+            //필수약관이지만 동의여부가 N으로 요청왔을때
+            if(useClause.getUseClauseEssentialYn().equals(Constants.YN.Y) && useClauseDto.getUseClauseAgreeYN().equals(Constants.YN.N)){
+                throw new CommonException(CommonErrorCode.NOT_AGREE_ESSENTIAL_USE_CLAUSE.getCode(),CommonErrorCode.NOT_AGREE_ESSENTIAL_USE_CLAUSE.getMessage());
+            }
+            userUseClauseRepository.save(new UserUseClause(userInfo, useClause, useClauseDto));
         }
 
         //응답 토큰 세팅(리스레시 토큰은 키값으로 응답)
