@@ -20,12 +20,12 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserUseClause extends BaseTimeEntity implements Serializable {
 
-    @Id//ㅅ
+    @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
     @Comment(value = "이용약관ID")
-    private String useClauseId;
+    private String userUseClauseId;
 
     @Comment(value = "동의여부")
     @Column(columnDefinition = "VARCHAR(1) default 'N'")
@@ -36,9 +36,13 @@ public class UserUseClause extends BaseTimeEntity implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public UserUseClause(User user, UseClauseDto useClauseDto){
-        this.useClauseId = useClauseDto.getUseClauseId();
+    @ManyToOne
+    @JoinColumn(name = "use_clause_id")
+    private UseClause useClause;
+
+    public UserUseClause(User user, UseClause useClause, UseClauseDto useClauseDto){
         this.agreeYn = Boolean.parseBoolean(useClauseDto.getUseClauseAgreeYN());
         this.user = user;
+        this.useClause = useClause;
     }
 }

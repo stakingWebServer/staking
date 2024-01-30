@@ -12,6 +12,7 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -42,6 +43,9 @@ public class UseClause extends BaseTimeEntity implements Serializable {
     @Comment(value = "이용약관 상태")
     @Column(length = 2)
     private String useClauseState;
+
+    @OneToMany(mappedBy = "useClause")
+    private List<UserUseClause> userUseClauses;
 
     @OneToOne
     @JoinColumn(name = "file_id")
