@@ -29,91 +29,106 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 // Bar Chart Example
-var ctx = document.getElementById("myBarChart");
-var myBarChart = new Chart(ctx, {
-  type: "bar",
-  data: {
-    labels: ["Main", "Detail", "MyData", "Logout"],
-    datasets: [
-      {
-        label: "Revenue",
-        backgroundColor: "#4e73df",
-        hoverBackgroundColor: "#2e59d9",
-        borderColor: "#4e73df",
-        data: [4215, 5312, 6251, 7841],
-      },
-    ],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0,
-      },
-    },
-    scales: {
-      xAxes: [
+async function pageView() {
+  let url = new URL(`https://api.s2it.kro.kr/api/v1/admin/page-view`);
+  const response = await fetch(url);
+  data = await response.json();
+  console.log("dddddddddddddd", data);
+  main = data.result[0].pageView;
+  console.log("main", data.result[0].pageView);
+  console.log("detail", data.result[1].pageView);
+  detail = data.result[1].pageView;
+  console.log("mydata", data.result[2].pageView);
+  mydata = data.result[2].pageView;
+  // today_drop_user = data.;
+  var ctx = document.getElementById("myBarChart");
+  var myBarChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Main", "Detail", "MyData", "Logout"],
+      datasets: [
         {
-          time: {
-            unit: "month",
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-          ticks: {
-            maxTicksLimit: 6,
-          },
-          maxBarThickness: 25,
+          label: "Revenue",
+          backgroundColor: "#4e73df",
+          hoverBackgroundColor: "#2e59d9",
+          borderColor: "#4e73df",
+          data: [main, detail, mydata, 4],
         },
       ],
-      yAxes: [
-        {
-          ticks: {
-            min: 0,
-            max: 15000,
-            maxTicksLimit: 5,
-            padding: 10,
-            // Include a dollar sign in the ticks
-            callback: function (value, index, values) {
-              return "$" + number_format(value);
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "month",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 6,
+            },
+            maxBarThickness: 25,
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              min: 0,
+              max: 5,
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return "$" + number_format(value);
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
             },
           },
-          gridLines: {
-            color: "rgb(234, 236, 244)",
-            zeroLineColor: "rgb(234, 236, 244)",
-            drawBorder: false,
-            borderDash: [2],
-            zeroLineBorderDash: [2],
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + ": $" + number_format(tooltipItem.yLabel);
           },
-        },
-      ],
-    },
-    legend: {
-      display: false,
-    },
-    tooltips: {
-      titleMarginBottom: 10,
-      titleFontColor: "#6e707e",
-      titleFontSize: 14,
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: "#dddfeb",
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10,
-      callbacks: {
-        label: function (tooltipItem, chart) {
-          var datasetLabel =
-            chart.datasets[tooltipItem.datasetIndex].label || "";
-          return datasetLabel + ": $" + number_format(tooltipItem.yLabel);
         },
       },
     },
-  },
-});
+  });
+  console.log("mmmmm", main);
+}
+pageView();
