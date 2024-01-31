@@ -33,7 +33,7 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     private String favoriteId;
     @Comment(value = "총 보유수량")
     @Column(nullable = false, precision = 27, scale = 15)
-    private BigDecimal totalHoldings;
+    private BigDecimal totalHoldings; 
     @Comment(value = "총 보상수량")
     @Column(nullable = false, precision = 27, scale = 15)
     private BigDecimal totalRewards;
@@ -58,6 +58,8 @@ public class Favorite extends BaseTimeEntity implements Serializable {
     public Favorite(User userInfo, StakingInfo stakingInfo) {
         this.stakingInfo = stakingInfo;
         this.user = userInfo;
+        this.totalHoldings = BigDecimal.ZERO;
+        this.totalRewards = BigDecimal.ZERO;
     }
 
     public void unFavorite() {
@@ -66,5 +68,14 @@ public class Favorite extends BaseTimeEntity implements Serializable {
 
     public void updateStakingId(StakingInfo stakingInfo) {
         this.stakingInfo = stakingInfo;
+    }
+
+    public void updateTotalHoldingsAndRewards(BigDecimal totalHoldings, BigDecimal totalRewards){
+        this.totalHoldings = totalHoldings;
+        this.totalRewards = totalRewards;
+    }
+
+    public void updateTotalHoldings(BigDecimal totalHoldings){
+        this.totalHoldings = totalHoldings;
     }
 }

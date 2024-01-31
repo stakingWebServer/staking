@@ -126,4 +126,19 @@ public class UserController {
         userService.alarmCheck(serviceUser,alarmCheckRequestDto);
         return ObjectResult.ok();
     }
+
+    @Operation(summary = "보유수량 입력", description = "보유수량 입력 입니다.")
+    @PostMapping("/ownCoin")
+    public ResponseEntity<?> ownCoin(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody OwnCoinRequestDto coinRequestDto) {
+        userService.ownCoin(serviceUser,coinRequestDto);
+        return ObjectResult.ok();
+    }
+
+    @Operation(summary = "마이데이터스테이킹 디테일 조회", description = "마이데이터스테이킹 디테일 조회입니다.")
+    @GetMapping("/stakingsDetail")
+    public ResponseEntity<?> stakingsDetail(@AuthenticationPrincipal ServiceUser serviceUser,
+                                            @Parameter(description = "스태이킹키값", example = "528271d4-7711-43fe-849f-da9227f25ee7", required = true) @RequestParam String stakingId,
+                                            @Parameter(description = "히스토리기간", example = "01") @RequestParam(required = false) String historyDate) {
+        return ObjectResult.build(userService.stakingsDetail(serviceUser,stakingId,historyDate));
+    }
 }

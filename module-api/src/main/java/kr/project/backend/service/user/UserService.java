@@ -2,6 +2,7 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
+import kr.project.backend.dto.coin.StakingListDto;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
 import kr.project.backend.utils.JwtUtil;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -36,6 +38,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -349,44 +353,6 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        //즐겨찾기 조회
-        List<Favorite> favorite = favoriteRepository.findAllByUserAndDelYn(userInfo,false);
-
-        //즐겨찾기 항목이 있다면
-        if(favorite.size() > 0){
-            for(Favorite data : favorite){
-
-                //보상수량이 입력된 상태라면
-                if(data.getTotalHoldings().compareTo(BigDecimal.ZERO) > 0){
-
-                    //가장 최근에 저장된 보상내역 조회
-                    Page<MyStakingDataAboutReward> myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavorite(data,PageRequest.of(0, 1));
-
-                    //보상내역이 있고
-                    if(myStakingDataAboutReward.getContent().size() > 0){
-                        //24시간이 지났다면 현재날짜의 이율로 계산하여 보상내역 new insert
-                        LocalDateTime inputDateTime = LocalDateTime.parse(myStakingDataAboutReward.getContent().get(0).getUserRegDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                        LocalDateTime currentDateTime = LocalDateTime.now();
-                        long hoursBetween = ChronoUnit.HOURS.between(inputDateTime, currentDateTime);
-                        if(hoursBetween >= 24){
-                            //TODO 보상내역 insert
-                            StakingInfo stakingInfo = stakingInfoRepository.findByCoinMarketTypeAndCoinNameAndCreatedDateBetween
-                                    (data.getStakingInfo().getCoinMarketType(),
-                                     data.getStakingInfo().getCoinName(),
-                                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                                     LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                                    ).orElse(null);
-
-                            if(stakingInfo != null){
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
         return favoriteRepository.findAllByUserAndDelYn(userInfo,false)
                 .stream()
                 .map(MyStakingDataResponseDto::new)
@@ -417,5 +383,82 @@ public class UserService {
 
         alarm.updateAlarmReadYn();
         alarmRepository.save(alarm);
+    }
+
+    @Transactional
+    public void ownCoin(ServiceUser serviceUser, OwnCoinRequestDto ownCoinRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+
+        StakingInfo stakingInfo = stakingInfoRepository.findById(ownCoinRequestDto.getStakingId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(),CommonErrorCode.NOT_FOUND_COIN.getMessage()));
+
+        //보상주기 없으면 return
+        if(stakingInfo.getRewardCycle() == null){
+            throw new CommonException(CommonErrorCode.NOT_INPUT_COIN.getCode(),CommonErrorCode.NOT_INPUT_COIN.getMessage());
+        }
+
+        //최소신청수량 return
+        //최소신청수량에서 숫자랑 소수점만 추출
+        String regex = "[0-9.]+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(stakingInfo.getMinimumOrderQuantity());
+        String regexTotalHoldings = "";
+        while (matcher.find()) {
+            regexTotalHoldings = matcher.group();
+        }
+        BigDecimal minimumOrderQuantity = new BigDecimal(regexTotalHoldings);
+        BigDecimal totalHoldings = new BigDecimal(ownCoinRequestDto.getTotalHoldings());
+        if(totalHoldings.compareTo(minimumOrderQuantity) < 0){
+            throw new CommonException(CommonErrorCode.CHECK_MIN_INPUT_COIN.getCode(),CommonErrorCode.CHECK_MIN_INPUT_COIN.getMessage());
+        }
+
+        Favorite favorite = favoriteRepository.findByStakingInfoAndUserAndDelYn(stakingInfo, userInfo,false)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
+
+        favorite.updateTotalHoldings(new BigDecimal(ownCoinRequestDto.getTotalHoldings()));
+        //총보유수량 업데이트
+        favoriteRepository.save(favorite);
+        //보상내역 저장
+        myStakingDataAboutRewardRepository.save(new MyStakingDataAboutReward(favorite,userInfo,new BigDecimal("0"), new BigDecimal(ownCoinRequestDto.getTotalHoldings())));
+    }
+
+    @Transactional(readOnly = true)
+    public StakingsDetailResponseDto stakingsDetail(ServiceUser serviceUser, String stakingId, String historyDate){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(),CommonErrorCode.NOT_FOUND_COIN.getMessage()));
+
+        Favorite favorite = favoriteRepository.findByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
+
+        List<MyStakingDataAboutReward> myStakingDataAboutReward = new ArrayList<>();
+
+        if(historyDate != null && !historyDate.equals("04")){
+            LocalDateTime past = LocalDateTime.now();
+            if(historyDate.equals("01")){
+                past = LocalDateTime.now().minusWeeks(1);
+            }else if(historyDate.equals("02")){
+                past = LocalDateTime.now().minusMonths(1);
+            }else if(historyDate.equals("03")){
+                past = LocalDateTime.now().minusMonths(6);
+            }
+            String startDate = LocalDateTime.of(past.toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String endDate = LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavoriteAndUserAndCreatedDateBetween(favorite,userInfo,startDate,endDate);
+        }else{
+            myStakingDataAboutReward = myStakingDataAboutRewardRepository.findByFavoriteAndUser(favorite,userInfo);
+        }
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.##################");
+
+        return new StakingsDetailResponseDto(stakingInfo.getCoinName(),decimalFormat.format(favorite.getTotalHoldings()),decimalFormat.format(favorite.getTotalRewards()),
+                myStakingDataAboutReward.stream().map(MyStakingDataAboutRewardHistoryDto::new).collect(Collectors.toList())
+                );
     }
 }
