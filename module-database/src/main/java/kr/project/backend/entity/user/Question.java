@@ -1,6 +1,7 @@
 package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
+import kr.project.backend.dto.user.request.QuestionRequestDto;
 import kr.project.backend.entity.common.BaseTimeEntity;
 import kr.project.backend.entity.common.CommonFile;
 import lombok.AccessLevel;
@@ -29,4 +30,9 @@ public class Question extends BaseTimeEntity implements Serializable {
     private String content;
     @OneToMany(mappedBy = "question")
     private List<CommonFile> commonFile;
+
+    public Question(QuestionRequestDto questionRequestDto){
+        this.title = questionRequestDto.getQuestionTitle();
+        this.content = questionRequestDto.getQuestionContent();
+    }
 }

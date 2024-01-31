@@ -148,4 +148,11 @@ public class UserController {
         userService.noticeRead(serviceUser,noticeReadRequestDto);
         return ObjectResult.ok();
     }
+
+    @Operation(summary = "문의사항", description = "문의사항 입니다.")
+    @PostMapping("/question")
+    public ResponseEntity<?> question(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody QuestionRequestDto questionRequestDto) {
+        userService.question(serviceUser,questionRequestDto);
+        return ObjectResult.ok();
+    }
 }

@@ -9,6 +9,7 @@ public enum CommonErrorCode {
     NULL_DATA("A001","데이터가 없습니다."),
     NOT_ALLOW_FILE("A002","허용되지 않는 파일입니다."),
     NOT_FOUND_FILE("A003","파일을 찾을 수 없습니다."),
+    $_NOT_FOUND_FILE("A004","[$fileId] 파일을 찾을 수 없습니다."),
 
     // token
     EXPIRED_TOKEN("BOOO","만료된 토큰입니다."),

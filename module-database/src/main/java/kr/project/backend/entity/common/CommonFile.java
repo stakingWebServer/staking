@@ -52,4 +52,8 @@ public class CommonFile extends BaseTimeEntity implements Serializable {
         this.fileUrl = fileUrl;
     }
 
+    public void updateGroupFileId(String groupFileId){
+        this.groupFileId = groupFileId;
+    }
+
 }

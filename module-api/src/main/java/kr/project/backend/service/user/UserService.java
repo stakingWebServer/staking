@@ -5,6 +5,9 @@ import kr.project.backend.auth.ServiceUser;
 import kr.project.backend.dto.coin.StakingListDto;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
+import kr.project.backend.entity.common.CommonFile;
+import kr.project.backend.repository.common.FileRepository;
+import kr.project.backend.repository.common.QuestionRepository;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
 import kr.project.backend.common.CommonErrorCode;
@@ -71,6 +74,8 @@ public class UserService {
     private final AlarmRepository alarmRepository;
     private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
     private final UserNoticeReadRepository userNoticeReadRepository;
+    private final FileRepository fileRepository;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -477,5 +482,35 @@ public class UserService {
         if(!noticeReadCheck){
             userNoticeReadRepository.save(new UserNoticeRead(userInfo,notice));
         }
+    }
+
+    @Transactional
+    public void question(ServiceUser serviceUser, QuestionRequestDto questionRequestDto){
+        //그룹파일ID
+        String groupFileId = "";
+
+        //문의하기 파일 첨부시에만
+        if(questionRequestDto.getFileList() != null){
+            //파일 체크
+            for(QuestionRequestDto.file file : questionRequestDto.getFileList()){
+                CommonFile commonFile = fileRepository.findByFileId(file.getFileId())
+                        .orElseThrow(() -> new CommonException(CommonErrorCode.$_NOT_FOUND_FILE.getCode(),
+                                CommonErrorCode.$_NOT_FOUND_FILE.getMessage().replace("[$fileId]",file.getFileId())));
+                groupFileId = commonFile.getGroupFileId();
+            }
+
+            //그룹파일로 묶어주기
+            for(QuestionRequestDto.file file : questionRequestDto.getFileList()){
+                CommonFile commonFile = fileRepository.findByFileId(file.getFileId())
+                        .orElseThrow(() -> new CommonException(CommonErrorCode.$_NOT_FOUND_FILE.getCode(),
+                                CommonErrorCode.$_NOT_FOUND_FILE.getMessage().replace("[$fileId]",file.getFileId())));
+                commonFile.updateGroupFileId(groupFileId);
+                fileRepository.save(commonFile);
+            }
+        }
+
+        //문의사항 저장
+        questionRepository.save(new Question(questionRequestDto));
+
     }
 }
