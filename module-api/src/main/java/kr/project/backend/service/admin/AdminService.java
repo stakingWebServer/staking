@@ -108,7 +108,7 @@ public class AdminService {
         List<User> userInfos = userRepository.findAllByUserEmailNotNull();
         UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
-        List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUserClauseAndAgreeYn(useClause, Constants.YN.Y);
+        List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
         List<String> targetUserTokens = new ArrayList<>();
         targetUsers.forEach(targetUser -> targetUserTokens.add(targetUser.getUser().getUserPushToken()));
         FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(),targetUserTokens));
