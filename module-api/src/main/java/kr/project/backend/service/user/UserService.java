@@ -463,7 +463,7 @@ public class UserService {
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##################");
 
-        return new StakingsDetailResponseDto(stakingInfo.getCoinName(),decimalFormat.format(favorite.getTotalHoldings()),decimalFormat.format(favorite.getTotalRewards()),
+        return new StakingsDetailResponseDto(stakingInfo.getCoinName(),decimalFormat.format(favorite.getTotalHoldings()),decimalFormat.format(favorite.getTotalRewards()),stakingInfo.getUnit(),
                 myStakingDataAboutReward.stream().map(MyStakingDataAboutRewardHistoryDto::new).collect(Collectors.toList())
                 );
     }
