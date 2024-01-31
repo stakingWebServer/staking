@@ -141,4 +141,11 @@ public class UserController {
                                             @Parameter(description = "히스토리기간", example = "01") @RequestParam(required = false) String historyDate) {
         return ObjectResult.build(userService.stakingsDetail(serviceUser,stakingId,historyDate));
     }
+
+    @Operation(summary = "공지사항 읽음", description = "유저의 공지사항 읽음 처리 입니다.")
+    @PostMapping("/noticeRead")
+    public ResponseEntity<?> noticeRead(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody NoticeReadRequestDto noticeReadRequestDto) {
+        userService.noticeRead(serviceUser,noticeReadRequestDto);
+        return ObjectResult.ok();
+    }
 }

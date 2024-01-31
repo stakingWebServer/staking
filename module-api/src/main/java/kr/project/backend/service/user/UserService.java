@@ -70,6 +70,7 @@ public class UserService {
     private final NoticeRepository noticeRepository;
     private final AlarmRepository alarmRepository;
     private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
+    private final UserNoticeReadRepository userNoticeReadRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -460,5 +461,21 @@ public class UserService {
         return new StakingsDetailResponseDto(stakingInfo.getCoinName(),decimalFormat.format(favorite.getTotalHoldings()),decimalFormat.format(favorite.getTotalRewards()),
                 myStakingDataAboutReward.stream().map(MyStakingDataAboutRewardHistoryDto::new).collect(Collectors.toList())
                 );
+    }
+
+    @Transactional
+    public void noticeRead(ServiceUser serviceUser, NoticeReadRequestDto noticeReadRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        Notice notice = noticeRepository.findById(noticeReadRequestDto.getNoticeId())
+                .orElseThrow(()-> new CommonException(CommonErrorCode.NOT_FOUND_NOTICE.getCode(),CommonErrorCode.NOT_FOUND_NOTICE.getMessage()));
+
+        boolean noticeReadCheck = userNoticeReadRepository.existsByUserAndNotice(userInfo,notice);
+
+        if(!noticeReadCheck){
+            userNoticeReadRepository.save(new UserNoticeRead(userInfo,notice));
+        }
     }
 }

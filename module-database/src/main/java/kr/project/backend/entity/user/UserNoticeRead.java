@@ -32,4 +32,9 @@ public class UserNoticeRead extends BaseTimeEntity implements Serializable {
     @JoinColumn(name = "notice_id")
     private Notice notice;
 
+    public UserNoticeRead(User user, Notice notice){
+        this.user = user;
+        this.notice = notice;
+    }
+
 }
