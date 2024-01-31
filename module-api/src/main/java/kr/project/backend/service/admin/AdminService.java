@@ -104,8 +104,6 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
-        //유저 정보 조회
-        List<User> userInfos = userRepository.findAllByUserEmailNotNull();
         UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
         List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
