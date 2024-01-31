@@ -26,6 +26,8 @@ public enum CommonErrorCode {
     NOT_FOUND_STAKING_DATA("C006","마이 스테이킹 데이터를 찾을수 없습니다."),
     NOT_FOUND_USE_CLAUSE_DATA("C007","이용약관을 찾을 수 없습니다. 약관ID를 확인해주세요."),
     NOT_AGREE_ESSENTIAL_USE_CLAUSE("C008","필수 이용약관은 반드시 동의해야 합니다."),
+    NOT_FOUND_USE_CLAUSE("C009","존재하지 않는 항목입니다."),
+    NOT_FOUND_USER_USE_CLAUSE("C010","선택한 항목이 아닙니다."),
 
     // coin
     NOT_FOUND_COIN("D000","없는 코인정보입니다."),

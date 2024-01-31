@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 public interface UseClauseRepository extends JpaRepository<UseClause, String> {
 
@@ -32,4 +32,6 @@ public interface UseClauseRepository extends JpaRepository<UseClause, String> {
                      "ON A.commonFile.fileId = C.fileId " +
                   "WHERE A.useClauseState = :useClauseState ")
     List<UseClauseResponseDto> getUseClauses(@Param(value = "useClauseKind") String useClauseKind, @Param(value = "useClauseState") String useClauseState );
+
+    Optional<UseClause> findByUseClauseKindAndUseClauseState(String advertisementPush, String apply);
 }

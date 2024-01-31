@@ -4,14 +4,14 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
+import kr.project.backend.common.Constants;
 import kr.project.backend.dto.admin.response.*;
 import kr.project.backend.dto.common.request.PushRequestDto;
 import kr.project.backend.dto.common.request.PushsRequestDto;
+import kr.project.backend.entity.user.UseClause;
 import kr.project.backend.entity.user.User;
-import kr.project.backend.repository.user.DropUserRepository;
-import kr.project.backend.repository.user.MoveViewRepository;
-import kr.project.backend.repository.user.UserRepository;
-import kr.project.backend.repository.user.UserUseClauseRepository;
+import kr.project.backend.entity.user.UserUseClause;
+import kr.project.backend.repository.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static kr.project.backend.common.PushContent.makeMessage;
@@ -43,7 +44,9 @@ public class AdminService {
     private final DropUserRepository dropUserRepository;
     private final MoveViewRepository moveViewRepository;
     private final FirebaseMessaging firebaseMessaging;
+    private final UseClauseRepository useClauseRepository;
     private final UserUseClauseRepository userUseClauseRepository;
+
 
     public AccessKeyResponseDto giveApikey(String plainText) throws Exception {
         return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, plainText + System.currentTimeMillis()));
@@ -88,18 +91,27 @@ public class AdminService {
         User userInfo = userRepository.findByUserEmail(pushRequestDto.getUserEmail())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
         //푸시 전송
-        //TODO 발송 조건 추가
-
-        firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
+        UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
+        UserUseClause targetUser = userUseClauseRepository.findByUserAndUseClauseAndAgreeYn(userInfo, useClause, Constants.YN.Y)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage()));
+        if(pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())){
+            firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
+        }else{
+            throw new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
         //유저 정보 조회
         List<User> userInfos = userRepository.findAllByUserEmailNotNull();
-        List<String> targetTokens = userInfos.stream().map(User::getUserPushToken).filter(token -> token != null && !token.isEmpty()).toList();
-        //TODO 발송 조건 추가
-        FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(),targetTokens));
+        UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
+        List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUserClauseAndAgreeYn(useClause, Constants.YN.Y);
+        List<String> targetUserTokens = new ArrayList<>();
+        targetUsers.forEach(targetUser -> targetUserTokens.add(targetUser.getUser().getUserPushToken()));
+        FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(),targetUserTokens));
 
     }
 }
