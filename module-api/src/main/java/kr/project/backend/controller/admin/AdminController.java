@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.project.backend.dto.common.request.PushRequestDto;
+import kr.project.backend.dto.common.request.PushsRequestDto;
 import kr.project.backend.results.ListResult;
 import kr.project.backend.service.admin.AdminService;
 import kr.project.backend.common.Environment;
@@ -52,10 +53,16 @@ public class AdminController {
     public ResponseEntity<?> getPageView(){
         return ListResult.build(adminService.getPageView());
     }
-    @Operation(summary = "푸시 토큰 발송",description = "푸시 토큰 발송을 한다.")
+    @Operation(summary = "단일 푸시 토큰 발송",description = "단일 푸시 토큰 발송을 한다.")
     @PostMapping("/send-push")
     public ResponseEntity<?> push(@RequestBody PushRequestDto pushRequestDto) throws FirebaseMessagingException{
         adminService.sendPush(pushRequestDto);
+        return ObjectResult.ok();
+    }
+    @Operation(summary = "단체 푸시 토큰 발송",description = "단체 푸시 토큰 발송을 한다.")
+    @PostMapping("/send-pushs")
+    public ResponseEntity<?> pushs(@RequestBody PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
+        adminService.sendPushs(pushsRequestDto);
         return ObjectResult.ok();
     }
 }

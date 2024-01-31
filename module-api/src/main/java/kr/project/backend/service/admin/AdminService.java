@@ -6,6 +6,7 @@ import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
 import kr.project.backend.dto.admin.response.*;
 import kr.project.backend.dto.common.request.PushRequestDto;
+import kr.project.backend.dto.common.request.PushsRequestDto;
 import kr.project.backend.entity.user.User;
 import kr.project.backend.repository.user.DropUserRepository;
 import kr.project.backend.repository.user.MoveViewRepository;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static kr.project.backend.common.PushContent.makeMessage;
+import static kr.project.backend.common.PushContent.makeMessages;
 import static kr.project.backend.utils.AesUtil.encryptAES256;
 
 
@@ -79,6 +81,7 @@ public class AdminService {
         return moveViewRepository.getPageViewInfo();
     }
 
+
     @Transactional(readOnly = true)
     public void sendPush(PushRequestDto pushRequestDto) throws FirebaseMessagingException {
         //유저 정보 조회
@@ -86,7 +89,17 @@ public class AdminService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
         //푸시 전송
         //TODO 발송 조건 추가
+
         firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
     }
 
+    @Transactional(readOnly = true)
+    public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
+        //유저 정보 조회
+        List<User> userInfos = userRepository.findAllByUserEmailNotNull();
+        List<String> targetTokens = userInfos.stream().map(User::getUserPushToken).filter(token -> token != null && !token.isEmpty()).toList();
+        //TODO 발송 조건 추가
+        FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(),targetTokens));
+
+    }
 }
