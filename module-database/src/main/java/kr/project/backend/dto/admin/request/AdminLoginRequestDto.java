@@ -6,6 +6,6 @@ import java.io.Serializable;
 
 @Data
 public class AdminLoginRequestDto implements Serializable {
-    private String loginId;
-    private String password;
+    private String loginId;//아디
+    private String password;//비번
 }
