@@ -41,16 +41,16 @@ public class CommonFile extends BaseTimeEntity implements Serializable {
 
 
 
-    public CommonFile(String groupFileId, String fileId, String fileName, String filePath, String fileUrl){
-        //this.groupFileId = groupFileId;
+    public CommonFile(CommonGroupFile commonGroupFile, String fileId, String fileName, String filePath, String fileUrl){
+        this.commonGroupFile = commonGroupFile;
         this.fileId = fileId;
         this.fileName = fileName;
         this.filePath = filePath;
         this.fileUrl = fileUrl;
     }
 
-    public void updateGroupFileId(String groupFileId){
-        //this.groupFileId = groupFileId;
+    public void updateGroupFileId(CommonGroupFile commonGroupFile){
+        this.commonGroupFile = commonGroupFile;
     }
 
 }

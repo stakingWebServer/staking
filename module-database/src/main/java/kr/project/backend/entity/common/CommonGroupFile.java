@@ -14,8 +14,8 @@ import java.util.List;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class CommonGroupFile extends BaseTimeEntity implements Serializable {
     @Id
     @Comment(value = "그룹파일키값")

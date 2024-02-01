@@ -4,7 +4,10 @@ import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
+import kr.project.backend.entity.common.CommonFile;
+import kr.project.backend.entity.common.CommonGroupFile;
 import kr.project.backend.repository.common.CommonFileRepository;
+import kr.project.backend.repository.common.CommonGroupFileRepository;
 import kr.project.backend.repository.common.QuestionsRepository;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
@@ -72,6 +75,7 @@ public class UserService {
     private final UserNoticeReadRepository userNoticeReadRepository;
     private final CommonFileRepository commonFileRepository;
     private final QuestionsRepository questionsRepository;
+    private final CommonGroupFileRepository commonGroupFileRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -479,34 +483,42 @@ public class UserService {
             userNoticeReadRepository.save(new UserNoticeRead(userInfo,notice));
         }
     }
-/*
+
     @Transactional
     public void question(ServiceUser serviceUser, QuestionRequestDto questionRequestDto){
         //그룹파일ID
         String groupFileId = "";
+        CommonGroupFile commonGroupFile = null;
+
+        //중복체크
+        boolean questionsCheck = false;
 
         //문의하기 파일 첨부시에만
         if(questionRequestDto.getFileList() != null){
             //파일 체크
             for(QuestionRequestDto.file file : questionRequestDto.getFileList()){
-                CommonFile commonFile = fileRepository.findByFileId(file.getFileId())
+                CommonFile commonFile = commonFileRepository.findByFileId(file.getFileId())
                         .orElseThrow(() -> new CommonException(CommonErrorCode.$_NOT_FOUND_FILE.getCode(),
                                 CommonErrorCode.$_NOT_FOUND_FILE.getMessage().replace("[$fileId]",file.getFileId())));
-                groupFileId = commonFile.getGroupFileId();
+                groupFileId = commonFile.getCommonGroupFile().getGroupFileId();
             }
 
             //그룹파일로 묶어주기
             for(QuestionRequestDto.file file : questionRequestDto.getFileList()){
-                CommonFile commonFile = fileRepository.findByFileId(file.getFileId())
+                CommonFile commonFile = commonFileRepository.findByFileId(file.getFileId())
                         .orElseThrow(() -> new CommonException(CommonErrorCode.$_NOT_FOUND_FILE.getCode(),
                                 CommonErrorCode.$_NOT_FOUND_FILE.getMessage().replace("[$fileId]",file.getFileId())));
-                commonFile.updateGroupFileId(groupFileId);
-                fileRepository.save(commonFile);
+                commonGroupFile = commonGroupFileRepository.findById(groupFileId).orElse(null);
+                commonFile.updateGroupFileId(commonGroupFile);
+                commonFileRepository.save(commonFile);
+                questionsCheck = questionsRepository.existsByCommonGroupFile(commonGroupFile);
             }
         }
 
         //문의사항 저장
-        questionRepository.save(new Question(questionRequestDto));
+        if(!questionsCheck){
+            questionsRepository.save(new Questions(questionRequestDto,commonGroupFile));
+        }
 
-    }*/
+    }
 }

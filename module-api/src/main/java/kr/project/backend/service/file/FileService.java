@@ -5,7 +5,9 @@ import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
 import kr.project.backend.dto.common.response.FileResponseDto;
 import kr.project.backend.entity.common.CommonFile;
+import kr.project.backend.entity.common.CommonGroupFile;
 import kr.project.backend.repository.common.CommonFileRepository;
+import kr.project.backend.repository.common.CommonGroupFileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -36,6 +38,7 @@ public class FileService {
     private String fileUrl;
 
     private final CommonFileRepository commonFileRepository;
+    private final CommonGroupFileRepository commonGroupFileRepository;
 
     @Transactional
     public List<FileResponseDto> uploadImage(MultipartHttpServletRequest multipartHttpServletRequest) throws Exception{
@@ -61,8 +64,8 @@ public class FileService {
         String saveFileName = "";
         String savaFilePath = "";
 
-        //그룹키로 저장될 파일ID(문자숫자 포함 랜덤 문자열 8자리)
-        String groupFileId = RandomStringUtils.randomAlphanumeric(10);
+        //그룹 테이블 선 저장
+        String groupFileId = commonGroupFileRepository.save(new CommonGroupFile()).getGroupFileId();
 
         //읽어 올 요소가 있으면 true, 없으면 false를 반환
         while (itr.hasNext()) {
@@ -132,7 +135,8 @@ public class FileService {
                 mFile.transferTo(new File(savaFilePath));
 
                 //DB저장
-                commonFileRepository.save(new CommonFile(groupFileId,fileId,saveFileName,filePath,fileUrl+File.separator+fileId));
+                CommonGroupFile commonGroupFile = commonGroupFileRepository.findById(groupFileId).orElse(null);
+                commonFileRepository.save(new CommonFile(commonGroupFile,fileId,saveFileName,filePath,fileUrl+File.separator+fileId));
 
                 //응답부 추가
                 FileResponseDto fileResponseDto = new FileResponseDto();
@@ -148,7 +152,8 @@ public class FileService {
                 mFile.transferTo(saveFile);
 
                 //DB저장
-                commonFileRepository.save(new CommonFile(groupFileId,fileId,fileName,filePath,fileUrl+File.separator+fileId));
+                CommonGroupFile commonGroupFile = commonGroupFileRepository.findById(groupFileId).orElse(null);
+                commonFileRepository.save(new CommonFile(commonGroupFile,fileId,fileName,filePath,fileUrl+File.separator+fileId));
 
                 //응답부 추가
                 FileResponseDto fileResponseDto = new FileResponseDto();

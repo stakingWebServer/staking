@@ -17,11 +17,11 @@ public class QuestionRequestDto {
     @Schema(description = "문의사항 내용", example = "업비트 보상주기는 어디서 봐야 하나요?")
     private String questionContent;
 
-/*    @Schema(description = "파일ID", example = "SFMEAQ19QA")
-    private List<file> fileList;*/
+    @Schema(description = "파일ID", example = "SFMEAQ19QA")
+    private List<file> fileList;
 
-/*    @lombok.Data
+    @lombok.Data
     public static class file {
         private String fileId;
-    }*/
+    }
 }
