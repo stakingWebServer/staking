@@ -49,6 +49,7 @@ public class SecurityConfig {
                                          "/api/v1/user/useClauses",
                                          "/api/v1/admin/account/accessKey/**",
                                          "/api/v1/admin/file/show/image/**",
+                                         "/api/v1/admin/auth",
                                          "/error",
                                          "/")
                                         .permitAll()
