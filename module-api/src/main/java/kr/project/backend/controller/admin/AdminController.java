@@ -65,4 +65,9 @@ public class AdminController {
         adminService.sendPushs(pushsRequestDto);
         return ObjectResult.ok();
     }
+    @Operation(summary = "문의 목록",description = "문의 목록을 조회합니다.")
+    @PostMapping("/questions")
+    public ResponseEntity<?> questions(){
+        return ListResult.build(adminService.getQuestions());
+    }
 }

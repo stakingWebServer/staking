@@ -8,6 +8,8 @@ import kr.project.backend.common.Constants;
 import kr.project.backend.dto.admin.response.*;
 import kr.project.backend.dto.common.request.PushRequestDto;
 import kr.project.backend.dto.common.request.PushsRequestDto;
+import kr.project.backend.entity.common.CommonFile;
+import kr.project.backend.entity.user.Questions;
 import kr.project.backend.entity.user.UseClause;
 import kr.project.backend.entity.user.User;
 import kr.project.backend.entity.user.UserUseClause;
@@ -23,6 +25,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kr.project.backend.common.PushContent.makeMessage;
 import static kr.project.backend.common.PushContent.makeMessages;
@@ -46,8 +49,7 @@ public class AdminService {
     private final FirebaseMessaging firebaseMessaging;
     private final UseClauseRepository useClauseRepository;
     private final UserUseClauseRepository userUseClauseRepository;
-
-
+    private final QuestionRepository questionRepository;
     public AccessKeyResponseDto giveApikey(String plainText) throws Exception {
         return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, plainText + System.currentTimeMillis()));
     }
@@ -110,6 +112,20 @@ public class AdminService {
         List<String> targetUserTokens = new ArrayList<>();
         targetUsers.forEach(targetUser -> targetUserTokens.add(targetUser.getUser().getUserPushToken()));
         FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(),targetUserTokens));
+    }
 
+    @Transactional(readOnly = true)
+    public List<QuestionResponseDto> getQuestions() {
+        List<Questions> questions = questionRepository.findAll();
+        List<QuestionResponseDto> responses = new ArrayList<>();
+        questions.forEach(question -> {
+            List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
+            List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
+            commonFiles.forEach(file -> {
+                questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(),file.getFileUrl()));
+            });
+            responses.add(new QuestionResponseDto(question.getTitle(),question.getContent(),questionFileInfoDtos));
+        });
+        return responses;
     }
 }
