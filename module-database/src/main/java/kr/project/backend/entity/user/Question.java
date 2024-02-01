@@ -34,6 +34,10 @@ public class Question extends BaseTimeEntity implements Serializable {
     @JoinColumn(name = "group_file_id")
     private CommonGroupFile commonGroupFile;
 
+    @OneToOne
+    @JoinColumn(name = "reply_id")
+    private Reply reply;
+
     public Question(QuestionRequestDto questionRequestDto){
         this.title = questionRequestDto.getQuestionTitle();
         this.content = questionRequestDto.getQuestionContent();

@@ -1,7 +1,8 @@
-package kr.project.backend.entity.common;
+package kr.project.backend.entity.user;
+
 
 import jakarta.persistence.*;
-import kr.project.backend.entity.user.Question;
+import kr.project.backend.entity.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,23 +11,20 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommonGroupFile extends BaseTimeEntity implements Serializable {
+public class Reply extends BaseTimeEntity implements Serializable {
+
     @Id
-    @Comment(value = "그룹파일키값")
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2",strategy = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "varchar(38)")
-    private String groupFileId;
-
-    @OneToMany(mappedBy = "commonGroupFile")
-    private List<CommonFile> commonFileList;
-
-    @OneToOne(mappedBy = "commonGroupFile")
+    @Comment(value = "댓글키값")
+    private String replyId;
+    private String content;
+    @OneToOne(mappedBy = "reply")
     private Question question;
 }
