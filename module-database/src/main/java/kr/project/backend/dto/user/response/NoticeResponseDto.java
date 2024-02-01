@@ -14,10 +14,13 @@ public class NoticeResponseDto {
 
     private String noticeDate;
 
-    public NoticeResponseDto(Notice notice) {
+    private String noticeReadYn;
+
+    public NoticeResponseDto(Notice notice, String noticeReadYn) {
         this.noticeId = notice.getNoticeId();
         this.noticeTitle = notice.getNoticeTitle();
         this.noticeContent = notice.getNoticeContent();
         this.noticeDate = notice.getCreatedDate().substring(0,10);
+        this.noticeReadYn = noticeReadYn;
     }
 }

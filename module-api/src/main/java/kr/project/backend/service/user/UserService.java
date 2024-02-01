@@ -346,11 +346,19 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<NoticeResponseDto> getNotices(Pageable pageable) {
-        return noticeRepository.findAllByOrderByCreatedDateDesc(pageable)
-                .stream()
-                .map(NoticeResponseDto::new)
-                .collect(Collectors.toList());
+    public List<NoticeResponseDto> getNotices(Pageable pageable,ServiceUser serviceUser) {
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        Page<Notice> noticeList = noticeRepository.findAllByOrderByCreatedDateDesc(pageable);
+        List<NoticeResponseDto> noticeResponseDtoList = new ArrayList<>();
+        noticeList.forEach(notice -> {
+            boolean noticeReadChk = userNoticeReadRepository.existsByUserAndNotice(userInfo,notice);
+            noticeResponseDtoList.add(new NoticeResponseDto(notice, noticeReadChk ? "Y" : "N"));
+        });
+
+        return noticeResponseDtoList;
     }
 
     @Transactional(readOnly = true)
