@@ -49,7 +49,6 @@ public class SecurityConfig {
                                          "/api/v1/admin/account/accessKey/**",
                                          "/api/v1/admin/file/show/image/**",
                                          "/error",
-                                         "/**",
                                          "/")
                                         .permitAll()
                         .anyRequest().authenticated()
