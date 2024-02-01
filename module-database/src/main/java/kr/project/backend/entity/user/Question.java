@@ -1,6 +1,7 @@
 package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
+import kr.project.backend.converter.BooleanToYNConverter;
 import kr.project.backend.dto.user.request.QuestionRequestDto;
 import kr.project.backend.entity.common.BaseTimeEntity;
 import kr.project.backend.entity.common.CommonFile;
@@ -29,7 +30,10 @@ public class Question extends BaseTimeEntity implements Serializable {
     private String questionId;
     private String title;
     private String content;
-
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
+    @Convert(converter = BooleanToYNConverter.class)
+    @Comment(value = "답변 유무")
+    private boolean replyYn;
     @OneToOne
     @JoinColumn(name = "group_file_id")
     private CommonGroupFile commonGroupFile;
