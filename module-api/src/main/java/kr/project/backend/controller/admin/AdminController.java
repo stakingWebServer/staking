@@ -26,6 +26,12 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    @Operation(summary = "관리자 로그인",description = "로그인 성공하면, api-key를 준다.")
+    @PostMapping("/auth")
+    public void auth(){
+
+    }
+
     @Operation(summary = "apiKey 발급",description = "관리자용 헤더 apikey를 발급합니다.")
     @GetMapping("/accessKey/{plainText}")
     public ResponseEntity<?> accessKey(@Parameter(name = "plainText", description = "암호화 할 평문", example = "testText")
