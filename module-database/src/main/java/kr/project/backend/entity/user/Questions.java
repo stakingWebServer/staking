@@ -28,16 +28,10 @@ public class Questions extends BaseTimeEntity implements Serializable {
     private String questionId;
     private String title;
     private String content;
-    @Column(columnDefinition = "VARCHAR(1) default 'N'")
-    @Convert(converter = BooleanToYNConverter.class)
-    @Comment(value = "답변 유무")
-    private boolean replyYn;
     @OneToOne
     @JoinColumn(name = "group_file_id")
     private CommonGroupFile commonGroupFile;
-
-    @OneToOne
-    @JoinColumn(name = "reply_id")
+    @OneToOne(mappedBy = "questions")
     private Reply reply;
 
     public Questions(QuestionRequestDto questionRequestDto,CommonGroupFile commonGroupFile){

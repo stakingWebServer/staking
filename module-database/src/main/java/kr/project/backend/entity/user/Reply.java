@@ -2,6 +2,8 @@ package kr.project.backend.entity.user;
 
 
 import jakarta.persistence.*;
+import kr.project.backend.converter.BooleanToYNConverter;
+import kr.project.backend.dto.admin.request.ReplyRequestDto;
 import kr.project.backend.entity.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,15 @@ public class Reply extends BaseTimeEntity implements Serializable {
     @Comment(value = "댓글키값")
     private String replyId;
     private String content;
-    @OneToOne(mappedBy = "reply")
+    @Column(columnDefinition = "VARCHAR(1) default 'Y'")
+    @Convert(converter = BooleanToYNConverter.class)
+    @Comment(value = "답변 유무")
+    private boolean replyYn;
+    @OneToOne
+    @JoinColumn(name = "question_id")
     private Questions questions;
+
+    public Reply(ReplyRequestDto replyRequestDto){
+        this.content = replyRequestDto.getContent();
+    }
 }

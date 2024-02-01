@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.project.backend.dto.admin.request.ReplyRequestDto;
 import kr.project.backend.dto.common.request.PushRequestDto;
 import kr.project.backend.dto.common.request.PushsRequestDto;
 import kr.project.backend.results.ListResult;
@@ -66,8 +67,14 @@ public class AdminController {
         return ObjectResult.ok();
     }
     @Operation(summary = "문의 목록",description = "문의 목록을 조회합니다.")
-    @PostMapping("/questions")
+    @GetMapping("/questions")
     public ResponseEntity<?> questions(){
         return ListResult.build(adminService.getQuestions());
+    }
+    @Operation(summary = "문의에 대한 답변",description = "문의에 대한 답변을 합니다.")
+    @PostMapping("/reply")
+    public ResponseEntity<?> post(@RequestBody ReplyRequestDto replyRequestDto){
+        adminService.replyAboutQuestion(replyRequestDto);
+        return ObjectResult.ok();
     }
 }

@@ -5,14 +5,12 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
 import kr.project.backend.common.Constants;
+import kr.project.backend.dto.admin.request.ReplyRequestDto;
 import kr.project.backend.dto.admin.response.*;
 import kr.project.backend.dto.common.request.PushRequestDto;
 import kr.project.backend.dto.common.request.PushsRequestDto;
 import kr.project.backend.entity.common.CommonFile;
-import kr.project.backend.entity.user.Questions;
-import kr.project.backend.entity.user.UseClause;
-import kr.project.backend.entity.user.User;
-import kr.project.backend.entity.user.UserUseClause;
+import kr.project.backend.entity.user.*;
 import kr.project.backend.repository.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +23,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static kr.project.backend.common.PushContent.makeMessage;
 import static kr.project.backend.common.PushContent.makeMessages;
@@ -50,6 +47,8 @@ public class AdminService {
     private final UseClauseRepository useClauseRepository;
     private final UserUseClauseRepository userUseClauseRepository;
     private final QuestionRepository questionRepository;
+    private final ReplyRepository replyRepository;
+
     public AccessKeyResponseDto giveApikey(String plainText) throws Exception {
         return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, plainText + System.currentTimeMillis()));
     }
@@ -118,14 +117,19 @@ public class AdminService {
     public List<QuestionResponseDto> getQuestions() {
         List<Questions> questions = questionRepository.findAll();
         List<QuestionResponseDto> responses = new ArrayList<>();
-        questions.forEach(question -> {
+       questions.forEach(question -> {
             List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
             List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
             commonFiles.forEach(file -> {
                 questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(),file.getFileUrl()));
             });
-            responses.add(new QuestionResponseDto(question.getTitle(),question.getContent(),questionFileInfoDtos));
+            responses.add(new QuestionResponseDto(question.getTitle(),question.getContent(),questionFileInfoDtos,String.valueOf(question.getReply().isReplyYn())));
         });
         return responses;
+    }
+
+    @Transactional
+    public void replyAboutQuestion(ReplyRequestDto replyRequestDto) {
+        replyRepository.save(new Reply(replyRequestDto));
     }
 }
