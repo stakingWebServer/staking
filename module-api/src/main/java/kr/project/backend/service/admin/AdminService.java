@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
 import kr.project.backend.common.Constants;
+import kr.project.backend.dto.admin.request.AdminLoginRequestDto;
 import kr.project.backend.dto.admin.request.ReplyRequestDto;
 import kr.project.backend.dto.admin.response.*;
 import kr.project.backend.dto.common.request.PushRequestDto;
@@ -23,7 +24,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static kr.project.backend.common.PushContent.makeMessage;
 import static kr.project.backend.common.PushContent.makeMessages;
@@ -41,6 +41,11 @@ public class AdminService {
     @Value("${admin.aesIv}")
     private String adminAESIv;
 
+    @Value("${admin.loginId}")
+    private final String loginId;
+    @Value("${admin.password}")
+    private final String password;
+
     private final UserRepository userRepository;
     private final DropUserRepository dropUserRepository;
     private final MoveViewRepository moveViewRepository;
@@ -49,10 +54,6 @@ public class AdminService {
     private final UserUseClauseRepository userUseClauseRepository;
     private final QuestionRepository questionRepository;
     private final ReplyRepository replyRepository;
-
-    public AccessKeyResponseDto giveApikey(String plainText) throws Exception {
-        return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, plainText + System.currentTimeMillis()));
-    }
 
     @Transactional(readOnly = true)
     public TodayRegisterResponseDto getTodayRegister() {
@@ -141,5 +142,12 @@ public class AdminService {
         firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "관리자", replyRequestDto.getContent()));
 
         replyRepository.save(new Reply(replyRequestDto));
+    }
+
+    public AccessKeyResponseDto getApikey(AdminLoginRequestDto adminLoginRequestDto) throws Exception {
+        if(adminLoginRequestDto.getLoginId().equals(loginId) && adminLoginRequestDto.getPassword().equals(password)){
+            return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, "stakingAdmin" + System.currentTimeMillis()),"ok");
+        }
+        return new AccessKeyResponseDto(null,"fail");
     }
 }
