@@ -5,7 +5,7 @@ import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
 import kr.project.backend.dto.common.response.FileResponseDto;
 import kr.project.backend.entity.common.CommonFile;
-import kr.project.backend.repository.common.FileRepository;
+import kr.project.backend.repository.common.CommonFileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -35,7 +35,7 @@ public class FileService {
     @Value("${spring.file.url}")
     private String fileUrl;
 
-    private final FileRepository fileRepository;
+    private final CommonFileRepository commonFileRepository;
 
     @Transactional
     public List<FileResponseDto> uploadImage(MultipartHttpServletRequest multipartHttpServletRequest) throws Exception{
@@ -132,7 +132,7 @@ public class FileService {
                 mFile.transferTo(new File(savaFilePath));
 
                 //DB저장
-                fileRepository.save(new CommonFile(groupFileId,fileId,saveFileName,filePath,fileUrl+File.separator+fileId));
+                commonFileRepository.save(new CommonFile(groupFileId,fileId,saveFileName,filePath,fileUrl+File.separator+fileId));
 
                 //응답부 추가
                 FileResponseDto fileResponseDto = new FileResponseDto();
@@ -148,7 +148,7 @@ public class FileService {
                 mFile.transferTo(saveFile);
 
                 //DB저장
-                fileRepository.save(new CommonFile(groupFileId,fileId,fileName,filePath,fileUrl+File.separator+fileId));
+                commonFileRepository.save(new CommonFile(groupFileId,fileId,fileName,filePath,fileUrl+File.separator+fileId));
 
                 //응답부 추가
                 FileResponseDto fileResponseDto = new FileResponseDto();
@@ -166,7 +166,7 @@ public class FileService {
     @Transactional
     public ResponseEntity<byte[]> showImage(String fileId) throws Exception, IOException{
 
-        CommonFile commonFile = fileRepository.findById(fileId)
+        CommonFile commonFile = commonFileRepository.findById(fileId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FILE.getCode(), CommonErrorCode.NOT_FOUND_FILE.getMessage()));
 
         File file = new File(commonFile.getFilePath()+File.separator+commonFile.getFileName());

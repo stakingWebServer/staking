@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface FileRepository extends JpaRepository<CommonFile, String> {
+public interface CommonFileRepository extends JpaRepository<CommonFile, String> {
 
     Optional<CommonFile> findByFileId(String fileId);
 }

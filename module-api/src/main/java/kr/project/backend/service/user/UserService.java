@@ -2,11 +2,9 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
-import kr.project.backend.dto.coin.StakingListDto;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
-import kr.project.backend.entity.common.CommonFile;
-import kr.project.backend.repository.common.FileRepository;
+import kr.project.backend.repository.common.CommonFileRepository;
 import kr.project.backend.repository.common.QuestionRepository;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
@@ -33,11 +31,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +70,7 @@ public class UserService {
     private final AlarmRepository alarmRepository;
     private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
     private final UserNoticeReadRepository userNoticeReadRepository;
-    private final FileRepository fileRepository;
+    private final CommonFileRepository commonFileRepository;
     private final QuestionRepository questionRepository;
 
     @Transactional
