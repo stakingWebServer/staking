@@ -7,6 +7,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class QuestionResponseDto {
+    private String questionId;
     private String title;
     private String content;
     private List<QuestionFileInfoDto> fileInfos;

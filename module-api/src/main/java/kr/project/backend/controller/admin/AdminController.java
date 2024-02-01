@@ -73,7 +73,7 @@ public class AdminController {
     }
     @Operation(summary = "문의에 대한 답변",description = "문의에 대한 답변을 합니다.")
     @PostMapping("/reply")
-    public ResponseEntity<?> post(@RequestBody ReplyRequestDto replyRequestDto){
+    public ResponseEntity<?> post(@RequestBody ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {
         adminService.replyAboutQuestion(replyRequestDto);
         return ObjectResult.ok();
     }

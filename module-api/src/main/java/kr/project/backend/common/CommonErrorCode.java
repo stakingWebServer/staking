@@ -37,7 +37,10 @@ public enum CommonErrorCode {
     CHECK_MIN_INPUT_COIN("D002","최소 신청 수량을 확인해주세요."),
 
     // favorite
-    ALREADY_EXIST_STAKING_DATA("E000","이미 존재하는 마이스테이킹데이터 입니다.")
+    ALREADY_EXIST_STAKING_DATA("E000","이미 존재하는 마이스테이킹데이터 입니다."),
+
+    // question
+    NOT_FOUND_QUESTION("F000","해당 문의를 찾을수 없습니다.")
     ;
 
 

@@ -23,6 +23,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static kr.project.backend.common.PushContent.makeMessage;
 import static kr.project.backend.common.PushContent.makeMessages;
@@ -123,13 +124,22 @@ public class AdminService {
             commonFiles.forEach(file -> {
                 questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(),file.getFileUrl()));
             });
-            responses.add(new QuestionResponseDto(question.getTitle(),question.getContent(),questionFileInfoDtos,String.valueOf(question.getReply().isReplyYn())));
+           boolean replyCheck = replyRepository.existsByQuestions(question);
+           responses.add(new QuestionResponseDto(question.getQuestionId(),question.getTitle(),question.getContent(),questionFileInfoDtos,replyCheck ? String.valueOf(question.getReply().isReplyYn()) : "N"));
         });
         return responses;
     }
 
     @Transactional
-    public void replyAboutQuestion(ReplyRequestDto replyRequestDto) {
+    public void replyAboutQuestion(ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {
+        Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
+        User userInfo = questionInfo.getUser();
+
+        //토큰 발송
+        //TODO 문의에 대한 답변 후 푸시알림 제목 뭐로 보낼지 고민.
+        firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "관리자", replyRequestDto.getContent()));
+
         replyRepository.save(new Reply(replyRequestDto));
     }
 }

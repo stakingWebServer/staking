@@ -6,5 +6,6 @@ import java.io.Serializable;
 
 @Data
 public class ReplyRequestDto implements Serializable {
+    private String questionId;
     private String content;
 }
