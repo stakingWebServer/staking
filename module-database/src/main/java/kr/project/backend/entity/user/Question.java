@@ -28,8 +28,10 @@ public class Question extends BaseTimeEntity implements Serializable {
     private String questionId;
     private String title;
     private String content;
-    @OneToMany(mappedBy = "question")
-    private List<CommonFile> commonFile;
+
+    @ManyToOne
+    @JoinColumn(name = "group_file_id")
+    private CommonFile commonFile;
 
     public Question(QuestionRequestDto questionRequestDto){
         this.title = questionRequestDto.getQuestionTitle();

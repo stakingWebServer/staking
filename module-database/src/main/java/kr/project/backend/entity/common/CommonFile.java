@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Entity
@@ -40,9 +41,8 @@ public class CommonFile extends BaseTimeEntity implements Serializable {
     @OneToOne(mappedBy = "commonFile")
     private UseClause useClause;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @OneToMany(mappedBy = "commonFile")
+    private List<Question> questions;
 
     public CommonFile(String groupFileId, String fileId, String fileName, String filePath, String fileUrl){
         this.groupFileId = groupFileId;
