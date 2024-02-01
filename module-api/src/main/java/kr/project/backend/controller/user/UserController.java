@@ -105,7 +105,7 @@ public class UserController {
 
     @Operation(summary = "공지사항 조회", description = "공지사항 조회 입니다.")
     @GetMapping("/notices")
-    public ResponseEntity<?> getNotices(@PageableDefault()Pageable pageable) {
+    public ResponseEntity<?> getNotices(@PageableDefault Pageable pageable) {
         return ListResult.build(userService.getNotices(pageable));
     }
 

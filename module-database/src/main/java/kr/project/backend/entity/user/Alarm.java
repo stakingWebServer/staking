@@ -41,6 +41,11 @@ public class Alarm extends BaseTimeEntity implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public Alarm(String alarmTitle,String alarmContent,User user){
+        this.alarmTitle = alarmTitle;
+        this.alarmContent = alarmContent;
+        this.user = user;
+    }
     public void updateAlarmReadYn(){
         this.alarmReadYn = "Y";
     }

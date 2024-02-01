@@ -54,6 +54,7 @@ public class AdminService {
     private final UserUseClauseRepository userUseClauseRepository;
     private final QuestionRepository questionRepository;
     private final ReplyRepository replyRepository;
+    private final AlarmRepository alarmRepository;
 
     @Transactional(readOnly = true)
     public TodayRegisterResponseDto getTodayRegister() {
@@ -100,6 +101,7 @@ public class AdminService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage()));
         if (pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())) {
             firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
+            alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
         } else {
             throw new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage());
         }
@@ -111,8 +113,14 @@ public class AdminService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
         List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
         List<String> targetUserTokens = new ArrayList<>();
-        targetUsers.forEach(targetUser -> targetUserTokens.add(targetUser.getUser().getUserPushToken()));
+        targetUsers.forEach(targetUser -> {
+            targetUserTokens.add(targetUser.getUser().getUserPushToken());
+            //알림 DB 저장.
+            alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
+        });
+        //단체 푸시 전송.
         FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens));
+
     }
 
     @Transactional(readOnly = true)
@@ -141,6 +149,9 @@ public class AdminService {
         //TODO 문의에 대한 답변 후 푸시알림 제목 뭐로 보낼지 고민.
         firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "관리자", replyRequestDto.getContent()));
 
+        //알림 DB 저장.
+        alarmRepository.save(new Alarm("관리자", replyRequestDto.getContent(), userInfo));
+        //답변 DB 저장.
         replyRepository.save(new Reply(replyRequestDto));
     }
 
