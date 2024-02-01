@@ -26,5 +26,5 @@ public class Reply extends BaseTimeEntity implements Serializable {
     private String replyId;
     private String content;
     @OneToOne(mappedBy = "reply")
-    private Question question;
+    private Questions questions;
 }

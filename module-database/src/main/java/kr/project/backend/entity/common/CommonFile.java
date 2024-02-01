@@ -1,8 +1,6 @@
 package kr.project.backend.entity.common;
 
 import jakarta.persistence.*;
-import kr.project.backend.entity.common.BaseTimeEntity;
-import kr.project.backend.entity.user.Question;
 import kr.project.backend.entity.user.UseClause;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Entity

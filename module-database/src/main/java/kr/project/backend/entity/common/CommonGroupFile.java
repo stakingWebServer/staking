@@ -1,7 +1,7 @@
 package kr.project.backend.entity.common;
 
 import jakarta.persistence.*;
-import kr.project.backend.entity.user.Question;
+import kr.project.backend.entity.user.Questions;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,5 +28,5 @@ public class CommonGroupFile extends BaseTimeEntity implements Serializable {
     private List<CommonFile> commonFileList;
 
     @OneToOne(mappedBy = "commonGroupFile")
-    private Question question;
+    private Questions questions;
 }

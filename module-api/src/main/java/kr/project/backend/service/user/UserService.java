@@ -5,7 +5,7 @@ import kr.project.backend.auth.ServiceUser;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
 import kr.project.backend.repository.common.CommonFileRepository;
-import kr.project.backend.repository.common.QuestionRepository;
+import kr.project.backend.repository.common.QuestionsRepository;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
 import kr.project.backend.common.CommonErrorCode;
@@ -71,7 +71,7 @@ public class UserService {
     private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
     private final UserNoticeReadRepository userNoticeReadRepository;
     private final CommonFileRepository commonFileRepository;
-    private final QuestionRepository questionRepository;
+    private final QuestionsRepository questionsRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
