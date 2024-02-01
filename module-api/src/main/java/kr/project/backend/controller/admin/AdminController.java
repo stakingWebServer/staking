@@ -30,8 +30,8 @@ public class AdminController {
 
     @Operation(summary = "관리자 로그인",description = "로그인 성공하면, api-key를 준다.")
     @PostMapping("/auth")
-    public void auth(@RequestBody AdminLoginRequestDto adminLoginRequestDto) throws Exception {
-        adminService.getApikey(adminLoginRequestDto);
+    public ResponseEntity<?> auth(@RequestBody AdminLoginRequestDto adminLoginRequestDto) throws Exception {
+        return ObjectResult.build(adminService.getApikey(adminLoginRequestDto));
     }
     @Operation(summary = "당일 가입 사용자 수",description = "당일 가입 사용자 수를 구한다.")
     @GetMapping("/today-register")
