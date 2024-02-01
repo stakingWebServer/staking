@@ -42,9 +42,9 @@ public class AdminService {
     private String adminAESIv;
 
     @Value("${admin.loginId}")
-    private final String loginId;
+    private String loginId;
     @Value("${admin.password}")
-    private final String password;
+    private String password;
 
     private final UserRepository userRepository;
     private final DropUserRepository dropUserRepository;
@@ -98,9 +98,9 @@ public class AdminService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
         UserUseClause targetUser = userUseClauseRepository.findByUserAndUseClauseAndAgreeYn(userInfo, useClause, Constants.YN.Y)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage()));
-        if(pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())){
+        if (pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())) {
             firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
-        }else{
+        } else {
             throw new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage());
         }
     }
@@ -112,21 +112,21 @@ public class AdminService {
         List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
         List<String> targetUserTokens = new ArrayList<>();
         targetUsers.forEach(targetUser -> targetUserTokens.add(targetUser.getUser().getUserPushToken()));
-        FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(),targetUserTokens));
+        FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens));
     }
 
     @Transactional(readOnly = true)
     public List<QuestionResponseDto> getQuestions() {
         List<Questions> questions = questionRepository.findAll();
         List<QuestionResponseDto> responses = new ArrayList<>();
-       questions.forEach(question -> {
+        questions.forEach(question -> {
             List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
             List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
             commonFiles.forEach(file -> {
-                questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(),file.getFileUrl()));
+                questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
             });
-           boolean replyCheck = replyRepository.existsByQuestions(question);
-           responses.add(new QuestionResponseDto(question.getQuestionId(),question.getTitle(),question.getContent(),questionFileInfoDtos,replyCheck ? String.valueOf(question.getReply().isReplyYn()) : "N"));
+            boolean replyCheck = replyRepository.existsByQuestions(question);
+            responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, replyCheck ? String.valueOf(question.getReply().isReplyYn()) : "N"));
         });
         return responses;
     }
@@ -145,9 +145,9 @@ public class AdminService {
     }
 
     public AccessKeyResponseDto getApikey(AdminLoginRequestDto adminLoginRequestDto) throws Exception {
-        if(adminLoginRequestDto.getLoginId().equals(loginId) && adminLoginRequestDto.getPassword().equals(password)){
-            return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, "stakingAdmin" + System.currentTimeMillis()),"ok");
+        if (adminLoginRequestDto.getLoginId().equals(loginId) && adminLoginRequestDto.getPassword().equals(password)) {
+            return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, "stakingAdmin" + System.currentTimeMillis()), "ok");
         }
-        return new AccessKeyResponseDto(null,"fail");
+        return new AccessKeyResponseDto(null, "fail");
     }
 }
