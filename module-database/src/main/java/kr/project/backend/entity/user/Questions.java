@@ -38,9 +38,10 @@ public class Questions extends BaseTimeEntity implements Serializable {
     private Reply reply;
 
 
-    public Questions(QuestionRequestDto questionRequestDto,CommonGroupFile commonGroupFile){
+    public Questions(QuestionRequestDto questionRequestDto,CommonGroupFile commonGroupFile,User user){
         this.title = questionRequestDto.getQuestionTitle();
         this.content = questionRequestDto.getQuestionContent();
         this.commonGroupFile = commonGroupFile;
+        this.user = user;
     }
 }

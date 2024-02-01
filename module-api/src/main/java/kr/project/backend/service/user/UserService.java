@@ -486,6 +486,11 @@ public class UserService {
 
     @Transactional
     public void question(ServiceUser serviceUser, QuestionRequestDto questionRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+
         //그룹파일ID
         String groupFileId = "";
         CommonGroupFile commonGroupFile = null;
@@ -517,7 +522,7 @@ public class UserService {
 
         //문의사항 저장
         if(!questionsCheck){
-            questionsRepository.save(new Questions(questionRequestDto,commonGroupFile));
+            questionsRepository.save(new Questions(questionRequestDto,commonGroupFile,userInfo));
         }
 
     }
