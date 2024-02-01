@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import kr.project.backend.dto.user.request.QuestionRequestDto;
 import kr.project.backend.entity.common.BaseTimeEntity;
 import kr.project.backend.entity.common.CommonFile;
+import kr.project.backend.entity.common.CommonGroupFile;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +30,9 @@ public class Question extends BaseTimeEntity implements Serializable {
     private String title;
     private String content;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "group_file_id")
-    private CommonFile commonFile;
+    private CommonGroupFile commonGroupFile;
 
     public Question(QuestionRequestDto questionRequestDto){
         this.title = questionRequestDto.getQuestionTitle();

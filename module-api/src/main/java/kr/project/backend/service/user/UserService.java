@@ -483,7 +483,7 @@ public class UserService {
             userNoticeReadRepository.save(new UserNoticeRead(userInfo,notice));
         }
     }
-
+/*
     @Transactional
     public void question(ServiceUser serviceUser, QuestionRequestDto questionRequestDto){
         //그룹파일ID
@@ -512,5 +512,5 @@ public class UserService {
         //문의사항 저장
         questionRepository.save(new Question(questionRequestDto));
 
-    }
+    }*/
 }
