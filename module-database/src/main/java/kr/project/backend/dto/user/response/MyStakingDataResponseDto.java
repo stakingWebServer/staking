@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 
 @Data
 public class MyStakingDataResponseDto implements Serializable {
-
+    private String favoriteId;
     private String stakingId;
     private String coinName;
     private String maxAnnualRewardRate;
@@ -19,6 +19,7 @@ public class MyStakingDataResponseDto implements Serializable {
 
     public MyStakingDataResponseDto(Favorite favorite) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##################");
+        this.favoriteId = favorite.getFavoriteId();
         this.stakingId = favorite.getStakingInfo().getStakingId();
         this.coinName = favorite.getStakingInfo().getCoinName();
         this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate();
