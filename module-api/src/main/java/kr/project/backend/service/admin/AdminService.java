@@ -100,8 +100,10 @@ public class AdminService {
         UserUseClause targetUser = userUseClauseRepository.findByUserAndUseClauseAndAgreeYn(userInfo, useClause, Constants.YN.Y)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage()));
         if (pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())) {
-            firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
-            alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
+            if(!targetUser.getUser().getUserPushToken().isBlank()){
+                firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
+                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
+            }
         } else {
             throw new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage());
         }
@@ -114,9 +116,11 @@ public class AdminService {
         List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
         List<String> targetUserTokens = new ArrayList<>();
         targetUsers.forEach(targetUser -> {
-            targetUserTokens.add(targetUser.getUser().getUserPushToken());
-            //알림 DB 저장.
-            alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
+            if(!targetUser.getUser().getUserPushToken().isBlank()){
+                targetUserTokens.add(targetUser.getUser().getUserPushToken());
+                //알림 DB 저장.
+                alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
+            }
         });
         //단체 푸시 전송.
         FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens));
