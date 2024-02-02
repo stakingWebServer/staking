@@ -12,7 +12,7 @@ public enum CommonErrorCode {
     $_NOT_FOUND_FILE("A004","[$fileId] 파일을 찾을 수 없습니다."),
 
     // token
-    EXPIRED_TOKEN("BOOO","만료된 토큰입니다."),
+    EXPIRED_TOKEN("B000","만료된 토큰입니다."),
     WRONG_TOKEN("B001","형식이 잘못된 토큰입니다."),
     NOT_EXIST_TOKEN("B002","존재하지 않는 토큰입니다."),
     NOT_FOUND_TOKEN("B003","토큰정보를 찾을 수 없습니다."),
