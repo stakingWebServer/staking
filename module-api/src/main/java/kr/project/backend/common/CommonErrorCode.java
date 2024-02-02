@@ -40,7 +40,10 @@ public enum CommonErrorCode {
     ALREADY_EXIST_STAKING_DATA("E000","이미 존재하는 마이스테이킹데이터 입니다."),
 
     // question
-    NOT_FOUND_QUESTION("F000","해당 문의를 찾을수 없습니다.")
+    NOT_FOUND_QUESTION("F000","해당 문의를 찾을수 없습니다."),
+
+    // time
+    NOT_SEND_TIME("G000","발송불가능한 시간입니다.")
     ;
 
 

@@ -13,6 +13,7 @@ import kr.project.backend.dto.common.request.PushsRequestDto;
 import kr.project.backend.entity.common.CommonFile;
 import kr.project.backend.entity.user.*;
 import kr.project.backend.repository.user.*;
+import kr.project.backend.utils.TimeRestriction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,40 +92,48 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public void sendPush(PushRequestDto pushRequestDto) throws FirebaseMessagingException {
-        //유저 정보 조회
-        User userInfo = userRepository.findByUserEmail(pushRequestDto.getUserEmail())
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
-        //푸시 전송
-        UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
-        UserUseClause targetUser = userUseClauseRepository.findByUserAndUseClauseAndAgreeYn(userInfo, useClause, Constants.YN.Y)
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage()));
-        if (pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())) {
-            if(!targetUser.getUser().getUserPushToken().isBlank()){
-                firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
-                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
-            }
+        if (TimeRestriction.checkTimeRestriction()) {
+            throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
         } else {
-            throw new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage());
+            //유저 정보 조회
+            User userInfo = userRepository.findByUserEmail(pushRequestDto.getUserEmail())
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+            //푸시 전송
+            UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
+            UserUseClause targetUser = userUseClauseRepository.findByUserAndUseClauseAndAgreeYn(userInfo, useClause, Constants.YN.Y)
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage()));
+            if (pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())) {
+                if (!targetUser.getUser().getUserPushToken().isBlank()) {
+                    firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
+                    alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
+                }
+            } else {
+                throw new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage());
+            }
         }
     }
 
     @Transactional(readOnly = true)
     public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
-        UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
-        List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
-        List<String> targetUserTokens = new ArrayList<>();
-        targetUsers.forEach(targetUser -> {
-            if(!targetUser.getUser().getUserPushToken().isBlank()){
-                targetUserTokens.add(targetUser.getUser().getUserPushToken());
-                //알림 DB 저장.
-                alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
-            }
-        });
-        //단체 푸시 전송.
-        FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens));
+        if (TimeRestriction.checkTimeRestriction()) {
+            throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
+        } else {
+            UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
+            List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
+            List<String> targetUserTokens = new ArrayList<>();
+            targetUsers.forEach(targetUser -> {
+                if (!targetUser.getUser().getUserPushToken().isBlank()) {
+                    targetUserTokens.add(targetUser.getUser().getUserPushToken());
+                    //알림 DB 저장.
+                    alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
+                }
+            });
+            //단체 푸시 전송.
+            FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens));
 
+        }
     }
 
     @Transactional(readOnly = true)
@@ -145,18 +154,22 @@ public class AdminService {
 
     @Transactional
     public void replyAboutQuestion(ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {
-        Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
-        User userInfo = questionInfo.getUser();
+        if (TimeRestriction.checkTimeRestriction()) {
+            throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
+        } else {
+            Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
+            User userInfo = questionInfo.getUser();
 
-        //토큰 발송
-        //TODO 문의에 대한 답변 후 푸시알림 제목 뭐로 보낼지 고민.
-        firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "관리자", replyRequestDto.getContent()));
+            //토큰 발송
+            //TODO 문의에 대한 답변 후 푸시알림 제목 뭐로 보낼지 고민.
+            firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "관리자", replyRequestDto.getContent()));
 
-        //알림 DB 저장.
-        alarmRepository.save(new Alarm("관리자", replyRequestDto.getContent(), userInfo));
-        //답변 DB 저장.
-        replyRepository.save(new Reply(replyRequestDto));
+            //알림 DB 저장.
+            alarmRepository.save(new Alarm("관리자", replyRequestDto.getContent(), userInfo));
+            //답변 DB 저장.
+            replyRepository.save(new Reply(replyRequestDto));
+        }
     }
 
     public AccessKeyResponseDto getApikey(AdminLoginRequestDto adminLoginRequestDto) throws Exception {
