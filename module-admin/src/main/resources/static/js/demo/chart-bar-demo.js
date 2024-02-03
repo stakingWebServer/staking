@@ -31,9 +31,10 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 // Bar Chart Example
 async function pageView() {
   let url = new URL(`https://api.s2it.kro.kr/api/v1/admin/page-view`);
-  const response = await fetch(url);
+  const response = await fetch(url, {headers : {
+      Authorization: `Bearer ${localStorage.getItem("accessKey")}`
+    }});
   data = await response.json();
-  console.log("dddddddddddddd", data);
   main = data.result[0].pageView;
   console.log("main", data.result[0].pageView);
   console.log("detail", data.result[1].pageView);

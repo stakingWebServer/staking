@@ -65,13 +65,13 @@
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index">
+          <a class="nav-link" href="push">
             <i class="fas fa-fw fa-cog"></i>
             <span>푸쉬전송</span></a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index">
+          <a class="nav-link" href="qna">
             <i class="fas fa-fw fa-wrench"></i>
             <span>문의답변</span></a
           >
@@ -127,18 +127,24 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="p-5">
-                                        <form class="user">
+                                          <div class="form-group">
+                                            <input type="text" class="form-control"
+                                                id="email"
+                                                placeholder="이메일" />
+                                           </div>
                                             <div class="form-group">
                                                 <input type="text" class="form-control"
+                                                    id="title"
                                                     placeholder="제목">
                                             </div>
                                             <div class="form-group">
-                                                <textarea class="form-control"placeholder="내용"style="height:700px">
+                                                <textarea class="form-control"placeholder="내용"style="height:700px" id="content">
                                                 </textarea>
                                             </div>
-                                            <a href="index" class="btn btn-primary btn-user btn-block">
+                                            <button class="btn btn-primary btn-user btn-block" id="push_btn">전송</button>
+                                            <!-- <a href="push.html" class="btn btn-primary btn-user btn-block">
                                                 전송
-                                            </a>
+                                            </a> -->
                                     </div>
                                 </div>
                             </div>
@@ -183,5 +189,6 @@
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
     <script src="js/demo/chart-bar-demo.js"></script>
+    <script src="js/push.js"></script>
   </body>
 </html>

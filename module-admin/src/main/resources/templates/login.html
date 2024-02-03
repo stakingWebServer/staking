@@ -42,12 +42,12 @@
                     <div class="text-center">
                       <h1 class="h4 text-gray-900 mb-4">LOGIN</h1>
                     </div>
-                    <form class="user">
+                    <!--<form class="user">-->
                       <div class="form-group">
                         <input
-                          type="email"
+                          type="text"
                           class="form-control form-control-user"
-                          id="exampleInputEmail"
+                          id="login_id"
                           aria-describedby="emailHelp"
                           placeholder="ID"
                         />
@@ -56,17 +56,18 @@
                         <input
                           type="password"
                           class="form-control form-control-user"
-                          id="exampleInputPassword"
+                          id="login_pw"
                           placeholder="Password"
                         />
                       </div>
-                      <a
-                        href="index"
+                      <button
+                        id="login_btn"
+                        href=""
                         class="btn btn-primary btn-user btn-block"
                       >
                         Login
-                      </a>
-                    </form>
+                      </button>
+                    <!--</form>-->
                   </div>
                 </div>
               </div>
@@ -85,5 +86,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <script src="js/login.js"></script>
   </body>
 </html>

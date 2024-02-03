@@ -5,9 +5,10 @@ var today_drop_user = "";
 
 async function todayRegister() {
   let url = new URL(`https://api.s2it.kro.kr/api/v1/admin/today-register`);
-  const response = await fetch(url);
+  const response = await fetch(url,{mode:'cors', credentials:'include', headers : {
+      Authorization: `Bearer ${localStorage.getItem("accessKey")}`
+    }});
   data = await response.json();
-  console.log("ddd", data);
   console.log("ddd", data.result.todayRegister);
   today_register = data.result.todayRegister;
   console.log(today_register);
@@ -16,9 +17,10 @@ async function todayRegister() {
 
 async function todayLoginUser() {
   let url = new URL(`https://api.s2it.kro.kr/api/v1/admin/today-loginUser`);
-  const response = await fetch(url);
+  const response = await fetch(url,{mode:'cors', credentials:'include',headers : {
+      Authorization: `Bearer ${localStorage.getItem("accessKey")}`
+    }});
   data = await response.json();
-  console.log("ddd", data);
   console.log("ddd", data.result.todayLoginUser);
   today_login_user = data.result.todayLoginUser;
   console.log(today_login_user);
@@ -27,7 +29,9 @@ async function todayLoginUser() {
 
 async function todayDropUser() {
   let url = new URL(`https://api.s2it.kro.kr/api/v1/admin/today-dropUser`);
-  const response = await fetch(url);
+  const response = await fetch(url,{mode:'cors', credentials:'include',headers : {
+      Authorization: `Bearer ${localStorage.getItem("accessKey")}`
+    }});
   data = await response.json();
   today_drop_user = data.result.todayDropUser;
   render();
@@ -35,7 +39,9 @@ async function todayDropUser() {
 
 async function todayDropUser() {
   let url = new URL(`https://api.s2it.kro.kr/api/v1/admin/today-dropUser`);
-  const response = await fetch(url);
+  const response = await fetch(url,{mode:'cors', credentials:'include',headers : {
+      Authorization: `Bearer ${localStorage.getItem("accessKey")}`
+    }});
   data = await response.json();
   today_drop_user = data.result.todayDropUser;
   render();
