@@ -12,6 +12,7 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Entity
@@ -32,5 +33,8 @@ public class Notice extends BaseTimeEntity implements Serializable {
 
     @Comment(value = "공지사항 내용")
     private String noticeContent;
+
+    @OneToMany(mappedBy = "notice")
+    private List<UserNoticeRead> userNoticeReads;
 
 }

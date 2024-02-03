@@ -7,6 +7,7 @@ import kr.project.backend.entity.user.Favorite;
 import kr.project.backend.repository.coin.StakingInfoRepository;
 import kr.project.backend.repository.user.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
 
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class Upbit {
     private final StakingInfoRepository stakingInfoRepository;
@@ -42,6 +44,7 @@ public class Upbit {
     }
     @Scheduled(cron = "0 0 0 * * *")
     public void craw() throws IOException, InterruptedException {
+        log.info("::: upbit crawling start :::");
         SaveDto saveDto = new SaveDto();
 
         //크롤링할 주소
@@ -125,15 +128,11 @@ public class Upbit {
                     favoriteRepository.save(favorite);
                 }
             });
-
             Thread.sleep(4000);
         }
-
-
-
         //웹브라우저 닫기
         webDriver.close();
-
+        log.info("::: upbit crawling finish :::");
     }
 
     public static String removeNonKorean(String input) {

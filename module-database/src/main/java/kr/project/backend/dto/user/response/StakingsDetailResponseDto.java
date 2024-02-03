@@ -14,6 +14,7 @@ public class StakingsDetailResponseDto {
     private String coinName;
     private String totalHoldings;
     private String totalRewards;
+    private String unit;
     private List<MyStakingDataAboutRewardHistoryDto> myStakingDataAboutRewardHistoryDtoList;
 
 }

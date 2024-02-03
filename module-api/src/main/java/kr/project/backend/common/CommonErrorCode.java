@@ -9,9 +9,10 @@ public enum CommonErrorCode {
     NULL_DATA("A001","데이터가 없습니다."),
     NOT_ALLOW_FILE("A002","허용되지 않는 파일입니다."),
     NOT_FOUND_FILE("A003","파일을 찾을 수 없습니다."),
+    $_NOT_FOUND_FILE("A004","[$fileId] 파일을 찾을 수 없습니다."),
 
     // token
-    EXPIRED_TOKEN("BOOO","만료된 토큰입니다."),
+    EXPIRED_TOKEN("B000","만료된 토큰입니다."),
     WRONG_TOKEN("B001","형식이 잘못된 토큰입니다."),
     NOT_EXIST_TOKEN("B002","존재하지 않는 토큰입니다."),
     NOT_FOUND_TOKEN("B003","토큰정보를 찾을 수 없습니다."),
@@ -26,6 +27,9 @@ public enum CommonErrorCode {
     NOT_FOUND_STAKING_DATA("C006","마이 스테이킹 데이터를 찾을수 없습니다."),
     NOT_FOUND_USE_CLAUSE_DATA("C007","이용약관을 찾을 수 없습니다. 약관ID를 확인해주세요."),
     NOT_AGREE_ESSENTIAL_USE_CLAUSE("C008","필수 이용약관은 반드시 동의해야 합니다."),
+    NOT_FOUND_USE_CLAUSE("C009","존재하지 않는 항목입니다."),
+    NOT_FOUND_USER_USE_CLAUSE("C010","선택한 항목이 아닙니다."),
+    NOT_FOUND_NOTICE("C011","공지사항을 찾을 수 없습니다."),
 
     // coin
     NOT_FOUND_COIN("D000","없는 코인정보입니다."),
@@ -33,7 +37,13 @@ public enum CommonErrorCode {
     CHECK_MIN_INPUT_COIN("D002","최소 신청 수량을 확인해주세요."),
 
     // favorite
-    ALREADY_EXIST_STAKING_DATA("E000","이미 존재하는 마이스테이킹데이터 입니다.")
+    ALREADY_EXIST_STAKING_DATA("E000","이미 존재하는 마이스테이킹데이터 입니다."),
+
+    // question
+    NOT_FOUND_QUESTION("F000","해당 문의를 찾을수 없습니다."),
+
+    // time
+    NOT_SEND_TIME("G000","발송불가능한 시간입니다.")
     ;
 
 

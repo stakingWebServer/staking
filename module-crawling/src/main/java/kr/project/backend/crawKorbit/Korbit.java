@@ -45,6 +45,7 @@ public class Korbit {
 
     @Scheduled(cron = "0 7 0 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
+        log.info("::: korbit crawling start :::");
         SaveDto saveDto = new SaveDto();
         String url = "https://lightning.korbit.co.kr/service/staking/list";
 
@@ -101,6 +102,7 @@ public class Korbit {
         }
         //웹브라우저 닫기
         webDriver.close();
+        log.info("::: korbit crawling finish :::");
     }
     private static String extractNumber(String input) {
         // 숫자와 소수점을 포함하는 정규표현식

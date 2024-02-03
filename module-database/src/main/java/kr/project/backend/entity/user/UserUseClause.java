@@ -44,4 +44,5 @@ public class UserUseClause extends BaseTimeEntity implements Serializable {
         this.user = user;
         this.useClause = useClause;
     }
+
 }

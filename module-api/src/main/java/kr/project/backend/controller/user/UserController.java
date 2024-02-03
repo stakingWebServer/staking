@@ -105,8 +105,8 @@ public class UserController {
 
     @Operation(summary = "공지사항 조회", description = "공지사항 조회 입니다.")
     @GetMapping("/notices")
-    public ResponseEntity<?> getNotices(@PageableDefault()Pageable pageable) {
-        return ListResult.build(userService.getNotices(pageable));
+    public ResponseEntity<?> getNotices(@AuthenticationPrincipal ServiceUser serviceUser,@PageableDefault Pageable pageable) {
+        return ListResult.build(userService.getNotices(pageable,serviceUser));
     }
 
     @Operation(summary = "마이데이터스테이킹 목록 조회", description = "마이데이터스테이킹 목록을 조회합니다.")
@@ -140,5 +140,19 @@ public class UserController {
                                             @Parameter(description = "스태이킹키값", example = "528271d4-7711-43fe-849f-da9227f25ee7", required = true) @RequestParam String stakingId,
                                             @Parameter(description = "히스토리기간", example = "01") @RequestParam(required = false) String historyDate) {
         return ObjectResult.build(userService.stakingsDetail(serviceUser,stakingId,historyDate));
+    }
+
+    @Operation(summary = "공지사항 읽음", description = "유저의 공지사항 읽음 처리 입니다.")
+    @PostMapping("/noticeRead")
+    public ResponseEntity<?> noticeRead(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody NoticeReadRequestDto noticeReadRequestDto) {
+        userService.noticeRead(serviceUser,noticeReadRequestDto);
+        return ObjectResult.ok();
+    }
+
+    @Operation(summary = "문의사항", description = "문의사항 입니다.")
+    @PostMapping("/question")
+    public ResponseEntity<?> question(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody QuestionRequestDto questionRequestDto) {
+        userService.question(serviceUser,questionRequestDto);
+        return ObjectResult.ok();
     }
 }

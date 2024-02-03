@@ -1,10 +1,6 @@
 package kr.project.backend.entity.common;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import kr.project.backend.entity.common.BaseTimeEntity;
+import jakarta.persistence.*;
 import kr.project.backend.entity.user.UseClause;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,10 +19,6 @@ public class CommonFile extends BaseTimeEntity implements Serializable {
     @Column(length = 10)
     private String fileId;
 
-    @Comment(value = "그룹 파일키값")
-    @Column(length = 10)
-    private String groupFileId;
-
     @Comment(value = "파일명")
     @Column(length = 50)
     private String fileName;
@@ -42,12 +34,23 @@ public class CommonFile extends BaseTimeEntity implements Serializable {
     @OneToOne(mappedBy = "commonFile")
     private UseClause useClause;
 
-    public CommonFile(String groupFileId, String fileId, String fileName, String filePath, String fileUrl){
-        this.groupFileId = groupFileId;
+    @ManyToOne
+    @JoinColumn(name = "group_file_id")
+    private CommonGroupFile commonGroupFile;
+
+
+
+
+    public CommonFile(CommonGroupFile commonGroupFile, String fileId, String fileName, String filePath, String fileUrl){
+        this.commonGroupFile = commonGroupFile;
         this.fileId = fileId;
         this.fileName = fileName;
         this.filePath = filePath;
         this.fileUrl = fileUrl;
+    }
+
+    public void updateGroupFileId(CommonGroupFile commonGroupFile){
+        this.commonGroupFile = commonGroupFile;
     }
 
 }

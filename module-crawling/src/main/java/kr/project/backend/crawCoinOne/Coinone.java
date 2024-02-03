@@ -33,6 +33,7 @@ public class Coinone {
 
     @Scheduled(cron = "0 14 0 * * *")
     public void craw() throws FileNotFoundException, InterruptedException {
+        log.info("::: coinone crawling start :::");
         SaveDto saveDto = new SaveDto();
         String url = "https://coinone.co.kr/plus";
 
@@ -90,6 +91,6 @@ public class Coinone {
         webDriver.close();
 
 
-
+        log.info("::: coinone crawling finish :::");
     }
 }

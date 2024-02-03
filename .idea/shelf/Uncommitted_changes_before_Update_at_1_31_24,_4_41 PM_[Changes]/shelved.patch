@@ -1,0 +1,223 @@
+Index: module-api/src/main/java/kr/project/backend/service/coin/StakingInfoService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.service.coin;\n\nimport kr.project.backend.auth.ServiceUser;\nimport kr.project.backend.common.CommonErrorCode;\nimport kr.project.backend.common.CommonException;\nimport kr.project.backend.dto.coin.*;\nimport kr.project.backend.entity.coin.StakingInfo;\nimport kr.project.backend.entity.user.Favorite;\nimport kr.project.backend.entity.user.User;\nimport kr.project.backend.repository.coin.StakingInfoRepository;\nimport kr.project.backend.repository.user.FavoriteRepository;\nimport kr.project.backend.repository.user.UserRepository;\nimport lombok.RequiredArgsConstructor;\nimport lombok.extern.slf4j.Slf4j;\nimport org.springframework.stereotype.Service;\nimport org.springframework.transaction.annotation.Transactional;\n\nimport java.time.LocalDateTime;\nimport java.time.LocalTime;\nimport java.time.format.DateTimeFormatter;\nimport java.util.ArrayList;\nimport java.util.List;\nimport java.util.stream.Collectors;\n\n@Service\n@RequiredArgsConstructor\n@Slf4j\npublic class StakingInfoService {\n    private final StakingInfoRepository stakingInfoRepository;\n    private final FavoriteRepository favoriteRepository;\n    private final UserRepository userRepository;\n\n    //@Cacheable(value = \"stakingInfoList\")\n    public StakingInfoAndFavoriteListResponseDto getStakingInfosAll(ServiceUser serviceUser) {\n        //회원정보\n        User userInfo = userRepository.findById(serviceUser.getUserId())\n                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));\n\n        //즐겨찾기 목록 조회\n        List<Favorite> myFavorites = favoriteRepository.findAllByUserAndDelYn(userInfo, false);\n\n        List<StakingInfo> stakingInfos = stakingInfoRepository.findAllByCreatedDateBetween(\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")),\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")));\n\n\n        return new StakingInfoAndFavoriteListResponseDto(\n                stakingInfos.stream().map(StakingListDto::new).collect(Collectors.toList()),\n                myFavorites.stream().map(FavoriteListDto::new).collect(Collectors.toList()));\n    }\n    @Transactional(readOnly = true)\n    public StakingInfoDetailResponseDto getStakingInfo(String stakingId,ServiceUser serviceUser) {\n\n        StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId)\n                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(), CommonErrorCode.NOT_FOUND_COIN.getMessage()));\n\n        User userInfo = userRepository.findById(serviceUser.getUserId())\n                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));\n\n        //즐겨찾기 인 스테이킹인지 확인\n        boolean favoriteCheck = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false);\n\n        List<StakingInfo> stakingInfos = stakingInfoRepository.findByCoinNameAndCreatedDateBetween(stakingInfo.getCoinName(),\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")),\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")));\n        List<AboutCoinMarketDto> aboutCoinMarketDtos = new ArrayList<>();\n        stakingInfos.forEach(aboutCoinMarket -> {\n            aboutCoinMarketDtos.add(new AboutCoinMarketDto(aboutCoinMarket.getStakingId(), String.valueOf(aboutCoinMarket.getCoinMarketType())));\n        });\n\n        return new StakingInfoDetailResponseDto(stakingInfo, aboutCoinMarketDtos,favoriteCheck);\n    }\n\n\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/service/coin/StakingInfoService.java b/module-api/src/main/java/kr/project/backend/service/coin/StakingInfoService.java
+--- a/module-api/src/main/java/kr/project/backend/service/coin/StakingInfoService.java	(revision a109a5c239b74a861082ea1a0dd8ebc49bfc802f)
++++ b/module-api/src/main/java/kr/project/backend/service/coin/StakingInfoService.java	(date 1706683448863)
+@@ -5,9 +5,12 @@
+ import kr.project.backend.common.CommonException;
+ import kr.project.backend.dto.coin.*;
+ import kr.project.backend.entity.coin.StakingInfo;
++import kr.project.backend.entity.common.CommonFile;
+ import kr.project.backend.entity.user.Favorite;
+ import kr.project.backend.entity.user.User;
+ import kr.project.backend.repository.coin.StakingInfoRepository;
++import kr.project.backend.repository.common.FileRepository;
++import kr.project.backend.repository.common.QuestionRepository;
+ import kr.project.backend.repository.user.FavoriteRepository;
+ import kr.project.backend.repository.user.UserRepository;
+ import lombok.RequiredArgsConstructor;
+@@ -20,6 +23,7 @@
+ import java.time.format.DateTimeFormatter;
+ import java.util.ArrayList;
+ import java.util.List;
++import java.util.Optional;
+ import java.util.stream.Collectors;
+ 
+ @Service
+@@ -29,6 +33,8 @@
+     private final StakingInfoRepository stakingInfoRepository;
+     private final FavoriteRepository favoriteRepository;
+     private final UserRepository userRepository;
++    private final QuestionRepository questionRepository;
++    private final FileRepository fileRepository;
+ 
+     //@Cacheable(value = "stakingInfoList")
+     public StakingInfoAndFavoriteListResponseDto getStakingInfosAll(ServiceUser serviceUser) {
+@@ -72,5 +78,8 @@
+     }
+ 
+ 
++    public void test() {
++        CommonFile file = fileRepository.findById("123").orElse(null);
++    }
+ }
+ 
+Index: module-database/src/main/java/kr/project/backend/entity/common/CommonFile.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.entity.common;\n\nimport jakarta.persistence.Column;\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.OneToOne;\nimport kr.project.backend.entity.common.BaseTimeEntity;\nimport kr.project.backend.entity.user.UseClause;\nimport lombok.AccessLevel;\nimport lombok.Getter;\nimport lombok.NoArgsConstructor;\nimport org.hibernate.annotations.Comment;\n\nimport java.io.Serializable;\n\n@Getter\n@Entity\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\npublic class CommonFile extends BaseTimeEntity implements Serializable {\n\n    @Id\n    @Comment(value = \"파일키값\")\n    @Column(length = 10)\n    private String fileId;\n\n    @Comment(value = \"그룹 파일키값\")\n    @Column(length = 10)\n    private String groupFileId;\n\n    @Comment(value = \"파일명\")\n    @Column(length = 50)\n    private String fileName;\n\n    @Comment(value = \"파일경로\")\n    @Column(length = 50)\n    private String filePath;\n\n    @Comment(value = \"파일url\")\n    @Column(length = 100)\n    private String fileUrl;\n\n    @OneToOne(mappedBy = \"commonFile\")\n    private UseClause useClause;\n\n    public CommonFile(String groupFileId, String fileId, String fileName, String filePath, String fileUrl){\n        this.groupFileId = groupFileId;\n        this.fileId = fileId;\n        this.fileName = fileName;\n        this.filePath = filePath;\n        this.fileUrl = fileUrl;\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-database/src/main/java/kr/project/backend/entity/common/CommonFile.java b/module-database/src/main/java/kr/project/backend/entity/common/CommonFile.java
+--- a/module-database/src/main/java/kr/project/backend/entity/common/CommonFile.java	(revision a109a5c239b74a861082ea1a0dd8ebc49bfc802f)
++++ b/module-database/src/main/java/kr/project/backend/entity/common/CommonFile.java	(date 1706683045295)
+@@ -1,10 +1,8 @@
+ package kr.project.backend.entity.common;
+ 
+-import jakarta.persistence.Column;
+-import jakarta.persistence.Entity;
+-import jakarta.persistence.Id;
+-import jakarta.persistence.OneToOne;
++import jakarta.persistence.*;
+ import kr.project.backend.entity.common.BaseTimeEntity;
++import kr.project.backend.entity.user.Question;
+ import kr.project.backend.entity.user.UseClause;
+ import lombok.AccessLevel;
+ import lombok.Getter;
+@@ -42,6 +40,10 @@
+     @OneToOne(mappedBy = "commonFile")
+     private UseClause useClause;
+ 
++    @ManyToOne
++    @JoinColumn(name = "question_id")
++    private Question question;
++
+     public CommonFile(String groupFileId, String fileId, String fileName, String filePath, String fileUrl){
+         this.groupFileId = groupFileId;
+         this.fileId = fileId;
+Index: module-api/src/main/java/kr/project/backend/controller/coin/StakingInfoController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.controller.coin;\n\nimport io.swagger.v3.oas.annotations.Operation;\nimport io.swagger.v3.oas.annotations.tags.Tag;\n\nimport kr.project.backend.auth.ServiceUser;\nimport kr.project.backend.results.ListResult;\nimport kr.project.backend.service.coin.StakingInfoService;\nimport kr.project.backend.common.Environment;\nimport kr.project.backend.results.ObjectResult;\nimport lombok.RequiredArgsConstructor;\nimport org.springframework.http.ResponseEntity;\nimport org.springframework.security.core.annotation.AuthenticationPrincipal;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport java.util.UUID;\n\n@Tag(name = \"staking\", description = \"스테이킹\")\n@RestController\n@RequiredArgsConstructor\n@RequestMapping(\"/api/\" + Environment.API_VERSION + \"/\" + Environment.API_USER + \"/staking\")\npublic class StakingInfoController {\n\n    private final StakingInfoService stakingInfoService;\n\n    @Operation(summary = \"코인 스테이킹 목록 조회\", description = \"코인 스테이킹 목록 조회를 합니다.\")\n    @GetMapping(\"/infos-all\")\n    public ResponseEntity<?> stakingInfosAll(@AuthenticationPrincipal ServiceUser serviceUser) {\n        return ObjectResult.build(stakingInfoService.getStakingInfosAll(serviceUser));\n    }\n\n    @Operation(summary = \"코인 스테이킹 상세 조회\", description = \"코인 스테이킹 상세 조회를 합니다.\")\n    @GetMapping(\"/info/{stakingId}\")\n    public ResponseEntity<?> stakingInfo(\n            @AuthenticationPrincipal ServiceUser serviceUser,\n            @PathVariable(value = \"stakingId\") String stakingId) {\n        return ObjectResult.build(stakingInfoService.getStakingInfo(stakingId,serviceUser));\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/controller/coin/StakingInfoController.java b/module-api/src/main/java/kr/project/backend/controller/coin/StakingInfoController.java
+--- a/module-api/src/main/java/kr/project/backend/controller/coin/StakingInfoController.java	(revision a109a5c239b74a861082ea1a0dd8ebc49bfc802f)
++++ b/module-api/src/main/java/kr/project/backend/controller/coin/StakingInfoController.java	(date 1706683221942)
+@@ -39,4 +39,9 @@
+             @PathVariable(value = "stakingId") String stakingId) {
+         return ObjectResult.build(stakingInfoService.getStakingInfo(stakingId,serviceUser));
+     }
++
++    @GetMapping("/")
++    public void get(){
++     stakingInfoService.test();
++    }
+ }
+Index: module-database/src/main/java/kr/project/backend/repository/common/QuestionRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-database/src/main/java/kr/project/backend/repository/common/QuestionRepository.java b/module-database/src/main/java/kr/project/backend/repository/common/QuestionRepository.java
+new file mode 100644
+--- /dev/null	(date 1706683221939)
++++ b/module-database/src/main/java/kr/project/backend/repository/common/QuestionRepository.java	(date 1706683221939)
+@@ -0,0 +1,7 @@
++package kr.project.backend.repository.common;
++
++import kr.project.backend.entity.user.Question;
++import org.springframework.data.jpa.repository.JpaRepository;
++
++public interface QuestionRepository extends JpaRepository<Question,String> {
++}
+Index: module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.config;\n\n\nimport com.google.auth.oauth2.GoogleCredentials;\nimport com.google.firebase.FirebaseApp;\nimport com.google.firebase.FirebaseOptions;\nimport com.google.firebase.messaging.FirebaseMessaging;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\nimport org.springframework.util.ResourceUtils;\n\nimport java.io.FileInputStream;\nimport java.io.IOException;\n\n@Configuration\npublic class FirebaseConfig {\n    @Bean\n    public FirebaseApp firebaseApp() throws IOException {\n        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile(\"/app/project/pushfile/stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json\")));\n        FirebaseOptions options = FirebaseOptions\n                .builder()\n                .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))\n                .build();\n        return FirebaseApp.initializeApp(options);\n    }\n\n    @Bean\n    public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {\n        return FirebaseMessaging.getInstance(firebaseApp);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java b/module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java
+--- a/module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java	(revision a109a5c239b74a861082ea1a0dd8ebc49bfc802f)
++++ b/module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java	(date 1706665541416)
+@@ -16,7 +16,9 @@
+ public class FirebaseConfig {
+     @Bean
+     public FirebaseApp firebaseApp() throws IOException {
+-        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("/app/project/pushfile/stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json")));
++        //FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("/app/project/pushfile/stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json")));
++        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("classpath:stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json")));
++
+         FirebaseOptions options = FirebaseOptions
+                 .builder()
+                 .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
+Index: module-api/src/main/java/kr/project/backend/service/admin/AdminService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.service.admin;\n\nimport com.google.firebase.messaging.FirebaseMessaging;\nimport com.google.firebase.messaging.FirebaseMessagingException;\nimport kr.project.backend.common.CommonErrorCode;\nimport kr.project.backend.common.CommonException;\nimport kr.project.backend.common.Constants;\nimport kr.project.backend.dto.admin.response.*;\nimport kr.project.backend.dto.common.request.PushRequestDto;\nimport kr.project.backend.dto.common.request.PushsRequestDto;\nimport kr.project.backend.entity.user.UseClause;\nimport kr.project.backend.entity.user.User;\nimport kr.project.backend.entity.user.UserUseClause;\nimport kr.project.backend.repository.user.*;\nimport lombok.RequiredArgsConstructor;\nimport lombok.extern.slf4j.Slf4j;\nimport org.springframework.beans.factory.annotation.Value;\nimport org.springframework.stereotype.Service;\nimport org.springframework.transaction.annotation.Transactional;\n\nimport java.time.LocalDateTime;\nimport java.time.LocalTime;\nimport java.time.format.DateTimeFormatter;\nimport java.util.ArrayList;\nimport java.util.List;\n\nimport static kr.project.backend.common.PushContent.makeMessage;\nimport static kr.project.backend.common.PushContent.makeMessages;\nimport static kr.project.backend.utils.AesUtil.encryptAES256;\n\n\n@Service\n@RequiredArgsConstructor\n@Slf4j\npublic class AdminService {\n\n    @Value(\"${admin.aesKey}\")\n    private String adminAESKey;\n\n    @Value(\"${admin.aesIv}\")\n    private String adminAESIv;\n\n    private final UserRepository userRepository;\n    private final DropUserRepository dropUserRepository;\n    private final MoveViewRepository moveViewRepository;\n    private final FirebaseMessaging firebaseMessaging;\n    private final UseClauseRepository useClauseRepository;\n    private final UserUseClauseRepository userUseClauseRepository;\n\n\n    public AccessKeyResponseDto giveApikey(String plainText) throws Exception {\n        return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, plainText + System.currentTimeMillis()));\n    }\n\n    @Transactional(readOnly = true)\n    public TodayRegisterResponseDto getTodayRegister() {\n        int todayRegister = userRepository.countByCreatedDateBetween(\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")),\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")));\n\n        return new TodayRegisterResponseDto(todayRegister);\n    }\n\n    @Transactional(readOnly = true)\n    public TodayLoginUserResponseDto getTodayLoginUser() {\n        int todayLoginUser = userRepository.countByUserLoginDttmBetween(\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")),\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")));\n\n        return new TodayLoginUserResponseDto(todayLoginUser);\n    }\n\n    @Transactional(readOnly = true)\n    public TodayDropUserResponseDto getTodayDropUser() {\n        int todayDropUser = dropUserRepository.countByDropDttmBetween(\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")),\n                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")));\n\n        return new TodayDropUserResponseDto(todayDropUser);\n    }\n\n    @Transactional(readOnly = true)\n    public List<PageViewDto> getPageView() {\n        return moveViewRepository.getPageViewInfo();\n    }\n\n\n    @Transactional(readOnly = true)\n    public void sendPush(PushRequestDto pushRequestDto) throws FirebaseMessagingException {\n        //유저 정보 조회\n        User userInfo = userRepository.findByUserEmail(pushRequestDto.getUserEmail())\n                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));\n        //푸시 전송\n        UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)\n                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));\n        UserUseClause targetUser = userUseClauseRepository.findByUserAndUseClauseAndAgreeYn(userInfo, useClause, Constants.YN.Y)\n                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage()));\n        if(pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())){\n            firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));\n        }else{\n            throw new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage());\n        }\n    }\n\n    @Transactional(readOnly = true)\n    public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {\n        //유저 정보 조회\n        List<User> userInfos = userRepository.findAllByUserEmailNotNull();\n        UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)\n                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));\n        List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);\n        List<String> targetUserTokens = new ArrayList<>();\n        targetUsers.forEach(targetUser -> targetUserTokens.add(targetUser.getUser().getUserPushToken()));\n        FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(),targetUserTokens));\n\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/service/admin/AdminService.java b/module-api/src/main/java/kr/project/backend/service/admin/AdminService.java
+--- a/module-api/src/main/java/kr/project/backend/service/admin/AdminService.java	(revision a109a5c239b74a861082ea1a0dd8ebc49bfc802f)
++++ b/module-api/src/main/java/kr/project/backend/service/admin/AdminService.java	(date 1706676992390)
+@@ -104,8 +104,6 @@
+ 
+     @Transactional(readOnly = true)
+     public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
+-        //유저 정보 조회
+-        List<User> userInfos = userRepository.findAllByUserEmailNotNull();
+         UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
+                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
+         List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
+Index: module-database/src/main/java/kr/project/backend/entity/user/Question.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-database/src/main/java/kr/project/backend/entity/user/Question.java b/module-database/src/main/java/kr/project/backend/entity/user/Question.java
+new file mode 100644
+--- /dev/null	(date 1706683045287)
++++ b/module-database/src/main/java/kr/project/backend/entity/user/Question.java	(date 1706683045287)
+@@ -0,0 +1,32 @@
++package kr.project.backend.entity.user;
++
++import jakarta.persistence.*;
++import kr.project.backend.entity.common.BaseTimeEntity;
++import kr.project.backend.entity.common.CommonFile;
++import lombok.AccessLevel;
++import lombok.AllArgsConstructor;
++import lombok.Getter;
++import lombok.NoArgsConstructor;
++import org.hibernate.annotations.Comment;
++import org.hibernate.annotations.GenericGenerator;
++
++import java.io.Serializable;
++import java.util.List;
++
++@Getter
++@Entity
++@NoArgsConstructor(access = AccessLevel.PROTECTED)
++@AllArgsConstructor(access = AccessLevel.PROTECTED)
++public class Question extends BaseTimeEntity implements Serializable {
++
++    @Id
++    @GeneratedValue(generator = "uuid2")
++    @GenericGenerator(name="uuid2", strategy = "uuid2")
++    @Column(columnDefinition = "varchar(38)")
++    @Comment(value = "문의ID")
++    private String questionId;
++    private String title;
++    private String content;
++    @OneToMany(mappedBy = "question")
++    private List<CommonFile> commonFile;
++}
+Index: module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.config;\n\nimport io.swagger.v3.oas.annotations.OpenAPIDefinition;\nimport io.swagger.v3.oas.annotations.info.Info;\nimport io.swagger.v3.oas.annotations.servers.Server;\nimport io.swagger.v3.oas.models.Components;\nimport io.swagger.v3.oas.models.OpenAPI;\nimport io.swagger.v3.oas.models.security.SecurityRequirement;\nimport io.swagger.v3.oas.models.security.SecurityScheme;\nimport lombok.RequiredArgsConstructor;\nimport org.springdoc.core.models.GroupedOpenApi;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\n\n@OpenAPIDefinition(\n        info = @Info(title = \"STAKING API 명세서\",\n                description = \"STAKING API 명세서 입니다.\",\n                version = \"v1\"),\n        servers = {@Server(url = \"https://api.s2it.kro.kr\")}) //prod\n        //servers = {@Server(url = \"/\")}) //local\n@RequiredArgsConstructor\n@Configuration\npublic class SwaggerConfig {\n    @Bean\n    public GroupedOpenApi userGroupApi() {\n        return GroupedOpenApi.builder()\n                .group(\"1\")\n                .displayName(\"사용자\")\n                .pathsToMatch(\"/api/v1/user/**\")\n                .build();\n    }\n\n    @Bean\n    public GroupedOpenApi adminGroupApi() {\n        return GroupedOpenApi.builder()\n                .group(\"2\")\n                .displayName(\"관리자\")\n                .pathsToMatch(\"/api/v1/admin/**\")\n                .build();\n    }\n\n    @Bean\n    public GroupedOpenApi commonGroupApi() {\n        return GroupedOpenApi.builder()\n                .group(\"3\")\n                .displayName(\"공통\")\n                .pathsToMatch(\"/api/v1/common/**\")\n                .build();\n    }\n\n    @Bean\n    public OpenAPI initOpenAPI() {\n        return new OpenAPI()\n                .info(new io.swagger.v3.oas.models.info.Info().title(\"TEST API\")\n                        .description(\"TEST API 명세서입니다.\")\n                        .version(\"v0.0.1\"))\n                .addSecurityItem(new SecurityRequirement().addList(\"Authorization\"))\n                .components(\n                        new Components().addSecuritySchemes(\n                                \"Authorization\",\n                                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme(\"bearer\").bearerFormat(\"JWT\").name(\"Authorization\")\n                        ));\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java b/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java
+--- a/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java	(revision a109a5c239b74a861082ea1a0dd8ebc49bfc802f)
++++ b/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java	(date 1706666642336)
+@@ -16,8 +16,8 @@
+         info = @Info(title = "STAKING API 명세서",
+                 description = "STAKING API 명세서 입니다.",
+                 version = "v1"),
+-        servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
+-        //servers = {@Server(url = "/")}) //local
++        //servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
++        servers = {@Server(url = "/")}) //local
+ @RequiredArgsConstructor
+ @Configuration
+ public class SwaggerConfig {

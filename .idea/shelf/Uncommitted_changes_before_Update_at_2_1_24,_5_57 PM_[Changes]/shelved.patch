@@ -1,0 +1,86 @@
+Index: module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.config;\n\n\nimport com.google.auth.oauth2.GoogleCredentials;\nimport com.google.firebase.FirebaseApp;\nimport com.google.firebase.FirebaseOptions;\nimport com.google.firebase.messaging.FirebaseMessaging;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\nimport org.springframework.util.ResourceUtils;\n\nimport java.io.FileInputStream;\nimport java.io.IOException;\n\n@Configuration\npublic class FirebaseConfig {\n    @Bean\n    public FirebaseApp firebaseApp() throws IOException {\n        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile(\"/app/project/pushfile/stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json\")));\n        FirebaseOptions options = FirebaseOptions\n                .builder()\n                .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))\n                .build();\n        return FirebaseApp.initializeApp(options);\n    }\n\n    @Bean\n    public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {\n        return FirebaseMessaging.getInstance(firebaseApp);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java b/module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java
+--- a/module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java	(revision a599375fa91575fe7fcb1926d4fdd2e195dfab9d)
++++ b/module-api/src/main/java/kr/project/backend/config/FirebaseConfig.java	(date 1706773461332)
+@@ -16,7 +16,9 @@
+ public class FirebaseConfig {
+     @Bean
+     public FirebaseApp firebaseApp() throws IOException {
+-        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("/app/project/pushfile/stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json")));
++        //FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("/app/project/pushfile/stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json")));
++        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("classpath:stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json")));
++
+         FirebaseOptions options = FirebaseOptions
+                 .builder()
+                 .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
+Index: module-database/src/main/java/kr/project/backend/dto/admin/request/AdminLoginRequestDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-database/src/main/java/kr/project/backend/dto/admin/request/AdminLoginRequestDto.java b/module-database/src/main/java/kr/project/backend/dto/admin/request/AdminLoginRequestDto.java
+new file mode 100644
+--- /dev/null	(date 1706777386260)
++++ b/module-database/src/main/java/kr/project/backend/dto/admin/request/AdminLoginRequestDto.java	(date 1706777386260)
+@@ -0,0 +1,11 @@
++package kr.project.backend.dto.admin.request;
++
++import lombok.Data;
++
++import java.io.Serializable;
++
++@Data
++public class AdminLoginRequestDto implements Serializable {
++    private String loginId;
++    private String password;
++}
+Index: module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.config;\n\nimport io.swagger.v3.oas.annotations.OpenAPIDefinition;\nimport io.swagger.v3.oas.annotations.info.Info;\nimport io.swagger.v3.oas.annotations.servers.Server;\nimport io.swagger.v3.oas.models.Components;\nimport io.swagger.v3.oas.models.OpenAPI;\nimport io.swagger.v3.oas.models.security.SecurityRequirement;\nimport io.swagger.v3.oas.models.security.SecurityScheme;\nimport lombok.RequiredArgsConstructor;\nimport org.springdoc.core.models.GroupedOpenApi;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\n\n@OpenAPIDefinition(\n        info = @Info(title = \"STAKING API 명세서\",\n                description = \"STAKING API 명세서 입니다.\",\n                version = \"v1\"),\n        servers = {@Server(url = \"https://api.s2it.kro.kr\")}) //prod\n        //servers = {@Server(url = \"/\")}) //local\n@RequiredArgsConstructor\n@Configuration\npublic class SwaggerConfig {\n    @Bean\n    public GroupedOpenApi userGroupApi() {\n        return GroupedOpenApi.builder()\n                .group(\"1\")\n                .displayName(\"사용자\")\n                .pathsToMatch(\"/api/v1/user/**\")\n                .build();\n    }\n\n    @Bean\n    public GroupedOpenApi adminGroupApi() {\n        return GroupedOpenApi.builder()\n                .group(\"2\")\n                .displayName(\"관리자\")\n                .pathsToMatch(\"/api/v1/admin/**\")\n                .build();\n    }\n\n    @Bean\n    public GroupedOpenApi commonGroupApi() {\n        return GroupedOpenApi.builder()\n                .group(\"3\")\n                .displayName(\"공통\")\n                .pathsToMatch(\"/api/v1/common/**\")\n                .build();\n    }\n\n    @Bean\n    public OpenAPI initOpenAPI() {\n        return new OpenAPI()\n                .info(new io.swagger.v3.oas.models.info.Info().title(\"TEST API\")\n                        .description(\"TEST API 명세서입니다.\")\n                        .version(\"v0.0.1\"))\n                .addSecurityItem(new SecurityRequirement().addList(\"Authorization\"))\n                .components(\n                        new Components().addSecuritySchemes(\n                                \"Authorization\",\n                                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme(\"bearer\").bearerFormat(\"JWT\").name(\"Authorization\")\n                        ));\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java b/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java
+--- a/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java	(revision a599375fa91575fe7fcb1926d4fdd2e195dfab9d)
++++ b/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java	(date 1706773461337)
+@@ -16,8 +16,8 @@
+         info = @Info(title = "STAKING API 명세서",
+                 description = "STAKING API 명세서 입니다.",
+                 version = "v1"),
+-        servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
+-        //servers = {@Server(url = "/")}) //local
++        //servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
++        servers = {@Server(url = "/")}) //local
+ @RequiredArgsConstructor
+ @Configuration
+ public class SwaggerConfig {
+Index: module-api/src/main/java/kr/project/backend/controller/admin/AdminController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.controller.admin;\n\n\nimport com.google.firebase.messaging.FirebaseMessagingException;\nimport io.swagger.v3.oas.annotations.Operation;\nimport io.swagger.v3.oas.annotations.Parameter;\nimport io.swagger.v3.oas.annotations.tags.Tag;\nimport kr.project.backend.dto.admin.request.ReplyRequestDto;\nimport kr.project.backend.dto.common.request.PushRequestDto;\nimport kr.project.backend.dto.common.request.PushsRequestDto;\nimport kr.project.backend.results.ListResult;\nimport kr.project.backend.service.admin.AdminService;\nimport kr.project.backend.common.Environment;\nimport kr.project.backend.results.ObjectResult;\nimport lombok.RequiredArgsConstructor;\nimport lombok.extern.slf4j.Slf4j;\nimport org.springframework.http.ResponseEntity;\nimport org.springframework.web.bind.annotation.*;\n\n@Tag(name = \"관리자\", description = \"관리자 로그인\")\n@Slf4j\n@RestController\n@RequestMapping(\"/api/\" + Environment.API_VERSION + \"/\" + Environment.API_ADMIN)\n@RequiredArgsConstructor\npublic class AdminController {\n\n    private final AdminService adminService;\n\n    @Operation(summary = \"apiKey 발급\",description = \"관리자용 헤더 apikey를 발급합니다.\")\n    @GetMapping(\"/accessKey/{plainText}\")\n    public ResponseEntity<?> accessKey(@Parameter(name = \"plainText\", description = \"암호화 할 평문\", example = \"testText\")\n                                       @PathVariable(name = \"plainText\") String plainText) throws Exception{\n        return ObjectResult.build(adminService.giveApikey(plainText));\n    }\n    @Operation(summary = \"당일 가입 사용자 수\",description = \"당일 가입 사용자 수를 구한다.\")\n    @GetMapping(\"/today-register\")\n    public ResponseEntity<?> getTodayRegister(){\n        return ObjectResult.build(adminService.getTodayRegister());\n    }\n\n    @Operation(summary = \"당일 로그인 사용자 수\",description = \"당일 로그인 사용자 수를 구한다.\")\n    @GetMapping(\"/today-loginUser\")\n    public ResponseEntity<?> getTodayLoginUser(){\n        return ObjectResult.build(adminService.getTodayLoginUser());\n    }\n    @Operation(summary = \"당일 탈퇴 사용자 수\",description = \"당일 탈토ㅚ 사용자 수를 구한다.\")\n    @GetMapping(\"/today-dropUser\")\n    public ResponseEntity<?> getTodayDropUser(){\n        return ObjectResult.build(adminService.getTodayDropUser());\n    }\n\n    @Operation(summary = \"페이지 별 조회 수\",description = \"패아자 별 조회 수를 구한다.\")\n    @GetMapping(\"/page-view\")\n    public ResponseEntity<?> getPageView(){\n        return ListResult.build(adminService.getPageView());\n    }\n    @Operation(summary = \"단일 푸시 토큰 발송\",description = \"단일 푸시 토큰 발송을 한다.\")\n    @PostMapping(\"/send-push\")\n    public ResponseEntity<?> push(@RequestBody PushRequestDto pushRequestDto) throws FirebaseMessagingException{\n        adminService.sendPush(pushRequestDto);\n        return ObjectResult.ok();\n    }\n    @Operation(summary = \"단체 푸시 토큰 발송\",description = \"단체 푸시 토큰 발송을 한다.\")\n    @PostMapping(\"/send-pushs\")\n    public ResponseEntity<?> pushs(@RequestBody PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {\n        adminService.sendPushs(pushsRequestDto);\n        return ObjectResult.ok();\n    }\n    @Operation(summary = \"문의 목록\",description = \"문의 목록을 조회합니다.\")\n    @GetMapping(\"/questions\")\n    public ResponseEntity<?> questions(){\n        return ListResult.build(adminService.getQuestions());\n    }\n    @Operation(summary = \"문의에 대한 답변\",description = \"문의에 대한 답변을 합니다.\")\n    @PostMapping(\"/reply\")\n    public ResponseEntity<?> post(@RequestBody ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {\n        adminService.replyAboutQuestion(replyRequestDto);\n        return ObjectResult.ok();\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/controller/admin/AdminController.java b/module-api/src/main/java/kr/project/backend/controller/admin/AdminController.java
+--- a/module-api/src/main/java/kr/project/backend/controller/admin/AdminController.java	(revision a599375fa91575fe7fcb1926d4fdd2e195dfab9d)
++++ b/module-api/src/main/java/kr/project/backend/controller/admin/AdminController.java	(date 1706777242909)
+@@ -26,6 +26,12 @@
+ 
+     private final AdminService adminService;
+ 
++    @Operation(summary = "관리자 로그인",description = "로그인 성공하면, api-key를 준다.")
++    @PostMapping("/auth")
++    public void auth(){
++
++    }
++
+     @Operation(summary = "apiKey 발급",description = "관리자용 헤더 apikey를 발급합니다.")
+     @GetMapping("/accessKey/{plainText}")
+     public ResponseEntity<?> accessKey(@Parameter(name = "plainText", description = "암호화 할 평문", example = "testText")

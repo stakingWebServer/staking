@@ -2,9 +2,13 @@ package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import kr.project.backend.auth.ServiceUser;
-import kr.project.backend.dto.coin.StakingListDto;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
+import kr.project.backend.entity.common.CommonFile;
+import kr.project.backend.entity.common.CommonGroupFile;
+import kr.project.backend.repository.common.CommonFileRepository;
+import kr.project.backend.repository.common.CommonGroupFileRepository;
+import kr.project.backend.repository.common.QuestionsRepository;
 import kr.project.backend.utils.JwtUtil;
 import kr.project.backend.entity.common.CommonCode;
 import kr.project.backend.common.CommonErrorCode;
@@ -30,11 +34,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,6 +72,10 @@ public class UserService {
     private final NoticeRepository noticeRepository;
     private final AlarmRepository alarmRepository;
     private final MyStakingDataAboutRewardRepository myStakingDataAboutRewardRepository;
+    private final UserNoticeReadRepository userNoticeReadRepository;
+    private final CommonFileRepository commonFileRepository;
+    private final QuestionsRepository questionsRepository;
+    private final CommonGroupFileRepository commonGroupFileRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -340,11 +346,19 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<NoticeResponseDto> getNotices(Pageable pageable) {
-        return noticeRepository.findAllByOrderByCreatedDateDesc(pageable)
-                .stream()
-                .map(NoticeResponseDto::new)
-                .collect(Collectors.toList());
+    public List<NoticeResponseDto> getNotices(Pageable pageable,ServiceUser serviceUser) {
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        Page<Notice> noticeList = noticeRepository.findAllByOrderByCreatedDateDesc(pageable);
+        List<NoticeResponseDto> noticeResponseDtoList = new ArrayList<>();
+        noticeList.forEach(notice -> {
+            boolean noticeReadChk = userNoticeReadRepository.existsByUserAndNotice(userInfo,notice);
+            noticeResponseDtoList.add(new NoticeResponseDto(notice, noticeReadChk ? "Y" : "N"));
+        });
+
+        return noticeResponseDtoList;
     }
 
     @Transactional(readOnly = true)
@@ -457,8 +471,67 @@ public class UserService {
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##################");
 
-        return new StakingsDetailResponseDto(stakingInfo.getCoinName(),decimalFormat.format(favorite.getTotalHoldings()),decimalFormat.format(favorite.getTotalRewards()),
+        return new StakingsDetailResponseDto(stakingInfo.getCoinName(),decimalFormat.format(favorite.getTotalHoldings()),decimalFormat.format(favorite.getTotalRewards()),stakingInfo.getUnit(),
                 myStakingDataAboutReward.stream().map(MyStakingDataAboutRewardHistoryDto::new).collect(Collectors.toList())
                 );
+    }
+
+    @Transactional
+    public void noticeRead(ServiceUser serviceUser, NoticeReadRequestDto noticeReadRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        Notice notice = noticeRepository.findById(noticeReadRequestDto.getNoticeId())
+                .orElseThrow(()-> new CommonException(CommonErrorCode.NOT_FOUND_NOTICE.getCode(),CommonErrorCode.NOT_FOUND_NOTICE.getMessage()));
+
+        boolean noticeReadCheck = userNoticeReadRepository.existsByUserAndNotice(userInfo,notice);
+
+        if(!noticeReadCheck){
+            userNoticeReadRepository.save(new UserNoticeRead(userInfo,notice));
+        }
+    }
+
+    @Transactional
+    public void question(ServiceUser serviceUser, QuestionRequestDto questionRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+
+        //그룹파일ID
+        String groupFileId = "";
+        CommonGroupFile commonGroupFile = null;
+
+        //중복체크
+        boolean questionsCheck = false;
+
+        //문의하기 파일 첨부시에만
+        if(questionRequestDto.getFileList() != null){
+            //파일 체크
+            for(QuestionRequestDto.file file : questionRequestDto.getFileList()){
+                CommonFile commonFile = commonFileRepository.findByFileId(file.getFileId())
+                        .orElseThrow(() -> new CommonException(CommonErrorCode.$_NOT_FOUND_FILE.getCode(),
+                                CommonErrorCode.$_NOT_FOUND_FILE.getMessage().replace("[$fileId]",file.getFileId())));
+                groupFileId = commonFile.getCommonGroupFile().getGroupFileId();
+            }
+
+            //그룹파일로 묶어주기
+            for(QuestionRequestDto.file file : questionRequestDto.getFileList()){
+                CommonFile commonFile = commonFileRepository.findByFileId(file.getFileId())
+                        .orElseThrow(() -> new CommonException(CommonErrorCode.$_NOT_FOUND_FILE.getCode(),
+                                CommonErrorCode.$_NOT_FOUND_FILE.getMessage().replace("[$fileId]",file.getFileId())));
+                commonGroupFile = commonGroupFileRepository.findById(groupFileId).orElse(null);
+                commonFile.updateGroupFileId(commonGroupFile);
+                commonFileRepository.save(commonFile);
+                questionsCheck = questionsRepository.existsByCommonGroupFile(commonGroupFile);
+            }
+        }
+
+        //문의사항 저장
+        if(!questionsCheck){
+            questionsRepository.save(new Questions(questionRequestDto,commonGroupFile,userInfo));
+        }
+
     }
 }

@@ -1,0 +1,21 @@
+Index: module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package kr.project.backend.config;\n\nimport io.swagger.v3.oas.annotations.OpenAPIDefinition;\nimport io.swagger.v3.oas.annotations.info.Info;\nimport io.swagger.v3.oas.annotations.servers.Server;\nimport io.swagger.v3.oas.models.Components;\nimport io.swagger.v3.oas.models.OpenAPI;\nimport io.swagger.v3.oas.models.security.SecurityRequirement;\nimport io.swagger.v3.oas.models.security.SecurityScheme;\nimport lombok.RequiredArgsConstructor;\nimport org.springdoc.core.models.GroupedOpenApi;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\n\n@OpenAPIDefinition(\n        info = @Info(title = \"STAKING API 명세서\",\n                description = \"STAKING API 명세서 입니다.\",\n                version = \"v1\"),\n        servers = {@Server(url = \"https://api.s2it.kro.kr\")}) //prod\n        //servers = {@Server(url = \"/\")}) //local\n@RequiredArgsConstructor\n@Configuration\npublic class SwaggerConfig {\n    @Bean\n    public GroupedOpenApi userGroupApi() {\n        return GroupedOpenApi.builder()\n                .group(\"1\")\n                .displayName(\"사용자\")\n                .pathsToMatch(\"/api/v1/user/**\")\n                .build();\n    }\n\n    @Bean\n    public GroupedOpenApi adminGroupApi() {\n        return GroupedOpenApi.builder()\n                .group(\"2\")\n                .displayName(\"관리자\")\n                .pathsToMatch(\"/api/v1/admin/**\")\n                .build();\n    }\n\n    @Bean\n    public OpenAPI initOpenAPI() {\n        return new OpenAPI()\n                .info(new io.swagger.v3.oas.models.info.Info().title(\"TEST API\")\n                        .description(\"TEST API 명세서입니다.\")\n                        .version(\"v0.0.1\"))\n                .addSecurityItem(new SecurityRequirement().addList(\"Authorization\"))\n                .components(\n                        new Components().addSecuritySchemes(\n                                \"Authorization\",\n                                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme(\"bearer\").bearerFormat(\"JWT\").name(\"Authorization\")\n                        ));\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java b/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java
+--- a/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java	(revision 891661e2fc7501788dacd3cfb4ac8559a4c8a166)
++++ b/module-api/src/main/java/kr/project/backend/config/SwaggerConfig.java	(date 1706257410015)
+@@ -16,8 +16,8 @@
+         info = @Info(title = "STAKING API 명세서",
+                 description = "STAKING API 명세서 입니다.",
+                 version = "v1"),
+-        servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
+-        //servers = {@Server(url = "/")}) //local
++        //servers = {@Server(url = "https://api.s2it.kro.kr")}) //prod
++        servers = {@Server(url = "/")}) //local
+ @RequiredArgsConstructor
+ @Configuration
+ public class SwaggerConfig {

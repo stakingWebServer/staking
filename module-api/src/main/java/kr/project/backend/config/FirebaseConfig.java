@@ -16,7 +16,9 @@ import java.io.IOException;
 public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("/app/project/pushfile/stake-409504-firebase-adminsdk-pyfkg-d12d552dfb.json")));
+        FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("/app/project/pushfile/stake-409504-firebase-adminsdk-pyfkg-88e33c9f60.json")));
+        //FileInputStream aboutFirebaseFile = new FileInputStream(String.valueOf(ResourceUtils.getFile("classpath:stake-409504-firebase-adminsdk-pyfkg-88e33c9f60.json")));
+
         FirebaseOptions options = FirebaseOptions
                 .builder()
                 .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
