@@ -10,9 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -37,6 +39,10 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     private String minAnnualRewardRate;
     @Comment(value = "연 추정 보상률 (최대)")
     private String maxAnnualRewardRate;
+
+    // 추가: 가상의 숫자 필드
+    @Formula("CAST(SUBSTRING(max_annual_reward_rate, LOCATE(' ', max_annual_reward_rate) + 1) AS DECIMAL(5,2))")
+    private BigDecimal maxAnnualRewardRateNumeric;
     @Comment(value = "스테이킹/언스테이킹 대기")
     private String stakingStatus;
     @Comment(value = "보상주기")

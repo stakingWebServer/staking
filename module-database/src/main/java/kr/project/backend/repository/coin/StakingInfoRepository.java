@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface StakingInfoRepository extends JpaRepository<StakingInfo, String> {
 
-    List<StakingInfo> findAllByCreatedDateBetweenOrderByMaxAnnualRewardRateDesc(String startDate, String endDate);
+    List<StakingInfo> findAllByCreatedDateBetweenOrderByMaxAnnualRewardRateNumericDesc(String startDate, String endDate);
 
     List<StakingInfo> findByCoinNameAndCreatedDateBetween(String coinName, String startDate, String endDate);
 
