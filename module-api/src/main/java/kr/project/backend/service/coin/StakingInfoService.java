@@ -39,7 +39,7 @@ public class StakingInfoService {
         //즐겨찾기 목록 조회
         List<Favorite> myFavorites = favoriteRepository.findAllByUserAndDelYn(userInfo, false);
 
-        List<StakingInfo> stakingInfos = stakingInfoRepository.findAllByCreatedDateBetween(
+        List<StakingInfo> stakingInfos = stakingInfoRepository.findAllByCreatedDateBetweenOrderByMaxAnnualRewardRateDesc(
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
@@ -60,7 +60,7 @@ public class StakingInfoService {
         //즐겨찾기 인 스테이킹인지 확인
         boolean favoriteCheck = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false);
 
-        List<StakingInfo> stakingInfos = stakingInfoRepository.findByCoinNameAndCreatedDateBetween(stakingInfo.getCoinName(),
+        List<StakingInfo> stakingInfos = stakingInfoRepository.findAllByCreatedDateBetweenOrderByMaxAnnualRewardRateDesc(stakingInfo.getCoinName(),
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         List<AboutCoinMarketDto> aboutCoinMarketDtos = new ArrayList<>();
