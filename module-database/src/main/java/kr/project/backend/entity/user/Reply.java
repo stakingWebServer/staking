@@ -31,9 +31,14 @@ public class Reply extends BaseTimeEntity implements Serializable {
     @Convert(converter = BooleanToYNConverter.class)
     @Comment(value = "답변 유무")
     private boolean replyYn;
+    @Column(columnDefinition = "VARCHAR(1) default 'N'")
+    @Convert(converter = BooleanToYNConverter.class)
+    @Comment(value = "답변 읽음 유무")
+    private boolean replyReadYn;
     @OneToOne
     @JoinColumn(name = "question_id")
     private Questions questions;
+
 
     public Reply(ReplyRequestDto replyRequestDto){
         this.content = replyRequestDto.getContent();

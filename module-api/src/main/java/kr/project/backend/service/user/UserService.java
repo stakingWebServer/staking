@@ -534,4 +534,16 @@ public class UserService {
         }
 
     }
+
+    @Transactional(readOnly = true)
+    public List<QuestionsResponseDto> getQuestions(Pageable pageable, ServiceUser serviceUser){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        return questionsRepository.findByUserOrderByCreatedDateDesc(userInfo,pageable)
+                .stream()
+                .map(QuestionsResponseDto::new)
+                .collect(Collectors.toList());
+    }
 }

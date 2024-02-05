@@ -187,4 +187,10 @@ public class UserController {
         userService.question(serviceUser,questionRequestDto);
         return ObjectResult.ok();
     }
+
+    @Operation(summary = "문의사항 목록", description = "문의사항 목록 입니다.")
+    @GetMapping("/questions")
+    public ResponseEntity<?> getQuestions(@PageableDefault()Pageable pageable, @AuthenticationPrincipal ServiceUser serviceUser) {
+        return ListResult.build(userService.getQuestions(pageable,serviceUser));
+    }
 }
