@@ -203,7 +203,7 @@ public class UserController {
         return ObjectResult.ok();
     }
 
-    @Operation(summary = "알람 세팅", description = "알람 세팅 입니다." +
+    @Operation(summary = "알람 세팅", description = "알람 세팅 입니다.<br>" +
                                                   "[param info]<br>" +
                                                   "* alarmKind(알람구분 코드)<br>" +
                                                   "01 : 광고성 안내 알림")
@@ -217,6 +217,18 @@ public class UserController {
     @GetMapping("/alarm-count")
     public ResponseEntity<?> alarmCount(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ObjectResult.build(userService.alarmCount(serviceUser));
+    }
+
+    @Operation(summary = "이전 약관 조회", description = "이전 약관 조회 입니다.<br>" +
+                                                      "[param info]<br>" +
+                                                      "* useClauseKind(약관구분 코드)<br>" +
+                                                      "01 : 서비스 이용약관<br>" +
+                                                      "02 : 개인정보처리방침<br>" +
+                                                      "03 : 마케팅 정보 수신 동의")
+    @GetMapping("/use-clauses/before")
+    public ResponseEntity<?> useClauseBefore(@Parameter(description = "약관구분코드", example = "01", required = true)
+                                             @RequestParam(value = "useClauseKind") String useClauseKind) {
+        return ListResult.build(userService.useClauseBefore(useClauseKind));
     }
 
 }

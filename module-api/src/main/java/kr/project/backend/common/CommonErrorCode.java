@@ -31,6 +31,7 @@ public enum CommonErrorCode {
     NOT_FOUND_USER_USE_CLAUSE("C010","선택한 항목이 아닙니다."),
     NOT_FOUND_NOTICE("C011","공지사항을 찾을 수 없습니다."),
     NOT_FOUND_REPLY("C012","답변을 찾을 수 없습니다."),
+    NOT_FOUND_BEFORE_USE_CLAUSE("C013","이전 약관을 찾을 수 없습니다."),
 
     // coin
     NOT_FOUND_COIN("D000","없는 코인정보입니다."),

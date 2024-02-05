@@ -13,14 +13,14 @@ import java.util.Optional;
 public interface UseClauseRepository extends JpaRepository<UseClause, String> {
 
     @Query(value = "SELECT new kr.project.backend.dto.user.response.UseClauseResponseDto(" +
-                        "A.useClauseId,A.useClauseEssentialYn,C.fileUrl, " +
+                        "A.useClauseId,A.useClauseEssentialYn,C.fileUrl,A.useClauseKind, " +
                         "CASE WHEN A.useClauseEssentialYn = 'Y' THEN CONCAT(B.commonCodeName,'(필수)') " +
                              "ELSE CONCAT(B.commonCodeName,'(선택)') " +
                          "END ," +
                         "CASE WHEN (SELECT COUNT(*) " +
                                      "FROM UseClause UC " +
                                     "WHERE UC.useClauseKind = A.useClauseKind " +
-                                      "AND A.useClauseState = '04') > 0 THEN 'Y' " +
+                                      "AND UC.useClauseState = '04') > 0 THEN 'Y' " +
                              "ELSE 'N' " +
                          "END " +
                         ")" +
@@ -34,4 +34,6 @@ public interface UseClauseRepository extends JpaRepository<UseClause, String> {
     List<UseClauseResponseDto> getUseClauses(@Param(value = "useClauseKind") String useClauseKind, @Param(value = "useClauseState") String useClauseState );
 
     Optional<UseClause> findByUseClauseKindAndUseClauseState(String advertisementPush, String apply);
+
+    List<UseClause> findByUseClauseKindAndUseClauseStateOrderByCreatedDateDesc(String useClauseKind, String useClauseState);
 }

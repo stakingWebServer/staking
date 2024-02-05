@@ -596,4 +596,18 @@ public class UserService {
 
         return new AlarmCountResponseDto(userInfo.getUserEmail(),alarmCnt>0 ? "Y":"N",alarmCnt);
     }
+
+    @Transactional(readOnly = true)
+    public List<UseClauseBeforeResponseDto> useClauseBefore(String useClauseKind){
+
+        List<UseClause> useClause = useClauseRepository.findByUseClauseKindAndUseClauseStateOrderByCreatedDateDesc(useClauseKind, Constants.USE_CLAUSE_STATE.END);
+        if(useClause.size() == 0){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_BEFORE_USE_CLAUSE.getCode(),CommonErrorCode.NOT_FOUND_BEFORE_USE_CLAUSE.getMessage());
+        }
+
+        return useClauseRepository.findByUseClauseKindAndUseClauseStateOrderByCreatedDateDesc(useClauseKind, Constants.USE_CLAUSE_STATE.END)
+                .stream()
+                .map(UseClauseBeforeResponseDto::new)
+                .collect(Collectors.toList());
+    }
 }

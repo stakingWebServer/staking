@@ -13,11 +13,13 @@ public class UseClauseResponseDto {
     private String useClauseFullTitle;
     private String useClauseBeforeYn;
     private String fileUrl;
+    private String useClauseKind;
 
-    public UseClauseResponseDto(String useClauseId, String useClauseEssentialYn, String fileUrl, String useClauseFullTitle, String useClauseBeforeYn){
+    public UseClauseResponseDto(String useClauseId, String useClauseEssentialYn, String fileUrl, String useClauseKind, String useClauseFullTitle, String useClauseBeforeYn){
         this.useClauseId = useClauseId;
         this.useClauseEssentialYn = useClauseEssentialYn;
         this.fileUrl = fileUrl;
+        this.useClauseKind = useClauseKind;
         this.useClauseFullTitle = useClauseFullTitle;
         this.useClauseBeforeYn = useClauseBeforeYn;
     }
