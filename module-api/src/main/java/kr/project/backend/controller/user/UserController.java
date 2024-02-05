@@ -104,7 +104,7 @@ public class UserController {
         return ObjectResult.ok();
     }
     @Operation(summary = "이용약관 목록 조회", description = "이용약관 목록을 조회 합니다.")
-    @GetMapping("/useClauses")
+    @GetMapping("/use-clauses")
     public ResponseEntity<?> getUseClauses() {
         return ListResult.build(userService.getUseClauses());
     }
@@ -114,7 +114,7 @@ public class UserController {
                                                             "* appOs(앱os)<br>" +
                                                             "01 : 안드로이드<br>" +
                                                             "02 : 애플")
-    @GetMapping("/appVersion")
+    @GetMapping("/app-version")
     public ResponseEntity<?> getAppVersion(@Parameter(description = "앱 OS", example = "01", required = true) @RequestParam String appOs,
                                            @Parameter(description = "앱 버전", example = "1.1.2", required = true) @RequestParam String appVersion) {
         userService.getAppVersion(appOs, appVersion);
@@ -122,7 +122,7 @@ public class UserController {
     }
 
     @Operation(summary = "화면 이동", description = "화면 이동시 해당 화면 방문을 저장 합니다.")
-    @PostMapping("/move/view")
+    @PostMapping("/view")
     public ResponseEntity<?> moveView(@AuthenticationPrincipal ServiceUser serviceUser,
                                       @Valid @RequestBody MoveViewRequestDto moveViewRequestDto) {
         userService.moveView(serviceUser, moveViewRequestDto);
@@ -147,14 +147,14 @@ public class UserController {
     }
 
     @Operation(summary = "알림 읽음", description = "알림 읽음 입니다.")
-    @PutMapping("/alarmCheck")
+    @PutMapping("/alarm")
     public ResponseEntity<?> alarmCheck(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody AlarmCheckRequestDto alarmCheckRequestDto) {
         userService.alarmCheck(serviceUser,alarmCheckRequestDto);
         return ObjectResult.ok();
     }
 
     @Operation(summary = "보유수량 입력", description = "보유수량 입력 입니다.")
-    @PostMapping("/ownCoin")
+    @PostMapping("/own-coin")
     public ResponseEntity<?> ownCoin(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody OwnCoinRequestDto coinRequestDto) {
         userService.ownCoin(serviceUser,coinRequestDto);
         return ObjectResult.ok();
@@ -167,15 +167,17 @@ public class UserController {
                                                                   "02 : 1개월<br>" +
                                                                   "03 : 6개월<br>" +
                                                                   "04 : 전체")
-    @GetMapping("/stakingsDetail")
+    @GetMapping("/staking/{stakingId}/{historyDate}")
     public ResponseEntity<?> stakingsDetail(@AuthenticationPrincipal ServiceUser serviceUser,
-                                            @Parameter(description = "스태이킹키값", example = "528271d4-7711-43fe-849f-da9227f25ee7", required = true) @RequestParam String stakingId,
-                                            @Parameter(description = "히스토리기간", example = "01") @RequestParam(required = false) String historyDate) {
+                                            @Parameter(description = "스태이킹키값", example = "528271d4-7711-43fe-849f-da9227f25ee7", required = true)
+                                            @PathVariable(value = "stakingId") String stakingId,
+                                            @Parameter(description = "히스토리기간", example = "01")
+                                            @PathVariable(value = "historyDate",required = false) String historyDate) {
         return ObjectResult.build(userService.stakingsDetail(serviceUser,stakingId,historyDate));
     }
 
     @Operation(summary = "공지사항 읽음", description = "유저의 공지사항 읽음 처리 입니다.")
-    @PostMapping("/noticeRead")
+    @PostMapping("/notice-read")
     public ResponseEntity<?> noticeRead(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody NoticeReadRequestDto noticeReadRequestDto) {
         userService.noticeRead(serviceUser,noticeReadRequestDto);
         return ObjectResult.ok();
