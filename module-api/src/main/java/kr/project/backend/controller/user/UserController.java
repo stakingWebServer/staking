@@ -83,7 +83,7 @@ public class UserController {
     }
 
     @Operation(summary = "회원상태 체크", description = "회원상태 체크 입니다.")
-    @GetMapping("/state/check")
+    @GetMapping("/user-state")
     public ResponseEntity<?> userStateCheck(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ObjectResult.build(userService.userStateCheck(serviceUser));
     }
