@@ -140,13 +140,13 @@ public class UserController {
     public ResponseEntity<?> stakings(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ListResult.build(userService.getMydataStakings(serviceUser));
     }
-    @Operation(summary = "알림 조회", description = "알림 조회 입니다.")
+    @Operation(summary = "알람 조회", description = "알람 조회 입니다.")
     @GetMapping("/alarms")
     public ResponseEntity<?> getAlarms(@PageableDefault()Pageable pageable, @AuthenticationPrincipal ServiceUser serviceUser) {
         return ListResult.build(userService.getAlarms(pageable,serviceUser));
     }
 
-    @Operation(summary = "알림 읽음", description = "알림 읽음 입니다.")
+    @Operation(summary = "알람 읽음", description = "알람 읽음 입니다.")
     @PutMapping("/alarm-read")
     public ResponseEntity<?> alarmRead(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody AlarmReadRequestDto alarmReadRequestDto) {
         userService.alarmRead(serviceUser, alarmReadRequestDto);
@@ -206,14 +206,14 @@ public class UserController {
     @Operation(summary = "알람 세팅", description = "알람 세팅 입니다.<br>" +
                                                   "[param info]<br>" +
                                                   "* alarmKind(알람구분 코드)<br>" +
-                                                  "01 : 광고성 안내 알림")
+                                                  "01 : 광고성 안내 알람")
     @PostMapping("/alarm-set")
     public ResponseEntity<?> alarmSet(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody UserAlarmSetRequestDto userAlarmSetRequestDto) {
         userService.alarmSet(serviceUser,userAlarmSetRequestDto);
         return ObjectResult.ok();
     }
 
-    @Operation(summary = "알람 여부", description = "읽지 않은 알림이 있는지 확인합니다.")
+    @Operation(summary = "알람 여부", description = "읽지 않은 알람이 있는지 확인합니다.")
     @GetMapping("/alarm-count")
     public ResponseEntity<?> alarmCount(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ObjectResult.build(userService.alarmCount(serviceUser));

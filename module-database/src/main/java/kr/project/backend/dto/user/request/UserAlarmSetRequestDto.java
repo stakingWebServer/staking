@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class UserAlarmSetRequestDto {
 
-    @NotEmpty(message = "알림구분을 넣어주세요")
-    @Schema(description = "알림구분", example = "01")
+    @NotEmpty(message = "알람구분을 넣어주세요")
+    @Schema(description = "알람구분", example = "01")
     private String alarmKind;
 
-    @NotEmpty(message = "알림구분 동의를 넣어주세요")
-    @Schema(description = "알림동의 구분", example = "Y")
+    @NotEmpty(message = "알람구분 동의를 넣어주세요")
+    @Schema(description = "알람동의 구분", example = "Y")
     private String agreeYn;
 }

@@ -129,7 +129,7 @@ public class AdminService {
             targetUsers.forEach(targetUser -> {
                 if (!targetUser.getUser().getUserPushToken().isBlank()) {
                     targetUserTokens.add(targetUser.getUser().getUserPushToken());
-                    //알림 DB 저장.
+                    //알람 DB 저장.
                     alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
                 }
             });
@@ -165,10 +165,10 @@ public class AdminService {
             User userInfo = questionInfo.getUser();
 
             //토큰 발송
-            //TODO 문의에 대한 답변 후 푸시알림 제목 뭐로 보낼지 고민.
+            //TODO 문의에 대한 답변 후 푸시알람 제목 뭐로 보낼지 고민.
             firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "관리자", replyRequestDto.getContent()));
 
-            //알림 DB 저장.
+            //알람 DB 저장.
             alarmRepository.save(new Alarm("관리자", replyRequestDto.getContent(), userInfo));
             //답변 DB 저장.
             replyRepository.save(new Reply(replyRequestDto));

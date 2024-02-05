@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class AlarmReadRequestDto {
 
-    @NotBlank(message = "알림ID를 넣어주세요")
-    @Schema(description = "알림ID", example = "4f17083a-fd35-47c9-a8e7-aaabf5cbb001")
+    @NotBlank(message = "알람ID를 넣어주세요")
+    @Schema(description = "알람ID", example = "4f17083a-fd35-47c9-a8e7-aaabf5cbb001")
     private String alarmId;
 
 }
