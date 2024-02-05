@@ -28,13 +28,35 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "일반 로그인", description = "일반 로그인 입니다.")
+    @Operation(summary = "일반 로그인", description = "일반 로그인 입니다.<br><br>" +
+                                                   "[param info]<br>" +
+                                                   "* userJoinSnsKind(회원가입 SNS 구분 코드)<br>" +
+                                                   "01 : 카카오<br>" +
+                                                   "02 : 네이버<br>" +
+                                                   "03 : 구글<br>" +
+                                                   "04 : 애플<br>" +
+                                                   "* userJoinOsKind(회원가입 OS 구분 코드)<br>" +
+                                                   "01 : 안드로이드<br>" +
+                                                   "02 : 애플<br>" +
+                                                   "03 : 윈도우<br>" +
+                                                   "04 : 맥")
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) {
         return ObjectResult.build(userService.userLogin(userLoginRequestDto));
     }
 
-    @Operation(summary = "회원가입", description = "회원가입 입니다.")
+    @Operation(summary = "회원가입", description = "회원가입 입니다.<br><br>" +
+                                                 "[param info]<br>" +
+                                                 "* userJoinSnsKind(회원가입 SNS 구분 코드)<br>" +
+                                                 "01 : 카카오<br>" +
+                                                 "02 : 네이버<br>" +
+                                                 "03 : 구글<br>" +
+                                                 "04 : 애플<br>" +
+                                                 "* userJoinOsKind(회원가입 OS 구분 코드)<br>" +
+                                                 "01 : 안드로이드<br>" +
+                                                 "02 : 애플<br>" +
+                                                 "03 : 윈도우<br>" +
+                                                 "04 : 맥")
     @PostMapping("/join")
     public ResponseEntity<?> join(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
         return ObjectResult.build(userService.userJoin(userJoinRequestDto));
@@ -87,7 +109,11 @@ public class UserController {
         return ListResult.build(userService.getUseClauses());
     }
 
-    @Operation(summary = "앱 강제 업데이트 조회", description = "앱 버전을 통해 강제 업데이트 유무를 조회 합니다.")
+    @Operation(summary = "앱 강제 업데이트 조회", description = "앱 버전을 통해 강제 업데이트 유무를 조회 합니다.<br><br>" +
+                                                            "[param info]<br>" +
+                                                            "* appOs(앱os)<br>" +
+                                                            "01 : 안드로이드<br>" +
+                                                            "02 : 애플")
     @GetMapping("/appVersion")
     public ResponseEntity<?> getAppVersion(@Parameter(description = "앱 OS", example = "01", required = true) @RequestParam String appOs,
                                            @Parameter(description = "앱 버전", example = "1.1.2", required = true) @RequestParam String appVersion) {
@@ -134,7 +160,13 @@ public class UserController {
         return ObjectResult.ok();
     }
 
-    @Operation(summary = "마이데이터스테이킹 디테일 조회", description = "마이데이터스테이킹 디테일 조회입니다.")
+    @Operation(summary = "마이데이터스테이킹 디테일 조회", description = "마이데이터스테이킹 디테일 조회입니다.<br><br>" +
+                                                                  "[param info]<br>" +
+                                                                  "* historyDate(히스토리기간)<br>" +
+                                                                  "01 : 일주일<br>" +
+                                                                  "02 : 1개월<br>" +
+                                                                  "03 : 6개월<br>" +
+                                                                  "04 : 전체")
     @GetMapping("/stakingsDetail")
     public ResponseEntity<?> stakingsDetail(@AuthenticationPrincipal ServiceUser serviceUser,
                                             @Parameter(description = "스태이킹키값", example = "528271d4-7711-43fe-849f-da9227f25ee7", required = true) @RequestParam String stakingId,
