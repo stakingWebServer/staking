@@ -2,7 +2,7 @@ package kr.project.backend.common;
 
 public class Constants {
 
-    /** 회원상태 코드 */
+    /** 회원상태 코드 */ //ㅇ
     public static final class USER_STATE {
 
         public static final String CODE = "USER_STATE";
