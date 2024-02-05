@@ -38,7 +38,7 @@ public class Reply extends BaseTimeEntity implements Serializable {
     @OneToOne
     @JoinColumn(name = "question_id")
     private Questions questions;
-
+ 
 
     public Reply(ReplyRequestDto replyRequestDto){
         this.content = replyRequestDto.getContent();
