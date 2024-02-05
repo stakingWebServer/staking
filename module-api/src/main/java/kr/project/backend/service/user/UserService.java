@@ -76,6 +76,7 @@ public class UserService {
     private final CommonFileRepository commonFileRepository;
     private final QuestionsRepository questionsRepository;
     private final CommonGroupFileRepository commonGroupFileRepository;
+    private final ReplyRepository replyRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -387,12 +388,12 @@ public class UserService {
     }
 
     @Transactional
-    public void alarmCheck(ServiceUser serviceUser,AlarmCheckRequestDto alarmCheckRequestDto){
+    public void alarmCheck(ServiceUser serviceUser, AlarmReadRequestDto alarmReadRequestDto){
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        Alarm alarm = alarmRepository.findByAlarmIdAndUser(alarmCheckRequestDto.getAlarmId(),userInfo)
+        Alarm alarm = alarmRepository.findByAlarmIdAndUser(alarmReadRequestDto.getAlarmId(),userInfo)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NULL_DATA.getCode(),CommonErrorCode.NULL_DATA.getMessage()));
 
         alarm.updateAlarmReadYn();
@@ -545,5 +546,19 @@ public class UserService {
                 .stream()
                 .map(QuestionsResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void replyRead(ServiceUser serviceUser, ReplyReadRequstDto replyReadRequstDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        Reply reply = replyRepository.findById(replyReadRequstDto.getReplyId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_REPLY.getCode(), CommonErrorCode.NOT_FOUND_REPLY.getMessage()));
+
+        reply.updateReplyReadYn();
+
+        replyRepository.save(reply);
     }
 }

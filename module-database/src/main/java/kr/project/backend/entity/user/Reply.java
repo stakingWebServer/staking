@@ -43,4 +43,8 @@ public class Reply extends BaseTimeEntity implements Serializable {
     public Reply(ReplyRequestDto replyRequestDto){
         this.content = replyRequestDto.getContent();
     }
+
+    public void updateReplyReadYn(){
+        this.replyReadYn = true;
+    }
 }

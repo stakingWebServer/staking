@@ -147,9 +147,9 @@ public class UserController {
     }
 
     @Operation(summary = "알림 읽음", description = "알림 읽음 입니다.")
-    @PutMapping("/alarm")
-    public ResponseEntity<?> alarmCheck(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody AlarmCheckRequestDto alarmCheckRequestDto) {
-        userService.alarmCheck(serviceUser,alarmCheckRequestDto);
+    @PutMapping("/alarm-read")
+    public ResponseEntity<?> alarmCheck(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody AlarmReadRequestDto alarmReadRequestDto) {
+        userService.alarmCheck(serviceUser, alarmReadRequestDto);
         return ObjectResult.ok();
     }
 
@@ -194,5 +194,12 @@ public class UserController {
     @GetMapping("/questions")
     public ResponseEntity<?> getQuestions(@PageableDefault()Pageable pageable, @AuthenticationPrincipal ServiceUser serviceUser) {
         return ListResult.build(userService.getQuestions(pageable,serviceUser));
+    }
+
+    @Operation(summary = "문의사항 답변 읽음", description = "문의사항 답변 읽음 입니다.")
+    @PutMapping("/reply-read")
+    public ResponseEntity<?> replyRead(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody ReplyReadRequstDto replyReadRequstDto) {
+        userService.replyRead(serviceUser,replyReadRequstDto);
+        return ObjectResult.ok();
     }
 }
