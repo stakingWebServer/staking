@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,11 +67,18 @@ public class StakingInfoService {
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         List<AboutCoinMarketDto> aboutCoinMarketDtos = new ArrayList<>();
+        List<AboutCoinMaxAnnualRewardRateDto> aboutCoinMaxAnnualRewardRateDtos = new ArrayList<>();
+        //각 거래소마다 있는 동일 코인들의 최대값과 최소값 구하는 식.
+        StakingInfo maxRewardRate = Collections.max(stakingInfos, Comparator.comparing(StakingInfo::getMaxAnnualRewardRateNumeric));
+        StakingInfo minRewardRate = Collections.min(stakingInfos, Comparator.comparing(StakingInfo::getMaxAnnualRewardRateNumeric));
+
         stakingInfos.forEach(aboutCoinMarket -> {
             aboutCoinMarketDtos.add(new AboutCoinMarketDto(aboutCoinMarket.getStakingId(), String.valueOf(aboutCoinMarket.getCoinMarketType())));
+            aboutCoinMaxAnnualRewardRateDtos.add(new AboutCoinMaxAnnualRewardRateDto(aboutCoinMarket.getCoinMarketType(),aboutCoinMarket.getMaxAnnualRewardRate()));
+
         });
 
-        return new StakingInfoDetailResponseDto(stakingInfo, aboutCoinMarketDtos,favoriteCheck);
+        return new StakingInfoDetailResponseDto(stakingInfo, aboutCoinMarketDtos,aboutCoinMaxAnnualRewardRateDtos,maxRewardRate.getMaxAnnualRewardRate(),minRewardRate.getMaxAnnualRewardRate(),favoriteCheck);
     }
 
 
