@@ -2,5 +2,4 @@ rootProject.name = 'staking'
 include 'module-api'
 include 'module-database'
 include 'module-crawling'
-include 'module-admin'
 

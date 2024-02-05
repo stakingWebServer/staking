@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        MODULE_ADMIN = 'module-admin'
         MODULE_API = 'module-api'
         MODULE_CRAWLING = 'module-crawling'
         MODULE_DATABASE = 'module-database'
@@ -16,20 +15,6 @@ pipeline {
         }
         stage('build') {
             parallel {
-                stage('module-admin(build)') {
-                    when {
-                        anyOf{
-                            changeset "module-database/**/*"
-                            changeset "module-admin/**/*"
-                        }
-                    }
-                    steps {
-                        echo '[build start] ${MODULE_ADMIN}'
-                        sh './gradlew ${MODULE_ADMIN}:build -x test'
-                        sh "sudo mv ${CURRENT_LOCATION}/module-admin/build/libs/module-admin-1.0-SNAPSHOT.jar /app/project"
-                        echo '[build end] ${MODULE_ADMIN}'
-                    }
-                }
                 stage('module-api(build)') {
                     when {
                         anyOf{
