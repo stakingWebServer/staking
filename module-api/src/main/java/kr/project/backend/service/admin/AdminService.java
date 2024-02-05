@@ -57,33 +57,36 @@ public class AdminService {
     private final ReplyRepository replyRepository;
     private final AlarmRepository alarmRepository;
 
-    @Transactional(readOnly = true)
-    public TodayRegisterResponseDto getTodayRegister() {
-        int todayRegister = userRepository.countByCreatedDateBetween(
-                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-        return new TodayRegisterResponseDto(todayRegister);
-    }
 
     @Transactional(readOnly = true)
-    public TodayLoginUserResponseDto getTodayLoginUser() {
-        int todayLoginUser = userRepository.countByUserLoginDttmBetween(
-                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    public TodayCommonResponseDto getTodayInfos(String todayStatus) {
+        switch (todayStatus){
+            case "register" -> {
+                int todayRegister = userRepository.countByCreatedDateBetween(
+                        LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                        LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                return new TodayCommonResponseDto(todayRegister);
+            }
+            case "loginUser" -> {
+                int todayLoginUser = userRepository.countByUserLoginDttmBetween(
+                        LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                        LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-        return new TodayLoginUserResponseDto(todayLoginUser);
+                return new TodayCommonResponseDto(todayLoginUser);
+            }
+            case "dropUser" -> {
+                int todayDropUser = dropUserRepository.countByDropDttmBetween(
+                        LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                        LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+                return new TodayCommonResponseDto(todayDropUser);
+            }
+            default -> {
+                throw new CommonException(CommonErrorCode.COMMON_FAIL.getCode(), CommonErrorCode.COMMON_FAIL.getMessage());
+            }
+        }
     }
-
-    @Transactional(readOnly = true)
-    public TodayDropUserResponseDto getTodayDropUser() {
-        int todayDropUser = dropUserRepository.countByDropDttmBetween(
-                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
-        return new TodayDropUserResponseDto(todayDropUser);
-    }
-
     @Transactional(readOnly = true)
     public List<PageViewDto> getPageView() {
         return moveViewRepository.getPageViewInfo();
@@ -178,4 +181,5 @@ public class AdminService {
         }
         return new AccessKeyResponseDto(null, "fail");
     }
+
 }

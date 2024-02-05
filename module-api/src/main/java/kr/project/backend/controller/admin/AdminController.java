@@ -33,21 +33,10 @@ public class AdminController {
     public ResponseEntity<?> auth(@RequestBody AdminLoginRequestDto adminLoginRequestDto) throws Exception {
         return ObjectResult.build(adminService.getApikey(adminLoginRequestDto));
     }
-    @Operation(summary = "당일 가입 사용자 수",description = "당일 가입 사용자 수를 구한다.")
-    @GetMapping("/today-register")
-    public ResponseEntity<?> getTodayRegister(){
-        return ObjectResult.build(adminService.getTodayRegister());
-    }
-
-    @Operation(summary = "당일 로그인 사용자 수",description = "당일 로그인 사용자 수를 구한다.")
-    @GetMapping("/today-loginUser")
-    public ResponseEntity<?> getTodayLoginUser(){
-        return ObjectResult.build(adminService.getTodayLoginUser());
-    }
-    @Operation(summary = "당일 탈퇴 사용자 수",description = "당일 탈토ㅚ 사용자 수를 구한다.")
-    @GetMapping("/today-dropUser")
-    public ResponseEntity<?> getTodayDropUser(){
-        return ObjectResult.build(adminService.getTodayDropUser());
+    @Operation(summary = "당일 가입 사용자 수 | 당일 로그인 사용자 수 | 당일 탈퇴 사용자 수",description = "당일 가입 사용자 수 | 당일 로그인 사용자 수 | 당일 탈퇴 사용자 수 구한다")
+    @GetMapping("/today/{todayStatus}")
+    public ResponseEntity<?> getTodayInfos(@PathVariable(value = "todayStatus")String todayStatus){
+            return ObjectResult.build(adminService.getTodayInfos(todayStatus));
     }
 
     @Operation(summary = "페이지 별 조회 수",description = "패아자 별 조회 수를 구한다.")
@@ -56,13 +45,13 @@ public class AdminController {
         return ListResult.build(adminService.getPageView());
     }
     @Operation(summary = "단일 푸시 토큰 발송",description = "단일 푸시 토큰 발송을 한다.")
-    @PostMapping("/send-push")
+    @PostMapping("/push")
     public ResponseEntity<?> push(@RequestBody PushRequestDto pushRequestDto) throws FirebaseMessagingException{
         adminService.sendPush(pushRequestDto);
         return ObjectResult.ok();
     }
     @Operation(summary = "단체 푸시 토큰 발송",description = "단체 푸시 토큰 발송을 한다.")
-    @PostMapping("/send-pushs")
+    @PostMapping("/pushs")
     public ResponseEntity<?> pushs(@RequestBody PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
         adminService.sendPushs(pushsRequestDto);
         return ObjectResult.ok();

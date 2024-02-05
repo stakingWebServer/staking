@@ -7,6 +7,6 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-public class TodayLoginUserResponseDto implements Serializable {
-    private int todayLoginUser;
+public class TodayCommonResponseDto implements Serializable {
+    private int todayNum;
 }
