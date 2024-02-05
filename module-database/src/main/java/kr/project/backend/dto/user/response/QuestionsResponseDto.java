@@ -6,17 +6,23 @@ import lombok.Data;
 @Data
 public class QuestionsResponseDto {
 
-    private String title;
-    private String content;
+    private String questionDate;
+    private String questionTitle;
+    private String questionContent;
     private String replyContent;
     private String replyYn = "N";
+    private String replyReadYn = "N";
+    private String replyDate;
 
     public QuestionsResponseDto(Questions questions) {
-        this.title = questions.getTitle();
-        this.content = questions.getContent();
+        this.questionDate = questions.getCreatedDate().substring(0,10);
+        this.questionTitle = questions.getTitle();
+        this.questionContent = questions.getContent();
         if(questions.getReply() != null){
             this.replyContent = questions.getReply().getContent();
             this.replyYn = questions.getReply().isReplyYn() ? "Y" : "N";
+            this.replyReadYn = questions.getReply().isReplyReadYn() ? "Y" : "N";
+            this.replyDate = questions.getReply().getCreatedDate().substring(0,10);
         }
     }
 }
