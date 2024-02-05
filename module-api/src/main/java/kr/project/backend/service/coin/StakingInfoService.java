@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -43,15 +44,16 @@ public class StakingInfoService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //스테이킹 목록, 즐겨찾기 목록 조회
-        List<StakingInfo> stakingInfos = stakingInfoRepository.getStakingInfos(startDate,endDate);
+        List<StakingInfo> stakingInfos = stakingInfoRepository.getStakingInfos(startDate, endDate);
         List<Favorite> myFavorites = favoriteRepository.findAllByUserAndDelYnOrderByStakingInfoMaxAnnualRewardRateNumericDesc(userInfo, false);
 
         return new StakingInfoAndFavoriteListResponseDto(
                 stakingInfos.stream().map(StakingListDto::new).collect(Collectors.toList()),
                 myFavorites.stream().map(FavoriteListDto::new).collect(Collectors.toList()));
     }
+
     @Transactional(readOnly = true)
-    public StakingInfoDetailResponseDto getStakingInfo(String stakingId,ServiceUser serviceUser) {
+    public StakingInfoDetailResponseDto getStakingInfo(String stakingId, ServiceUser serviceUser) {
 
         StakingInfo stakingInfo = stakingInfoRepository.findById(stakingId)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_COIN.getCode(), CommonErrorCode.NOT_FOUND_COIN.getMessage()));
@@ -60,7 +62,7 @@ public class StakingInfoService {
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
         //즐겨찾기 인 스테이킹인지 확인
-        boolean favoriteCheck = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo,userInfo,false);
+        boolean favoriteCheck = favoriteRepository.existsByStakingInfoAndUserAndDelYn(stakingInfo, userInfo, false);
 
         List<StakingInfo> stakingInfos = stakingInfoRepository.findByCoinNameAndCreatedDateBetween(
                 stakingInfo.getCoinName(),
@@ -74,11 +76,11 @@ public class StakingInfoService {
 
         stakingInfos.forEach(aboutCoinMarket -> {
             aboutCoinMarketDtos.add(new AboutCoinMarketDto(aboutCoinMarket.getStakingId(), String.valueOf(aboutCoinMarket.getCoinMarketType())));
-            aboutCoinMaxAnnualRewardRateDtos.add(new AboutCoinMaxAnnualRewardRateDto(aboutCoinMarket.getCoinMarketType(),aboutCoinMarket.getMaxAnnualRewardRate()));
+            aboutCoinMaxAnnualRewardRateDtos.add(new AboutCoinMaxAnnualRewardRateDto(aboutCoinMarket.getCoinMarketType(), aboutCoinMarket.getMaxAnnualRewardRate()));
 
         });
 
-        return new StakingInfoDetailResponseDto(stakingInfo, aboutCoinMarketDtos,aboutCoinMaxAnnualRewardRateDtos,maxRewardRate.getMaxAnnualRewardRate(),minRewardRate.getMaxAnnualRewardRate(),favoriteCheck);
+        return new StakingInfoDetailResponseDto(stakingInfo, aboutCoinMarketDtos, aboutCoinMaxAnnualRewardRateDtos, maxRewardRate.getMaxAnnualRewardRate(), minRewardRate.getMaxAnnualRewardRate(), favoriteCheck);
     }
 
 
