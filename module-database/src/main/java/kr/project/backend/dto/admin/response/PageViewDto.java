@@ -2,7 +2,7 @@ package kr.project.backend.dto.admin.response;
 
 import lombok.Data;
 
-@Data
+@Data//ㅇ
 public class PageViewDto {
     private String viewName;
     private Long pageView;
