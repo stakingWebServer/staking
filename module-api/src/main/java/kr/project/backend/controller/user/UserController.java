@@ -167,12 +167,12 @@ public class UserController {
                                                                   "02 : 1개월<br>" +
                                                                   "03 : 6개월<br>" +
                                                                   "04 : 전체")
-    @GetMapping("/staking/{stakingId}/{historyDate}")
+    @GetMapping("/staking")
     public ResponseEntity<?> stakingsDetail(@AuthenticationPrincipal ServiceUser serviceUser,
                                             @Parameter(description = "스태이킹키값", example = "528271d4-7711-43fe-849f-da9227f25ee7", required = true)
-                                            @PathVariable(value = "stakingId") String stakingId,
+                                            @RequestParam(value = "stakingId") String stakingId,
                                             @Parameter(description = "히스토리기간", example = "01")
-                                            @PathVariable(value = "historyDate",required = false) String historyDate) {
+                                            @RequestParam(value = "historyDate",required = false) String historyDate) {
         return ObjectResult.build(userService.stakingsDetail(serviceUser,stakingId,historyDate));
     }
 
