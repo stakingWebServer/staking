@@ -27,7 +27,7 @@ public class StakingInfoController {
     private final StakingInfoService stakingInfoService;
 
     @Operation(summary = "코인 스테이킹 목록 조회", description = "코인 스테이킹 목록 조회를 합니다.")
-    @GetMapping("/infos-all")
+    @GetMapping("/infos")
     public ResponseEntity<?> stakingInfosAll(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ObjectResult.build(stakingInfoService.getStakingInfosAll(serviceUser));
     }
