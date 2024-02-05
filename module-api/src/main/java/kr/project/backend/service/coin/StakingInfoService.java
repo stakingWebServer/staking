@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -32,16 +32,17 @@ public class StakingInfoService {
 
     //@Cacheable(value = "stakingInfoList")
     public StakingInfoAndFavoriteListResponseDto getStakingInfosAll(ServiceUser serviceUser) {
+        //날짜 조건식
+        LocalDate today = LocalDate.now();
+        LocalDateTime startDate = today.atStartOfDay();
+        LocalDateTime endDate = today.atTime(23, 59, 59);
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        //즐겨찾기 목록 조회
+        //스테이킹 목록, 즐겨찾기 목록 조회
+        List<StakingInfo> stakingInfos = stakingInfoRepository.getStakingInfos(startDate,endDate);
         List<Favorite> myFavorites = favoriteRepository.findAllByUserAndDelYnOrderByStakingInfoMaxAnnualRewardRateNumericDesc(userInfo, false);
-        List<StakingInfo> stakingInfos = stakingInfoRepository.findAllByCreatedDateBetweenOrderByMaxAnnualRewardRateNumericDesc(
-                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
 
         return new StakingInfoAndFavoriteListResponseDto(
                 stakingInfos.stream().map(StakingListDto::new).collect(Collectors.toList()),
