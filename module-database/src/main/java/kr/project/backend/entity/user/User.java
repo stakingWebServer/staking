@@ -79,6 +79,9 @@ public class User extends BaseTimeEntity implements Serializable {
     @OneToMany(mappedBy = "user")
     private List<Questions> questions;
 
+    @OneToMany(mappedBy = "user")
+    private List<UserAlarmSet> userAlarmSets;
+
 
 
     public User(UserLoginRequestDto userLoginRequestDto) {
