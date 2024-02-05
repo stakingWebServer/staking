@@ -388,7 +388,7 @@ public class UserService {
     }
 
     @Transactional
-    public void alarmCheck(ServiceUser serviceUser, AlarmReadRequestDto alarmReadRequestDto){
+    public void alarmRead(ServiceUser serviceUser, AlarmReadRequestDto alarmReadRequestDto){
         //회원정보
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
@@ -560,5 +560,29 @@ public class UserService {
         reply.updateReplyReadYn();
 
         replyRepository.save(reply);
+    }
+
+    @Transactional
+    public void alarmSet(ServiceUser serviceUser, UserAlarmSetRequestDto userAlarmSetRequestDto){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+
+        if(userAlarmSetRequestDto.getAlarmKind().equals("01")){
+            UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY).orElse(null);
+            if(useClause != null){
+                UserUseClause userUseClause = userUseClauseRepository.findByUserAndUseClause(userInfo, useClause).orElse(null);
+                if(userUseClause != null){
+                    userUseClause.updateAgreeYn(userAlarmSetRequestDto.getAgreeYn());
+                    userUseClauseRepository.save(userUseClause);
+                }else{
+                    UseClauseDto useClauseDto = new UseClauseDto();
+                    useClauseDto.setUseClauseId(useClause.getUseClauseId());
+                    useClauseDto.setUseClauseAgreeYN(userAlarmSetRequestDto.getAgreeYn());
+                    userUseClauseRepository.save(new UserUseClause(userInfo,useClause,useClauseDto));
+                }
+            }
+        }
     }
 }

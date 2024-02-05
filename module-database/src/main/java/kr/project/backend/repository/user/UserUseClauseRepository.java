@@ -16,4 +16,6 @@ public interface UserUseClauseRepository extends JpaRepository<UserUseClause, St
     Optional<UserUseClause> findByUserAndUseClauseAndAgreeYn(User userInfo, UseClause useClause, String agreeYn);
 
     List<UserUseClause> findAllByUseClauseAndAgreeYn(UseClause useClause, String y);
+
+    Optional<UserUseClause> findByUserAndUseClause(User user, UseClause useClause);
 }

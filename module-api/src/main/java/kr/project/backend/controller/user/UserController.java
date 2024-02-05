@@ -148,8 +148,8 @@ public class UserController {
 
     @Operation(summary = "알림 읽음", description = "알림 읽음 입니다.")
     @PutMapping("/alarm-read")
-    public ResponseEntity<?> alarmCheck(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody AlarmReadRequestDto alarmReadRequestDto) {
-        userService.alarmCheck(serviceUser, alarmReadRequestDto);
+    public ResponseEntity<?> alarmRead(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody AlarmReadRequestDto alarmReadRequestDto) {
+        userService.alarmRead(serviceUser, alarmReadRequestDto);
         return ObjectResult.ok();
     }
 
@@ -200,6 +200,13 @@ public class UserController {
     @PutMapping("/reply-read")
     public ResponseEntity<?> replyRead(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody ReplyReadRequstDto replyReadRequstDto) {
         userService.replyRead(serviceUser,replyReadRequstDto);
+        return ObjectResult.ok();
+    }
+
+    @Operation(summary = "알람 세팅", description = "[작업중] 알람 세팅 입니다.")
+    @PostMapping("/alarm-set")
+    public ResponseEntity<?> alarmSet(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody UserAlarmSetRequestDto userAlarmSetRequestDto) {
+        userService.alarmSet(serviceUser,userAlarmSetRequestDto);
         return ObjectResult.ok();
     }
 }

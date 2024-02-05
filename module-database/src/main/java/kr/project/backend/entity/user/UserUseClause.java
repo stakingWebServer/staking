@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 public class UserUseClause extends BaseTimeEntity implements Serializable {
 
     @Id
@@ -43,6 +45,10 @@ public class UserUseClause extends BaseTimeEntity implements Serializable {
         this.agreeYn = useClauseDto.getUseClauseAgreeYN();
         this.user = user;
         this.useClause = useClause;
+    }
+
+    public void updateAgreeYn(String agreeYn){
+        this.agreeYn = agreeYn;
     }
 
 }
