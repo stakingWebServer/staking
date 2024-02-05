@@ -203,10 +203,20 @@ public class UserController {
         return ObjectResult.ok();
     }
 
-    @Operation(summary = "알람 세팅", description = "[작업중] 알람 세팅 입니다.")
+    @Operation(summary = "알람 세팅", description = "알람 세팅 입니다." +
+                                                  "[param info]<br>" +
+                                                  "* alarmKind(알람구분 코드)<br>" +
+                                                  "01 : 광고성 안내 알림")
     @PostMapping("/alarm-set")
     public ResponseEntity<?> alarmSet(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody UserAlarmSetRequestDto userAlarmSetRequestDto) {
         userService.alarmSet(serviceUser,userAlarmSetRequestDto);
         return ObjectResult.ok();
     }
+
+    @Operation(summary = "알람 여부", description = "읽지 않은 알림이 있는지 확인합니다.")
+    @GetMapping("/alarm-count")
+    public ResponseEntity<?> alarmCount(@AuthenticationPrincipal ServiceUser serviceUser) {
+        return ObjectResult.build(userService.alarmCount(serviceUser));
+    }
+
 }

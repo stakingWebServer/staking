@@ -13,5 +13,6 @@ public interface AlarmRepository extends JpaRepository<Alarm, String> {
     Page<Alarm> findByUserOrderByCreatedDateDesc(User user, Pageable pageable);
 
     Optional<Alarm> findByAlarmIdAndUser(String alarmId, User user);
-//tt
+
+    long countByUserAndAlarmReadYn(User user, String alarmReadYn);
 }

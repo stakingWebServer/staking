@@ -585,4 +585,15 @@ public class UserService {
             }
         }
     }
+
+    @Transactional(readOnly = true)
+    public AlarmCountResponseDto alarmCount(ServiceUser serviceUser){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
+
+        return new AlarmCountResponseDto(userInfo.getUserEmail(),alarmCnt>0 ? "Y":"N",alarmCnt);
+    }
 }
