@@ -34,7 +34,6 @@ public class Upbit {
 
     public static String upbitApi(String market) {
 
-
         //upbit api 요청으로 전일종가 추출
 
             RestTemplate restTemplate = new RestTemplate();
@@ -71,6 +70,10 @@ public class Upbit {
             WebElement coinName = webDriver.findElement(By.className("ListDetailView__condition__title__text"));
             String market = coinName.getText().substring(coinName.getText().indexOf("(") + 1, coinName.getText().indexOf(")")).trim();
             saveDto.setCoinName(removeNonKorean(coinName.getText()));
+            //코인이미지url
+            WebElement coinImageUrl = webDriver.findElement(By.cssSelector("span.ListDetailView__condition__title__logo img"));
+            String srcValue = coinImageUrl.getAttribute("src");
+            saveDto.setCoinImageUrl(srcValue);
             //unit
             WebElement rawUnit = webDriver.findElement(By.className("ListDetailView__condition__title__unit"));
             String unit = rawUnit.getText().replaceAll("[^a-zA-Z]", "");

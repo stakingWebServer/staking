@@ -30,7 +30,8 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     private String stakingId;
     @Comment(value = "코인이름")
     private String coinName;
-
+    @Comment(value = "코인이미지url")
+    private String coinImageUrl;
     @Comment(value = "단위")
     private String unit;
     @Comment(value = "전일종가")
@@ -60,6 +61,7 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
 
     public StakingInfo(SaveDto saveDto) {
         this.coinName = saveDto.getCoinName();
+        this.coinImageUrl = saveDto.getCoinImageUrl();
         this.unit = saveDto.getUnit();
         this.prevClosingPrice = saveDto.getPrevClosingPrice();
         this.minAnnualRewardRate = saveDto.getMinAnnualRewardRate();

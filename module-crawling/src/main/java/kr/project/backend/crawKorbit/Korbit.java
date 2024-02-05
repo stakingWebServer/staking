@@ -63,6 +63,9 @@ public class Korbit {
 
         List<WebElement> clicks = webDriver.findElements(By.className("gaBYEM"));
         for (int i = 0; i < clicks.size(); i++) {
+            List<WebElement> imageInfos = webDriver.findElements(By.cssSelector("div.sc-1z0oddf-0.ffIHDz img"));
+            String imageUrl = imageInfos.get(i).getAttribute("src");
+            saveDto.setCoinImageUrl(imageUrl);
             List<WebElement> h3Element = webDriver.findElements(By.cssSelector(".sc-1z0oddf-0.ffIHDz h3"));
             String market = h3Element.get(i).getText().substring(h3Element.get(i).getText().indexOf("(") + 1, h3Element.get(i).getText().indexOf(")")).trim();
             List<WebElement> clickList = webDriver.findElements(By.className("gaBYEM"));
@@ -80,6 +83,7 @@ public class Korbit {
                 saveDto.setStakingStatus(elements.get(7).getText());
                 saveDto.setCoinMarketType(CoinMarketType.korbit);
             }
+
             System.out.println("saveDto = " + saveDto);
             String stakingId = stakingInfoRepository.save(new StakingInfo(saveDto)).getStakingId();
 

@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class SaveDto {
     private String coinName; //코인이름
+    private String coinImageUrl; //코인이미지주소
     private String unit; //단위
     private String prevClosingPrice; //전일 종가
     private String minAnnualRewardRate; //연 추정 보상률 (최소)
