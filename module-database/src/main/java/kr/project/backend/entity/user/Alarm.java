@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.io.Serializable;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 public class Alarm extends BaseTimeEntity implements Serializable {
 
     @Id
@@ -45,7 +47,6 @@ public class Alarm extends BaseTimeEntity implements Serializable {
         this.alarmTitle = alarmTitle;
         this.alarmContent = alarmContent;
         this.user = user;
-        this.alarmReadYn = "N";
     }
     public void updateAlarmReadYn(){
         this.alarmReadYn = "Y";
