@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
 
-@Tag(name = "account", description = "로그인 / 회원가입")
+@Tag(name = "user", description = "사용자 관련")
 @Slf4j
 @RestController
 @RequestMapping("/api/" + Environment.API_VERSION + "/" + Environment.API_USER)
