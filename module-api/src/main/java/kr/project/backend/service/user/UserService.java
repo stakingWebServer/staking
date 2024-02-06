@@ -644,9 +644,18 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        return userAlarmSetRepository.findByUser(userInfo)
+        //마케팅 동의 알람여부는 약관 조회를 통해 가능
+        UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH,Constants.USE_CLAUSE_STATE.APPLY).orElse(null);
+        UserUseClause userUseClause = userUseClauseRepository.findByUserAndUseClause(userInfo,useClause).orElse(null);
+        AlarmSetResponseDto alarmSetResponseDto = new AlarmSetResponseDto(Constants.ALARM_KIND.ADVERTISEMENT_PUSH,userUseClause == null ? "N" : userUseClause.getAgreeYn());
+
+        List<AlarmSetResponseDto> response = userAlarmSetRepository.findByUser(userInfo)
                 .stream()
                 .map(AlarmSetResponseDto::new)
                 .collect(Collectors.toList());
+
+        response.add(alarmSetResponseDto);
+
+        return response;
     }
 }

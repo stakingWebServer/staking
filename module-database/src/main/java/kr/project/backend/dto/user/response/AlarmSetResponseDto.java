@@ -14,4 +14,9 @@ public class AlarmSetResponseDto {
         this.alarmSetYn = userAlarmSet.getAlarmSetYn();
     }
 
+    public AlarmSetResponseDto(String alarmKind, String alarmSetYn){
+        this.alarmKind = alarmKind;
+        this.alarmSetYn = alarmSetYn;
+    }
+
 }
