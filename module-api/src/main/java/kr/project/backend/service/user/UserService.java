@@ -77,6 +77,7 @@ public class UserService {
     private final QuestionsRepository questionsRepository;
     private final CommonGroupFileRepository commonGroupFileRepository;
     private final ReplyRepository replyRepository;
+    private final UserAlarmSetRepository userAlarmSetRepository;
 
     @Transactional
     public UserTokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
@@ -581,8 +582,15 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-
-        if(userAlarmSetRequestDto.getAlarmKind().equals("01")){
+        if(userAlarmSetRequestDto.getAlarmKind().equals(Constants.ALARM_KIND.APP_IN_PUSH)){
+            UserAlarmSet userAlarmSetChk = userAlarmSetRepository.findByUserAndAlarmKind(userInfo,userAlarmSetRequestDto.getAlarmKind()).orElse(null);
+            if(userAlarmSetChk != null){
+                userAlarmSetChk.updateAlarmSetYn(userAlarmSetRequestDto.getAgreeYn());
+                userAlarmSetRepository.save(userAlarmSetChk);
+            }else{
+                userAlarmSetRepository.save(new UserAlarmSet(userAlarmSetRequestDto, userInfo));
+            }
+        }else if(userAlarmSetRequestDto.getAlarmKind().equals(Constants.ALARM_KIND.ADVERTISEMENT_PUSH)){
             UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY).orElse(null);
             if(useClause != null){
                 UserUseClause userUseClause = userUseClauseRepository.findByUserAndUseClause(userInfo, useClause).orElse(null);

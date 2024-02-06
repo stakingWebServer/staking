@@ -1,6 +1,7 @@
 package kr.project.backend.entity.user;
 
 import jakarta.persistence.*;
+import kr.project.backend.dto.user.request.UserAlarmSetRequestDto;
 import kr.project.backend.entity.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,12 @@ public class UserAlarmSet extends BaseTimeEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public UserAlarmSet(UserAlarmSetRequestDto userAlarmSetRequestDto, User user){
+        this.alarmKind = userAlarmSetRequestDto.getAlarmKind();
+        this.alarmSetYn = userAlarmSetRequestDto.getAgreeYn();
+        this.user = user;
+    }
 
     public void updateAlarmSetYn(String alarmSetYn){
         this.alarmSetYn = alarmSetYn;

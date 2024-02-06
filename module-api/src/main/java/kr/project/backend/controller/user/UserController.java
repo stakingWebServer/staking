@@ -206,7 +206,8 @@ public class UserController {
     @Operation(summary = "알람 세팅", description = "알람 세팅 입니다.<br>" +
                                                   "[param info]<br>" +
                                                   "* alarmKind(알람구분 코드)<br>" +
-                                                  "01 : 광고성 안내 알람")
+                                                  "01 : 앱 푸시알림<br>" +
+                                                  "02 : 광고성 안내 알람")
     @PostMapping("/alarm-set")
     public ResponseEntity<?> alarmSet(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody UserAlarmSetRequestDto userAlarmSetRequestDto) {
         userService.alarmSet(serviceUser,userAlarmSetRequestDto);

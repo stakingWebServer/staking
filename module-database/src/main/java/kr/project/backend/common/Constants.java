@@ -77,4 +77,10 @@ public class Constants {
         public static final String N = "N";
     }
 
+    public static final class ALARM_KIND {
+        public static final String CODE = "ALARM_KIND";
+        public static final String APP_IN_PUSH = "01"; //앱 푸시 알림
+        public static final String ADVERTISEMENT_PUSH = "02"; //광고 알림(마케팅 정보 수신 동의 약관 동의 알림)
+    }
+
 }
