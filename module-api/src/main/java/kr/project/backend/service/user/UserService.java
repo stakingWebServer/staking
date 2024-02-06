@@ -585,7 +585,7 @@ public class UserService {
         if(userAlarmSetRequestDto.getAlarmKind().equals(Constants.ALARM_KIND.APP_IN_PUSH)){
             UserAlarmSet userAlarmSetChk = userAlarmSetRepository.findByUserAndAlarmKind(userInfo,userAlarmSetRequestDto.getAlarmKind()).orElse(null);
             if(userAlarmSetChk != null){
-                userAlarmSetChk.updateAlarmSetYn(userAlarmSetRequestDto.getAgreeYn());
+                userAlarmSetChk.updateAlarmSetYn(userAlarmSetRequestDto.getAlarmSetYn());
                 userAlarmSetRepository.save(userAlarmSetChk);
             }else{
                 userAlarmSetRepository.save(new UserAlarmSet(userAlarmSetRequestDto, userInfo));
@@ -595,12 +595,12 @@ public class UserService {
             if(useClause != null){
                 UserUseClause userUseClause = userUseClauseRepository.findByUserAndUseClause(userInfo, useClause).orElse(null);
                 if(userUseClause != null){
-                    userUseClause.updateAgreeYn(userAlarmSetRequestDto.getAgreeYn());
+                    userUseClause.updateAgreeYn(userAlarmSetRequestDto.getAlarmSetYn());
                     userUseClauseRepository.save(userUseClause);
                 }else{
                     UseClauseDto useClauseDto = new UseClauseDto();
                     useClauseDto.setUseClauseId(useClause.getUseClauseId());
-                    useClauseDto.setUseClauseAgreeYN(userAlarmSetRequestDto.getAgreeYn());
+                    useClauseDto.setUseClauseAgreeYN(userAlarmSetRequestDto.getAlarmSetYn());
                     userUseClauseRepository.save(new UserUseClause(userInfo,useClause,useClauseDto));
                 }
             }
@@ -629,6 +629,18 @@ public class UserService {
         return useClauseRepository.findByUseClauseKindAndUseClauseStateOrderByCreatedDateDesc(useClauseKind, Constants.USE_CLAUSE_STATE.END)
                 .stream()
                 .map(UseClauseBeforeResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<AlarmSetResponseDto> getAlarmSet(ServiceUser serviceUser){
+        //회원정보
+        User userInfo = userRepository.findById(serviceUser.getUserId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+        return userAlarmSetRepository.findByUser(userInfo)
+                .stream()
+                .map(AlarmSetResponseDto::new)
                 .collect(Collectors.toList());
     }
 }

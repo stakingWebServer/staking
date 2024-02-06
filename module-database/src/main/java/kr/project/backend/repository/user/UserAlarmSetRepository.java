@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface UserAlarmSetRepository extends JpaRepository<UserAlarmSet, String> {
 
     Optional<UserAlarmSet> findByUserAndAlarmKind(User user, String alarmKind);
+
+    Optional<UserAlarmSet> findByUser(User user);
 }

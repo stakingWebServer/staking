@@ -41,7 +41,7 @@ public class UserAlarmSet extends BaseTimeEntity implements Serializable {
 
     public UserAlarmSet(UserAlarmSetRequestDto userAlarmSetRequestDto, User user){
         this.alarmKind = userAlarmSetRequestDto.getAlarmKind();
-        this.alarmSetYn = userAlarmSetRequestDto.getAgreeYn();
+        this.alarmSetYn = userAlarmSetRequestDto.getAlarmSetYn();
         this.user = user;
     }
 

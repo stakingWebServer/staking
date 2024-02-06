@@ -203,7 +203,7 @@ public class UserController {
         return ObjectResult.ok();
     }
 
-    @Operation(summary = "알람 세팅", description = "알람 세팅 입니다.<br>" +
+    @Operation(summary = "알람 설정", description = "알람 설정 입니다.<br>" +
                                                   "[param info]<br>" +
                                                   "* alarmKind(알람구분 코드)<br>" +
                                                   "01 : 앱 푸시알림<br>" +
@@ -230,6 +230,12 @@ public class UserController {
     public ResponseEntity<?> useClauseBefore(@Parameter(description = "약관구분코드", example = "01", required = true)
                                              @RequestParam(value = "useClauseKind") String useClauseKind) {
         return ListResult.build(userService.useClauseBefore(useClauseKind));
+    }
+
+    @Operation(summary = "알람 설정 조회", description = "알람 설정 조회 입니다.")
+    @GetMapping("/alarm-set")
+    public ResponseEntity<?> getAlarmSet(@AuthenticationPrincipal ServiceUser serviceUser) {
+        return ListResult.build(userService.getAlarmSet(serviceUser));
     }
 
 }

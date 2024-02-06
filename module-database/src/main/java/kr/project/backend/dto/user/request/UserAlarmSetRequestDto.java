@@ -13,5 +13,5 @@ public class UserAlarmSetRequestDto {
 
     @NotEmpty(message = "알람구분 동의를 넣어주세요")
     @Schema(description = "알람동의 구분", example = "Y")
-    private String agreeYn;
+    private String alarmSetYn;
 }
