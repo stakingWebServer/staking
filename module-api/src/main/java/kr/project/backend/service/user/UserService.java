@@ -173,6 +173,12 @@ public class UserService {
             userUseClauseRepository.save(new UserUseClause(userInfo, useClause, useClauseDto));
         }
 
+        //앱 푸시 알림 저장
+        UserAlarmSetRequestDto userAlarmSetRequestDto = new UserAlarmSetRequestDto();
+        userAlarmSetRequestDto.setAlarmKind(Constants.ALARM_KIND.APP_IN_PUSH);
+        userAlarmSetRequestDto.setAlarmSetYn(Constants.YN.Y);
+        userAlarmSetRepository.save(new UserAlarmSet(userAlarmSetRequestDto, userInfo));
+
         //응답 토큰 세팅(리스레시 토큰은 키값으로 응답)
         String accessToken = JwtUtil.createJwt(userId, userInfo.getUserEmail(), jwtSecretKey, expiredHs * accesTokenTime);
         String refreshToken = JwtUtil.createJwt(userId, userInfo.getUserEmail(), jwtSecretKey, expiredHs * refreshTokenTime);
