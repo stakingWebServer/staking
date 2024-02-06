@@ -542,10 +542,23 @@ public class UserService {
         User userInfo = userRepository.findById(serviceUser.getUserId())
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
-        return questionsRepository.findByUserOrderByCreatedDateDesc(userInfo,pageable)
-                .stream()
-                .map(QuestionsResponseDto::new)
-                .collect(Collectors.toList());
+        Page<Questions> questionsList = questionsRepository.findByUserOrderByCreatedDateDesc(userInfo,pageable);
+
+        List<QuestionsResponseDto> response = new ArrayList<>();
+
+        for(Questions questions : questionsList){
+            CommonGroupFile commonGroupFile = null;
+            List<CommonFile> commonFile = new ArrayList<>();
+            if(questions.getCommonGroupFile() != null){
+                commonGroupFile = commonGroupFileRepository.findById(questions.getCommonGroupFile().getGroupFileId()).orElse(null);
+                commonFile = commonFileRepository.findByCommonGroupFileOrderByCreatedDate(commonGroupFile);
+            }
+            QuestionsResponseDto questionsResponseDto = new QuestionsResponseDto(questions,
+                    commonFile.stream().map(QuestionsFileResponseDto::new).collect(Collectors.toList()));
+            response.add(questionsResponseDto);
+        }
+
+        return response;
     }
 
     @Transactional
