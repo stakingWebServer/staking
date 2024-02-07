@@ -39,6 +39,14 @@ public class Alarm extends BaseTimeEntity implements Serializable {
     @Column(columnDefinition = "VARCHAR(1) default 'N'")
     private String alarmReadYn;
 
+    @Comment(value = "알람 디테일 구분")
+    @Column(length = 2)
+    private String alarmDetailKind;
+
+    @Comment(value = "알람 디테일 구분 ID 값")
+    @Column(length = 38)
+    private String alarmDetailId;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
