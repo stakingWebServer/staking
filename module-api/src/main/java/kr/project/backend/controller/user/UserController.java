@@ -183,7 +183,7 @@ public class UserController {
         return ObjectResult.ok();
     }
 
-    @Operation(summary = "문의사항", description = "문의사항 입니다.")
+    @Operation(summary = "문의사항 등록", description = "문의사항을 등록 합니다.")
     @PostMapping("/question")
     public ResponseEntity<?> question(@AuthenticationPrincipal ServiceUser serviceUser, @Valid @RequestBody QuestionRequestDto questionRequestDto) {
         userService.question(serviceUser,questionRequestDto);
