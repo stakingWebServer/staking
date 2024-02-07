@@ -56,12 +56,12 @@ public class AdminService {
     private final QuestionRepository questionRepository;
     private final ReplyRepository replyRepository;
     private final AlarmRepository alarmRepository;
-
+    private final UserAlarmSetRepository userAlarmSetRepository;
 
 
     @Transactional(readOnly = true)
     public TodayCommonResponseDto getTodayInfos(String todayStatus) {
-        switch (todayStatus){
+        switch (todayStatus) {
             case "register" -> {
                 int todayRegister = userRepository.countByCreatedDateBetween(
                         LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
@@ -87,6 +87,7 @@ public class AdminService {
             }
         }
     }
+
     @Transactional(readOnly = true)
     public List<PageViewDto> getPageView() {
         return moveViewRepository.getPageViewInfo();
@@ -102,21 +103,16 @@ public class AdminService {
             User userInfo = userRepository.findByUserEmail(pushRequestDto.getUserEmail())
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
             //푸시 전송
-            UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
-                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
-            UserUseClause targetUser = userUseClauseRepository.findByUserAndUseClauseAndAgreeYn(userInfo, useClause, Constants.YN.Y)
-                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage()));
-            if (pushRequestDto.getUserEmail().equals(targetUser.getUser().getUserEmail())) {
-                if (!targetUser.getUser().getUserPushToken().isBlank()) {
-                    firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
-                    alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
-                }
-            } else {
-                throw new CommonException(CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USER_USE_CLAUSE.getMessage());
+            UserAlarmSet targetUser = userAlarmSetRepository.findByUserAndAlarmKindAndAlarmSetYn(userInfo,Constants.ALARM_KIND.APP_IN_PUSH,Constants.YN.Y)
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+            if (!targetUser.getUser().getUserPushToken().isBlank()) {
+                firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
+                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
             }
+               throw new CommonException(CommonErrorCode.FAIL_PUSH.getCode(), CommonErrorCode.FAIL_PUSH.getMessage());
         }
     }
-
     @Transactional(readOnly = true)
     public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
         if (TimeRestriction.checkTimeRestriction()) {
@@ -124,10 +120,14 @@ public class AdminService {
         } else {
             UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
-            List<UserUseClause> targetUsers = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
+            List<UserUseClause> userUseClauses = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
+
             List<String> targetUserTokens = new ArrayList<>();
-            targetUsers.forEach(targetUser -> {
-                if (!targetUser.getUser().getUserPushToken().isBlank()) {
+            userUseClauses.forEach(targetUser -> {
+                UserAlarmSet user = userAlarmSetRepository.findByUserAndAlarmKindAndAlarmSetYn(targetUser.getUser(),Constants.ALARM_KIND.APP_IN_PUSH,Constants.YN.Y)
+                        .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
+
+                if (!user.getUser().getUserPushToken().isBlank()) {
                     targetUserTokens.add(targetUser.getUser().getUserPushToken());
                     //알람 DB 저장.
                     alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
@@ -172,7 +172,7 @@ public class AdminService {
             String replyId = replyRepository.save(new Reply(replyRequestDto)).getReplyId();
 
             //알람 DB 저장.
-            alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo,Constants.ALARM_DETAIL_KIND.REPLY,replyId));
+            alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
         }
     }
 

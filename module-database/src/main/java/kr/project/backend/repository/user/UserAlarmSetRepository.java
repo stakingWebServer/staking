@@ -11,4 +11,6 @@ public interface UserAlarmSetRepository extends JpaRepository<UserAlarmSet, Stri
     Optional<UserAlarmSet> findByUserAndAlarmKind(User user, String alarmKind);
 
     Optional<UserAlarmSet> findByUser(User user);
+
+    Optional<UserAlarmSet> findByUserAndAlarmKindAndAlarmSetYn(User user, String appInPush, String y);
 }

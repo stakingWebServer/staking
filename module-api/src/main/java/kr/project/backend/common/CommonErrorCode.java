@@ -43,7 +43,8 @@ public enum CommonErrorCode {
 
     // question
     NOT_FOUND_QUESTION("F000","해당 문의를 찾을수 없습니다."),
-
+    // push
+    FAIL_PUSH("H000","푸쉬 전송이 실패 하였습니다."),
     // time
     NOT_SEND_TIME("G000","발송불가능한 시간입니다.")
     ;
