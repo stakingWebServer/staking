@@ -212,6 +212,7 @@ public class UserService {
 
             //리프레시 토큰 저장
             refreshToken.updateRefreshToken(newRefreshToken);
+            refreshTokenRepository.save(refreshToken);
         }
 
         //토큰 재발급
