@@ -166,12 +166,13 @@ public class AdminService {
 
             //토큰 발송
             //TODO 문의에 대한 답변 후 푸시알람 제목 뭐로 보낼지 고민.
-            firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "관리자", replyRequestDto.getContent()));
+            firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent()));
+
+            //답변 DB 저장.
+            String replyId = replyRepository.save(new Reply(replyRequestDto)).getReplyId();
 
             //알람 DB 저장.
-            alarmRepository.save(new Alarm("관리자", replyRequestDto.getContent(), userInfo));
-            //답변 DB 저장.
-            replyRepository.save(new Reply(replyRequestDto));
+            alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo,Constants.ALARM_DETAIL_KIND.REPLY,replyId));
         }
     }
 

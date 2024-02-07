@@ -56,6 +56,15 @@ public class Alarm extends BaseTimeEntity implements Serializable {
         this.alarmContent = alarmContent;
         this.user = user;
     }
+
+    public Alarm(String alarmTitle,String alarmContent,User user,String alarmDetailKind, String alarmDetailId){
+        this.alarmTitle = alarmTitle;
+        this.alarmContent = alarmContent;
+        this.user = user;
+        this.alarmDetailKind = alarmDetailKind;
+        this.alarmDetailId = alarmDetailId;
+    }
+
     public void updateAlarmReadYn(){
         this.alarmReadYn = "Y";
     }
