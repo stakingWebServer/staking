@@ -140,7 +140,12 @@ public class UserController {
     public ResponseEntity<?> stakings(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ListResult.build(userService.getMydataStakings(serviceUser));
     }
-    @Operation(summary = "알람 조회", description = "알람 조회 입니다.")
+    @Operation(summary = "알람 조회", description = "알람 조회 입니다.<br>"+
+                                                  "[responseInfo]<br>" +
+                                                  "* alarmDetailKind(알람 디테일 구분)<br>" +
+                                                  "00 : 이동 없음<br>" +
+                                                  "01 : 공지사항 이동<br>" +
+                                                  "02 : 문의사항 이동")
     @GetMapping("/alarms")
     public ResponseEntity<?> getAlarms(@PageableDefault()Pageable pageable, @AuthenticationPrincipal ServiceUser serviceUser) {
         return ListResult.build(userService.getAlarms(pageable,serviceUser));
@@ -234,6 +239,7 @@ public class UserController {
 
     @Operation(summary = "알람 설정 조회", description = "알람 설정 조회 입니다.<br>" +
                                                       "[responseInfo]<br>" +
+                                                      "* alarmKind(알람 구분)<br>" +
                                                       "01 : 앱푸시알림<br>" +
                                                       "02 : 광고성 푸시 알림")
     @GetMapping("/alarm-set")
