@@ -233,7 +233,7 @@ public class UserController {
     }
 
     @Operation(summary = "알람 설정 조회", description = "알람 설정 조회 입니다.<br>" +
-                                                      "[reponsInfo]<br>" +
+                                                      "[responseInfo]<br>" +
                                                       "01 : 앱푸시알림<br>" +
                                                       "02 : 광고성 푸시 알림")
     @GetMapping("/alarm-set")
