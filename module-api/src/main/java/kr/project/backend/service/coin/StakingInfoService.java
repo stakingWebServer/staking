@@ -12,6 +12,7 @@ import kr.project.backend.repository.user.FavoriteRepository;
 import kr.project.backend.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class StakingInfoService {
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
 
-    //@Cacheable(value = "stakingInfoList")
+    @Cacheable(value = "stakingInfoList",key = "#serviceUser.userId.concat('-').concat(#serviceUser.userEmail)")
     public StakingInfoAndFavoriteListResponseDto getStakingInfosAll(ServiceUser serviceUser) {
         //날짜 조건식
         LocalDate today = LocalDate.now();
