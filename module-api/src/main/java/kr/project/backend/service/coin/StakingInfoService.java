@@ -34,7 +34,7 @@ public class StakingInfoService {
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
 
-    @Cacheable(value = "stakingInfoList")
+    //@Cacheable(value = "stakingInfoList")
     public StakingInfoAndFavoriteListResponseDto getStakingInfosAll(ServiceUser serviceUser) {
         //날짜 조건식
         LocalDate today = LocalDate.now();
