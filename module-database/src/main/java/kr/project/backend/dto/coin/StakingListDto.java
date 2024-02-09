@@ -12,8 +12,8 @@ public class StakingListDto {
     private String stakingId;
     @Schema(description = "코인이름",example = "폴리곤 (MATIC)")
     private String coinName;
-    @Schema(description = "코인이미지URL",example = "URL")
-    private String coinImageUrl;
+    //@Schema(description = "코인이미지URL",example = "URL")
+    //private String coinImageUrl;
     @Schema(description = "연 추정 보상률 (최소)",example = "5.3%")
     private String minAnnualRewardRate;
     @Schema(description = "연 추정 보상률 (최대)",example = "10.3%")
@@ -22,7 +22,7 @@ public class StakingListDto {
     public StakingListDto(StakingInfo stakingInfo){
         this.stakingId = stakingInfo.getStakingId();
         this.coinName = stakingInfo.getCoinName();
-        this.coinImageUrl = stakingInfo.getCoinImageUrl() == null ? "" : stakingInfo.getCoinImageUrl();
+        //this.coinImageUrl = stakingInfo.getCoinImageUrl() == null ? "" : stakingInfo.getCoinImageUrl();
         this.minAnnualRewardRate = stakingInfo.getMinAnnualRewardRate();
         this.maxAnnualRewardRate = stakingInfo.getMaxAnnualRewardRate();
     }
