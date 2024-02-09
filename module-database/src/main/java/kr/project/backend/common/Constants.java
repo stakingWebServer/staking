@@ -4,6 +4,7 @@ public class Constants {
 
     /** 회원상태 코드 */ //ㅇ
     public static final class USER_STATE {
+//t
 
         public static final String CODE = "USER_STATE";
 
