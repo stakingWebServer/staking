@@ -32,13 +32,4 @@ public class RedisConfig {
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        final RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setConnectionFactory(redisConnectionFactory());
-        return template;
-    }
 }

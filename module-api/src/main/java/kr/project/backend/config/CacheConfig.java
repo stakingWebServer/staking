@@ -26,4 +26,5 @@ public class CacheConfig {
                         RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
                 );
     }
+
 }
