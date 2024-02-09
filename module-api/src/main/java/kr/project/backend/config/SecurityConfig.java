@@ -51,6 +51,7 @@ public class SecurityConfig {
                                          "/api/v1/admin/account/accessKey/**",
                                          "/api/v1/common/file/image/**",
                                          "/api/v1/admin/auth",
+                                         "/api/v1/user/staking/infos",
                                          "/error",
                                          "/")
                                         .permitAll()
