@@ -293,7 +293,7 @@ public class UserService {
             throw new CommonException(CommonErrorCode.ALREADY_EXIST_STAKING_DATA.getCode(), CommonErrorCode.ALREADY_EXIST_STAKING_DATA.getMessage());
         }
         favoriteRepository.save(new Favorite(userInfo, stakingInfo));
-    }
+    }//d
 
     @Transactional
     @CacheEvict(value = "stakingInfoList",allEntries = true)
