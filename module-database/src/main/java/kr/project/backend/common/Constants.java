@@ -9,7 +9,7 @@ public class Constants {
         public static final String CODE = "USER_STATE";
 
         public static final String ACTIVE_USER = "01"; //정상
-
+//d
         public static final String REST_USER = "02"; //휴면
 
         public static final String LOCK_USER = "03"; //잠김
