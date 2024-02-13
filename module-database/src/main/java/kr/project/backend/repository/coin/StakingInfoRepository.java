@@ -41,7 +41,7 @@ SELECT
     coin_name,
     coin_image_url,
     created_date,
-    max_annual_reward_rate,
+    TRIM(REGEXP_REPLACE(max_annual_reward_rate, '[가-힣]', '')) as max_annual_reward_rate,
     min_annual_reward_rate,
     minimum_order_quantity,
     modified_date,

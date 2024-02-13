@@ -24,6 +24,6 @@ public class FavoriteListDto {
         this.coinName = favorite.getStakingInfo().getCoinName();
         this.coinImageUrl = favorite.getStakingInfo().getCoinImageUrl() == null ? "" : favorite.getStakingInfo().getCoinImageUrl();
         this.minAnnualRewardRate = favorite.getStakingInfo().getMinAnnualRewardRate();
-        this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate();
+        this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate().replaceAll("[^0-9.%]","");
     }
 }
