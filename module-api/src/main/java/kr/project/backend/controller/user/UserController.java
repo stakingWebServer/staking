@@ -117,8 +117,7 @@ public class UserController {
     @GetMapping("/app-version")
     public ResponseEntity<?> getAppVersion(@Parameter(description = "앱 OS", example = "01", required = true) @RequestParam String appOs,
                                            @Parameter(description = "앱 버전", example = "1.1.2", required = true) @RequestParam String appVersion) {
-        userService.getAppVersion(appOs, appVersion);
-        return ObjectResult.ok();
+        return ObjectResult.build(userService.getAppVersion(appOs, appVersion));
     }
 
     @Operation(summary = "화면 이동", description = "화면 이동시 해당 화면 방문을 저장 합니다.")
@@ -140,7 +139,7 @@ public class UserController {
     public ResponseEntity<?> stakings(@AuthenticationPrincipal ServiceUser serviceUser) {
         return ListResult.build(userService.getMydataStakings(serviceUser));
     }
-    @Operation(summary = "알람 조회", description = "알람 조회 입니다.<br>"+
+    @Operation(summary = "알람 조회", description = "알람 조회 입니다.<br><br>"+
                                                   "[responseInfo]<br>" +
                                                   "* alarmDetailKind(알람 디테일 구분)<br>" +
                                                   "00 : 이동 없음<br>" +
@@ -208,7 +207,7 @@ public class UserController {
         return ObjectResult.ok();
     }
 
-    @Operation(summary = "알람 설정", description = "알람 설정 입니다.<br>" +
+    @Operation(summary = "알람 설정", description = "알람 설정 입니다.<br><br>" +
                                                   "[param info]<br>" +
                                                   "* alarmKind(알람구분 코드)<br>" +
                                                   "01 : 앱 푸시알림<br>" +
@@ -225,7 +224,7 @@ public class UserController {
         return ObjectResult.build(userService.alarmCount(serviceUser));
     }
 
-    @Operation(summary = "이전 약관 조회", description = "이전 약관 조회 입니다.<br>" +
+    @Operation(summary = "이전 약관 조회", description = "이전 약관 조회 입니다.<br><br>" +
                                                       "[param info]<br>" +
                                                       "* useClauseKind(약관구분 코드)<br>" +
                                                       "01 : 서비스 이용약관<br>" +
@@ -237,7 +236,7 @@ public class UserController {
         return ListResult.build(userService.useClauseBefore(useClauseKind));
     }
 
-    @Operation(summary = "알람 설정 조회", description = "알람 설정 조회 입니다.<br>" +
+    @Operation(summary = "알람 설정 조회", description = "알람 설정 조회 입니다.<br><br>" +
                                                       "[responseInfo]<br>" +
                                                       "* alarmKind(알람 구분)<br>" +
                                                       "01 : 앱푸시알림<br>" +
