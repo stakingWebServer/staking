@@ -109,8 +109,9 @@ public class AdminService {
             if (!targetUser.getUser().getUserPushToken().isBlank()) {
                 firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent()));
                 alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
+            }else{
+                throw new CommonException(CommonErrorCode.FAIL_PUSH.getCode(), CommonErrorCode.FAIL_PUSH.getMessage());
             }
-               throw new CommonException(CommonErrorCode.FAIL_PUSH.getCode(), CommonErrorCode.FAIL_PUSH.getMessage());
         }
     }
     @Transactional(readOnly = true)
@@ -157,9 +158,9 @@ public class AdminService {
 
     @Transactional
     public void replyAboutQuestion(ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {
-        if (TimeRestriction.checkTimeRestriction()) {
+  /*      if (TimeRestriction.checkTimeRestriction()) {
             throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
-        } else {
+        } else {*/
             Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
             User userInfo = questionInfo.getUser();
@@ -174,7 +175,7 @@ public class AdminService {
             //알람 DB 저장.
             alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
         }
-    }
+   // }
 
     public AccessKeyResponseDto getApikey(AdminLoginRequestDto adminLoginRequestDto) throws Exception {
         if (adminLoginRequestDto.getLoginId().equals(loginId) && adminLoginRequestDto.getPassword().equals(password)) {
