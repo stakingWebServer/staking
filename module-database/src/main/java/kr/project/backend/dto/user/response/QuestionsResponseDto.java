@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class QuestionsResponseDto {
 
+    private String questionId;
     private String questionDate;
     private String questionTitle;
     private String questionContent;
@@ -21,6 +22,7 @@ public class QuestionsResponseDto {
 
 
     public QuestionsResponseDto(Questions questions, List<QuestionsFileResponseDto> questionsFileResponseDtoList) {
+        this.questionId = questions.getQuestionId();
         this.questionDate = questions.getCreatedDate().substring(0,10);
         this.questionTitle = questions.getTitle();
         this.questionContent = questions.getContent();
