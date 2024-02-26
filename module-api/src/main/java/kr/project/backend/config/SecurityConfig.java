@@ -29,9 +29,12 @@ public class SecurityConfig {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    /** HttpSecurity set */
+    /**
+     * HttpSecurity set
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        String[] permitAll = {"/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/api/v1/user/login", "/api/v1/user/join", "/api/v1/user/refresh/authorize", "/api/v1/user/use-clauses", "/api/v1/user/use-clauses/before", "/api/v1/user/app-version", "/api/v1/admin/account/accessKey/**", "/api/v1/common/file/image/**", "/api/v1/admin/auth", "/error", "/"};
         http
                 .csrf().disable()
                 .httpBasic().disable()
@@ -40,25 +43,12 @@ public class SecurityConfig {
                 .authenticationEntryPoint(customAuthenticationEntryPoint) //401 custom
                 .and()
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/swagger-ui/**",
-                                         "/swagger-resources/**",
-                                         "/v3/api-docs/**",
-                                         "/api/v1/user/login",
-                                         "/api/v1/user/join",
-                                         "/api/v1/user/refresh/authorize",
-                                         "/api/v1/user/use-clauses",
-                                         "/api/v1/user/use-clauses/before",
-                                         "/api/v1/user/app-version",
-                                         "/api/v1/admin/account/accessKey/**",
-                                         "/api/v1/common/file/image/**",
-                                         "/api/v1/admin/auth",
-                                         "/error",
-                                         "/")
-                                        .permitAll()
+                        .requestMatchers(permitAll)
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthorizationFilter, BasicAuthenticationFilter.class)
-                ;
+        ;
         return http.build();
     }
 
@@ -79,7 +69,9 @@ public class SecurityConfig {
                 .build();
     }*/
 
-    /** cros 허용 */
+    /**
+     * cros 허용
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -94,7 +86,9 @@ public class SecurityConfig {
         return source;
     }
 
-    /** 더블슬래쉬 허용 */
+    /**
+     * 더블슬래쉬 허용
+     */
     @Bean
     public HttpFirewall defaultHttpFirewall() {
         return new DefaultHttpFirewall();
