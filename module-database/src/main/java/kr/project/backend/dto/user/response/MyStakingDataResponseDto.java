@@ -16,6 +16,7 @@ public class MyStakingDataResponseDto implements Serializable {
     private String totalRewards;
     private CoinMarketType coinMarketType;
     private String unit;
+    private String coinImageUrl;
 
     public MyStakingDataResponseDto(Favorite favorite) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##################");
@@ -27,5 +28,6 @@ public class MyStakingDataResponseDto implements Serializable {
         this.totalRewards = decimalFormat.format(favorite.getTotalRewards());
         this.coinMarketType = favorite.getStakingInfo().getCoinMarketType();
         this.unit = favorite.getStakingInfo().getUnit();
+        this.coinImageUrl = favorite.getStakingInfo().getCoinImageUrl();
     }
 }
