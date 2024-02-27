@@ -14,8 +14,8 @@ public interface UseClauseRepository extends JpaRepository<UseClause, String> {
 
     @Query(value = "SELECT new kr.project.backend.dto.user.response.UseClauseResponseDto(" +
                         "A.useClauseId,A.useClauseEssentialYn,C.fileUrl,A.useClauseKind, " +
-                        "CASE WHEN A.useClauseEssentialYn = 'Y' THEN CONCAT(B.commonCodeName,'(필수)') " +
-                             "ELSE CONCAT(B.commonCodeName,'(선택)') " +
+                        "CASE WHEN A.useClauseEssentialYn = 'Y' THEN CONCAT('(필수) ',B.commonCodeName) " +
+                             "ELSE CONCAT('(선택) ',B.commonCodeName) " +
                          "END ," +
                         "CASE WHEN (SELECT COUNT(*) " +
                                      "FROM UseClause UC " +
