@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     int countByUserLoginDttmBetween(String startDate, String endDate);
 
     List<User> findAllByUserEmailNotNull();
+
+    List<User> findByUserPushTokenNot(String userPushToken);
 }

@@ -2,7 +2,9 @@ package kr.project.backend.common;
 
 import com.google.firebase.messaging.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class PushContent {
 
@@ -34,5 +36,33 @@ public class PushContent {
                 .addAllTokens(targetTokens)
                 .build();
 
+    }
+
+    public static List<Message> makeMessageSendAll(String title, String body, List<String> targetTokens, List<Integer> alarmCnts) {
+
+        List<Message> messageList = new ArrayList<>();
+
+        Notification notification = Notification
+                .builder()
+                .setTitle(title)
+                .setBody(body)
+                .build();
+
+        IntStream.range(0, targetTokens.size())
+                .forEach(index -> {
+                    messageList.add(
+                        Message.builder()
+                                .setNotification(notification)
+                                .setToken(targetTokens.get(index))
+                                .setApnsConfig(ApnsConfig.builder()
+                                        .setAps(Aps.builder()
+                                                .setBadge(alarmCnts.get(index))
+                                                .build())
+                                        .build())
+                                .build()
+                    );
+                });
+
+        return messageList;
     }
 }
