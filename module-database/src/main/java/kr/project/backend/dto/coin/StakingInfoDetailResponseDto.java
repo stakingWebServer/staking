@@ -31,8 +31,7 @@ public class StakingInfoDetailResponseDto implements Serializable {
     private String maxAnnualRewardRate;
     @Schema(description = "거래소", example = "업비트")
     private CoinMarketType coinMarketType;
-/*    @Schema(description = "스테이킹/언스테이킹 대기", example = "3시간 / 3일")
-    private String stakingStatus;*/
+
     @Schema(description = "스테이킹 대기", example = "3시간")
     private String stakingStatus;
 
