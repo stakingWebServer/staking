@@ -195,7 +195,7 @@ public class AdminService {
             User userInfo = questionInfo.getUser();
 
             //답변 DB 저장.
-            String replyId = replyRepository.save(new Reply(replyRequestDto)).getReplyId();
+            String replyId = replyRepository.save(new Reply(replyRequestDto,questionInfo)).getReplyId();
 
             //알람 DB 저장.
             alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
