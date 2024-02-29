@@ -8,6 +8,7 @@ import kr.project.backend.entity.coin.StakingInfo;
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
@@ -30,8 +31,13 @@ public class StakingInfoDetailResponseDto implements Serializable {
     private String maxAnnualRewardRate;
     @Schema(description = "거래소", example = "업비트")
     private CoinMarketType coinMarketType;
-    @Schema(description = "스테이킹/언스테이킹 대기", example = "3시간 / 3일")
+/*    @Schema(description = "스테이킹/언스테이킹 대기", example = "3시간 / 3일")
+    private String stakingStatus;*/
+    @Schema(description = "스테이킹 대기", example = "3시간")
     private String stakingStatus;
+
+    @Schema(description = "언스테이킹 대기", example = "3일")
+    private String unStakingStatus;
     @Schema(description = "보상주기", example = "매일")
     private String rewardCycle;
     @Schema(description = "최소신청수량", example = "1.00000000DOT")
@@ -61,7 +67,19 @@ public class StakingInfoDetailResponseDto implements Serializable {
         this.minAnnualRewardRate = stakingInfo.getMinAnnualRewardRate();
         this.maxAnnualRewardRate = stakingInfo.getMaxAnnualRewardRate();
         this.coinMarketType = stakingInfo.getCoinMarketType();
-        this.stakingStatus = stakingInfo.getStakingStatus();
+
+        if(!ObjectUtils.isEmpty(stakingInfo.getStakingStatus())){
+            if(stakingInfo.getStakingStatus().contains("/")){
+                String stakingStatus = stakingInfo.getStakingStatus().replaceAll("\\s+", "");
+                String[] results = stakingStatus.split("/");
+                this.stakingStatus = results[0];
+                this.unStakingStatus = results[1];
+            }else{
+                this.stakingStatus = stakingInfo.getStakingStatus();
+            }
+        }else{
+            this.stakingStatus = stakingInfo.getStakingStatus();
+        }
         this.rewardCycle = stakingInfo.getRewardCycle();
         this.minimumOrderQuantity = stakingInfo.getMinimumOrderQuantity();
         this.verificationFee = stakingInfo.getVerificationFee();
