@@ -1,9 +1,7 @@
 package kr.project.backend.dto.coin;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import kr.project.backend.converter.BooleanToYNConverter;
+
 import kr.project.backend.entity.coin.StakingInfo;
 import kr.project.backend.entity.coin.enumType.CoinMarketType;
 import lombok.Data;
