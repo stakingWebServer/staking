@@ -201,7 +201,6 @@ public class AdminService {
             alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
 
             //push 발송
-            //TODO 문의에 대한 답변 후 푸시알람 제목 뭐로 보낼지 고민.
             long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
             firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent(),alarmCnt));
         }
