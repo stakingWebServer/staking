@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import kr.project.backend.dto.admin.request.AdminLoginRequestDto;
 import kr.project.backend.dto.admin.request.ReplyRequestDto;
 import kr.project.backend.dto.common.request.PushRequestDto;
@@ -69,7 +70,7 @@ public class AdminController {
 
     @Operation(summary = "문의에 대한 답변", description = "문의에 대한 답변을 합니다.")
     @PostMapping("/reply")
-    public ResponseEntity<?> post(@RequestBody ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {
+    public ResponseEntity<?> post(@Valid @RequestBody ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {
         adminService.replyAboutQuestion(replyRequestDto);
         return ObjectResult.ok();
     }
