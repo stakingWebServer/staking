@@ -23,7 +23,7 @@ public class MyStakingDataResponseDto implements Serializable {
         this.favoriteId = favorite.getFavoriteId();
         this.stakingId = favorite.getStakingInfo().getStakingId();
         this.coinName = favorite.getStakingInfo().getCoinName();
-        this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate();
+        this.maxAnnualRewardRate = String.format("%.1f", Double.parseDouble(favorite.getStakingInfo().getMaxAnnualRewardRate().replaceAll("[^0-9.]", ""))).concat("%");
         this.totalHoldings = decimalFormat.format(favorite.getTotalHoldings());
         this.totalRewards = decimalFormat.format(favorite.getTotalRewards());
         this.coinMarketType = favorite.getStakingInfo().getCoinMarketType();
