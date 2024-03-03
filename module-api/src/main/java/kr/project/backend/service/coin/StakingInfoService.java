@@ -77,7 +77,7 @@ public class StakingInfoService {
 
         stakingInfos.forEach(aboutCoinMarket -> {
             aboutCoinMarketDtos.add(new AboutCoinMarketDto(aboutCoinMarket.getStakingId(), String.valueOf(aboutCoinMarket.getCoinMarketType())));
-            aboutCoinMaxAnnualRewardRateDtos.add(new AboutCoinMaxAnnualRewardRateDto(aboutCoinMarket.getCoinMarketType(), aboutCoinMarket.getMaxAnnualRewardRate()));
+            aboutCoinMaxAnnualRewardRateDtos.add(new AboutCoinMaxAnnualRewardRateDto(aboutCoinMarket.getCoinMarketType(), String.format("%.1f", Double.parseDouble(aboutCoinMarket.getMaxAnnualRewardRate().replaceAll("[^0-9.]", ""))).concat("%")));
 
         });
 

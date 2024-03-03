@@ -62,7 +62,7 @@ public class StakingInfoDetailResponseDto implements Serializable {
         this.unit = stakingInfo.getUnit();
         this.prevClosingPrice = stakingInfo.getPrevClosingPrice();
         this.minAnnualRewardRate = stakingInfo.getMinAnnualRewardRate();
-        this.maxAnnualRewardRate = stakingInfo.getMaxAnnualRewardRate();
+        this.maxAnnualRewardRate = String.format("%.1f", Double.parseDouble(stakingInfo.getMaxAnnualRewardRate().replaceAll("[^0-9.]", ""))).concat("%");
         this.coinMarketType = stakingInfo.getCoinMarketType();
 
         if(!ObjectUtils.isEmpty(stakingInfo.getStakingStatus())){
@@ -82,8 +82,8 @@ public class StakingInfoDetailResponseDto implements Serializable {
         this.verificationFee = stakingInfo.getVerificationFee();
         this.coinMarketTypes = aboutCoinMarketDtos;
         this.coinMaxAnnualRewardRates = aboutCoinMaxAnnualRewardRateDtos;
-        this.maxRewardRate = maxRewardRate;
-        this.minRewardRate = minRewardRate;
+        this.maxRewardRate = String.format("%.1f", Double.parseDouble(maxRewardRate.replaceAll("[^0-9.]", ""))).concat("%");
+        this.minRewardRate = String.format("%.1f", Double.parseDouble(minRewardRate.replaceAll("[^0-9.]", ""))).concat("%");;
         this.favoriteYn = favoriteCheck ? "Y" : "N";
     }
 }
