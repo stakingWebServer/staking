@@ -20,10 +20,11 @@ public class StakingListDto {
     private String maxAnnualRewardRate;
 
     public StakingListDto(StakingInfo stakingInfo){
+        String numStr = stakingInfo.getMaxAnnualRewardRate().replaceAll("[^0-9.]", "");
         this.stakingId = stakingInfo.getStakingId();
         this.coinName = stakingInfo.getCoinName();
         this.coinImageUrl = stakingInfo.getCoinImageUrl() == null ? "" : stakingInfo.getCoinImageUrl();
         this.minAnnualRewardRate = stakingInfo.getMinAnnualRewardRate();
-        this.maxAnnualRewardRate = stakingInfo.getMaxAnnualRewardRate();
+        this.maxAnnualRewardRate = String.format("%.1f", Double.parseDouble(numStr)).concat("%");
     }
 }

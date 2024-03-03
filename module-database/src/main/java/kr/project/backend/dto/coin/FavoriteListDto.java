@@ -20,10 +20,11 @@ public class FavoriteListDto {
     private String maxAnnualRewardRate;
 
     public FavoriteListDto(Favorite favorite) {
+        String numStr = favorite.getStakingInfo().getMaxAnnualRewardRate().replaceAll("[^0-9.]", "");
         this.stakingId = favorite.getStakingInfo().getStakingId();
         this.coinName = favorite.getStakingInfo().getCoinName();
         this.coinImageUrl = favorite.getStakingInfo().getCoinImageUrl() == null ? "" : favorite.getStakingInfo().getCoinImageUrl();
         this.minAnnualRewardRate = favorite.getStakingInfo().getMinAnnualRewardRate();
-        this.maxAnnualRewardRate = favorite.getStakingInfo().getMaxAnnualRewardRate().replaceAll("[^0-9.%]","");
+        this.maxAnnualRewardRate = String.format("%.1f", Double.parseDouble(numStr)).concat("%");
     }
 }
