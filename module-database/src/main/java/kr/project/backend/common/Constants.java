@@ -89,7 +89,7 @@ public class Constants {
     public static final class ALARM_DETAIL_KIND {
         public static final String CODE = "ALARM_DETAIL_KIND";
         public static final String REPLY = "01"; //문의하기 답변 알림
-        public static final String NOTICE = "02"; //공지사항 알림
+        public static final String NOTICE = "02"; //공지사항 알림 
     }
 
 }
