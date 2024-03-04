@@ -7,6 +7,7 @@ import kr.project.backend.entity.coin.enumType.CoinMarketType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
@@ -78,7 +79,11 @@ public class StakingInfoDetailResponseDto implements Serializable {
             this.stakingStatus = stakingInfo.getStakingStatus();
         }
         this.rewardCycle = stakingInfo.getRewardCycle();
-        this.minimumOrderQuantity = stakingInfo.getMinimumOrderQuantity().replaceAll("[^0-9.]", "");
+        if(!StringUtils.isEmpty(stakingInfo.getMinimumOrderQuantity())){
+            this.minimumOrderQuantity = stakingInfo.getMinimumOrderQuantity().replaceAll("[^0-9.]", "");
+        }
+        this.minimumOrderQuantity = stakingInfo.getMinimumOrderQuantity();
+
         this.verificationFee = stakingInfo.getVerificationFee();
         this.coinMarketTypes = aboutCoinMarketDtos;
         this.coinMaxAnnualRewardRates = aboutCoinMaxAnnualRewardRateDtos;
