@@ -55,27 +55,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /*@Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .httpBasic().disable()
-                .csrf().disable()
-                .cors().and()
-                .authorizeRequests()
-                .requestMatchers("/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**","/api/v1/account/login").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                //
-                .build();
-    }*/
 
     /**
      * cros 허용
      */
-    @Bean
+ /*   @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
@@ -87,7 +71,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
+    }*/
 
     /**
      * 더블슬래쉬 허용
