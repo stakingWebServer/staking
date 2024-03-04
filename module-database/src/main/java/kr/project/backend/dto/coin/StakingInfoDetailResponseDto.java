@@ -81,9 +81,9 @@ public class StakingInfoDetailResponseDto implements Serializable {
         this.rewardCycle = stakingInfo.getRewardCycle();
         if(!StringUtils.isEmpty(stakingInfo.getMinimumOrderQuantity())){
             this.minimumOrderQuantity = stakingInfo.getMinimumOrderQuantity().replaceAll("[^0-9.]", "");
+        }else{
+            this.minimumOrderQuantity = stakingInfo.getMinimumOrderQuantity();
         }
-        this.minimumOrderQuantity = stakingInfo.getMinimumOrderQuantity();
-
         this.verificationFee = stakingInfo.getVerificationFee();
         this.coinMarketTypes = aboutCoinMarketDtos;
         this.coinMaxAnnualRewardRates = aboutCoinMaxAnnualRewardRateDtos;
