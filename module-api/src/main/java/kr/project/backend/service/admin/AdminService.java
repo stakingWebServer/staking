@@ -210,7 +210,7 @@ public class AdminService {
         if (adminLoginRequestDto.getLoginId().equals(loginId) && adminLoginRequestDto.getPassword().equals(password)) {
             return new AccessKeyResponseDto(encryptAES256(adminAESKey, adminAESIv, "stakingAdmin" + System.currentTimeMillis()), "ok");
         }
-        return new AccessKeyResponseDto(null, "fail");
+        throw new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage());
     }
 
 }
