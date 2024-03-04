@@ -1,6 +1,7 @@
 package kr.project.backend.service.user;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.micrometer.common.util.StringUtils;
 import kr.project.backend.auth.ServiceUser;
 import kr.project.backend.dto.user.response.UseClauseResponseDto;
 import kr.project.backend.dto.user.response.*;
@@ -428,19 +429,20 @@ public class UserService {
 
         //최소신청수량 return
         //최소신청수량에서 숫자랑 소수점만 추출
-        String regex = "[0-9.]+";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(stakingInfo.getMinimumOrderQuantity());
-        String regexTotalHoldings = "";
-        while (matcher.find()) {
-            regexTotalHoldings = matcher.group();
+        if(!StringUtils.isEmpty(stakingInfo.getMinimumOrderQuantity())){
+            String regex = "[0-9.]+";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(stakingInfo.getMinimumOrderQuantity());
+            String regexTotalHoldings = "";
+            while (matcher.find()) {
+                regexTotalHoldings = matcher.group();
+            }
+            BigDecimal minimumOrderQuantity = new BigDecimal(regexTotalHoldings);
+            BigDecimal totalHoldings = new BigDecimal(ownCoinRequestDto.getTotalHoldings());
+            if(totalHoldings.compareTo(minimumOrderQuantity) < 0){
+                throw new CommonException(CommonErrorCode.CHECK_MIN_INPUT_COIN.getCode(),CommonErrorCode.CHECK_MIN_INPUT_COIN.getMessage());
+            }
         }
-        BigDecimal minimumOrderQuantity = new BigDecimal(regexTotalHoldings);
-        BigDecimal totalHoldings = new BigDecimal(ownCoinRequestDto.getTotalHoldings());
-        if(totalHoldings.compareTo(minimumOrderQuantity) < 0){
-            throw new CommonException(CommonErrorCode.CHECK_MIN_INPUT_COIN.getCode(),CommonErrorCode.CHECK_MIN_INPUT_COIN.getMessage());
-        }
-
         Favorite favorite = favoriteRepository.findByStakingInfoAndUserAndDelYn(stakingInfo, userInfo,false)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FAVORITE.getCode(), CommonErrorCode.NOT_FOUND_FAVORITE.getMessage()));
 
