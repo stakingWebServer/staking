@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/" + Environment.API_VERSION + "/" + Environment.API_ADMIN)
 @RequiredArgsConstructor
 //TODO 배포할때는 배포서버로 설정
-//@CrossOrigin(origins = "http://localhost:3001")
+@CrossOrigin(origins = "http://localhost:3001")
 public class AdminController {
 
     private final AdminService adminService;
