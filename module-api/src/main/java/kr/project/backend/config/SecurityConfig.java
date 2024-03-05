@@ -59,19 +59,18 @@ public class SecurityConfig {
     /**
      * cros 허용
      */
- /*   @Bean
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOrigin("*");
+        configuration.addAllowedOrigin("http://localhost:3001");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
-        //configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }*/
+    }
 
     /**
      * 더블슬래쉬 허용
