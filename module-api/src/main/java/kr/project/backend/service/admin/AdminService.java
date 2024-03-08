@@ -16,6 +16,7 @@ import kr.project.backend.repository.user.*;
 import kr.project.backend.utils.TimeRestriction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,11 +175,13 @@ public class AdminService {
         List<Questions> questions = questionRepository.findAll();
         List<QuestionResponseDto> responses = new ArrayList<>();
         questions.forEach(question -> {
-            List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
             List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
-            commonFiles.forEach(file -> {
-                questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
-            });
+            if(!ObjectUtils.isEmpty(question.getCommonGroupFile())){
+                List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
+                commonFiles.forEach(file -> {
+                    questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
+                });
+            }
             boolean replyCheck = replyRepository.existsByQuestions(question);
             responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, replyCheck ? String.valueOf(question.getReply().isReplyYn()) : "N"));
         });
