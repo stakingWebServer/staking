@@ -24,7 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
-
+//d
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
