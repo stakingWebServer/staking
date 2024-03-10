@@ -197,6 +197,12 @@ public class AdminService {
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
             User userInfo = questionInfo.getUser();
 
+            //문의 : 답변 (1:1 이므로 이미 답변되었는지 체크)
+            boolean replyCheck = replyRepository.existsByQuestions(questionInfo);
+            if(replyCheck){
+                throw new CommonException(CommonErrorCode.ALREADY_REPLY.getCode(), CommonErrorCode.ALREADY_REPLY.getMessage());
+            }
+
             //답변 DB 저장.
             String replyId = replyRepository.save(new Reply(replyRequestDto,questionInfo)).getReplyId();
 
