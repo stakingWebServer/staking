@@ -81,7 +81,7 @@ public class Korbit {
                 saveDto.setMinimumOrderQuantity(elements.get(5).getText());
                 saveDto.setUnit(elements.get(5).getText().trim().replaceAll("[^a-zA-Z]", ""));
                 saveDto.setStakingStatus(elements.get(7).getText());
-                saveDto.setCoinMarketType(CoinMarketType.korbit);
+                saveDto.setCoinMarketType(CoinMarketType.코빗);
             }
 
             System.out.println("saveDto = " + saveDto);

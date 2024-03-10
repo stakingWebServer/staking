@@ -71,7 +71,7 @@ public class Coinone {
         for (int i = 0; i < coinNames.size(); i++) {
             saveDto.setCoinName(coinNames.get(i).getText());
             saveDto.setMaxAnnualRewardRate(years.get(i+1).getText());
-            saveDto.setCoinMarketType(CoinMarketType.coinone);
+            saveDto.setCoinMarketType(CoinMarketType.코인원);
             saveDto.setUnit(unit.get(i));
             String stakingId = stakingInfoRepository.save(new StakingInfo(saveDto)).getStakingId();
             System.out.println("saveDto = " + saveDto);
