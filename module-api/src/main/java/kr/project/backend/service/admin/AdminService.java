@@ -107,7 +107,7 @@ public class AdminService {
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
             if (!targetUser.getUser().getUserPushToken().isBlank()) {
-                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
+                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo, pushRequestDto.getAlarmDetailKind(),null));
                 long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
                 firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent(),alarmCnt));
             }else{
@@ -137,7 +137,7 @@ public class AdminService {
 
                     if ( userAlarmSet != null && (!targetUser.getUser().getUserPushToken().isBlank()) ) {
                         //알람 DB 저장.
-                        alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
+                        alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser(), pushsRequestDto.getAlarmDetailKind(), null));
                         //읽지 않은 알람 조회
                         long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(targetUser.getUser(),Constants.YN.N);
                         targetUserAlarmCnt.add((int) alarmCnt);
@@ -155,7 +155,7 @@ public class AdminService {
 
                     if ( userAlarmSet != null) {
                         //알람 DB 저장.
-                        alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser));
+                        alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser, pushsRequestDto.getAlarmDetailKind(), null));
                         //읽지 않은 알람 조회
                         long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(targetUser,Constants.YN.N);
                         targetUserAlarmCnt.add((int) alarmCnt);

@@ -50,16 +50,26 @@ public class AdminController {
         return ListResult.build(adminService.getPageView());
     }
 
-    @Operation(summary = "단일 푸시 토큰 발송", description = "단일 푸시 토큰 발송을 한다.")
+    @Operation(summary = "단일 푸시 토큰 발송", description = "단일 푸시 토큰 발송을 한다.<br><br>" +
+                                                          "[param info]<br>" +
+                                                          "* alarmDetailKind(알림 구분 코드)<br>" +
+                                                          "00 : 이동 없음<br>" +
+                                                          "01 : 공지사항 이동<br>" +
+                                                          "02 : 문의사항 이동")
     @PostMapping("/push")
-    public ResponseEntity<?> push(@RequestBody PushRequestDto pushRequestDto) throws FirebaseMessagingException {
+    public ResponseEntity<?> push(@Valid @RequestBody PushRequestDto pushRequestDto) throws FirebaseMessagingException {
         adminService.sendPush(pushRequestDto);
         return ObjectResult.ok();
     }
 
-    @Operation(summary = "단체 푸시 토큰 발송", description = "단체 푸시 토큰 발송을 한다.")
+    @Operation(summary = "단체 푸시 토큰 발송", description = "단체 푸시 토큰 발송을 한다.<br><br>" +
+                                                          "[param info]<br>" +
+                                                          "* alarmDetailKind(알림 구분 코드)<br>" +
+                                                          "00 : 이동 없음<br>" +
+                                                          "01 : 공지사항 이동<br>" +
+                                                          "02 : 문의사항 이동")
     @PostMapping("/pushs")
-    public ResponseEntity<?> pushs(@RequestBody PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
+    public ResponseEntity<?> pushs(@Valid @RequestBody PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
         adminService.sendPushs(pushsRequestDto);
         return ObjectResult.ok();
     }
