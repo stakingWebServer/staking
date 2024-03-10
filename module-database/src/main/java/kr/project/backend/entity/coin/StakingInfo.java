@@ -48,7 +48,7 @@ public class StakingInfo extends BaseTimeEntity implements Serializable {
     private String stakingStatus;
     @Comment(value = "보상주기")
     private String rewardCycle;
-    @Comment(value = "최소신청수량")
+    @Comment(value = "최소신청수량")//d
     private String minimumOrderQuantity;
     @Comment(value = "검증인 수수료")
     private String verificationFee;
