@@ -633,12 +633,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UseClauseBeforeResponseDto> useClauseBefore(String useClauseKind){
 
-        List<UseClause> useClause = useClauseRepository.findByUseClauseKindAndUseClauseStateOrderByCreatedDateDesc(useClauseKind, Constants.USE_CLAUSE_STATE.END);
+        List<UseClause> useClause = useClauseRepository.findByUseClauseKindOrderByCreatedDateDesc(useClauseKind);
         if(useClause.size() == 0){
             throw new CommonException(CommonErrorCode.NOT_FOUND_BEFORE_USE_CLAUSE.getCode(),CommonErrorCode.NOT_FOUND_BEFORE_USE_CLAUSE.getMessage());
         }
 
-        return useClauseRepository.findByUseClauseKindAndUseClauseStateOrderByCreatedDateDesc(useClauseKind, Constants.USE_CLAUSE_STATE.END)
+        return useClauseRepository.findByUseClauseKindOrderByCreatedDateDesc(useClauseKind)
                 .stream()
                 .map(UseClauseBeforeResponseDto::new)
                 .collect(Collectors.toList());
