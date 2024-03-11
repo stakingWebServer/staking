@@ -23,7 +23,7 @@ public class ApiResponseMessage {
     private String errorMessage;
     @Schema(description = "결과")
     private Object result;
-//ㅇ
+
     public ApiResponseMessage(String status, String message, String errorCode, String errorMessage){
         this.status = status;
         this.message = message;
