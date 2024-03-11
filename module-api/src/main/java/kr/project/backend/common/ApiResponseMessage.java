@@ -30,7 +30,7 @@ public class ApiResponseMessage {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
-
+///ㅇ
     public ApiResponseMessage(ApiResult result){
         this.status = CommonErrorCode.SUCCESS.getCode();
         this.message = CommonErrorCode.SUCCESS.getMessage();
