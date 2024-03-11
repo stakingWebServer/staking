@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Kakao Login Demo</title>
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script>
+        // Kakao SDK 초기화
+        Kakao.init('3d1cc283a854e2e0680656cd2d99a000'); // 여기에 JavaScript 키 입력
+
+        // 로그인 함수
+        function loginWithKakao() {
+            Kakao.Auth.login({
+                success: function(authObj) {
+                    alert(JSON.stringify(authObj));
+                    // 여기에 사용자 정보를 가져오는 등의 로직 구현
+                },
+                fail: function(err) {
+                    alert(JSON.stringify(err));
+                },
+            });
+        }
+    </script>
+</head>
+<body>
+<button onclick="loginWithKakao()">카카오로 로그인하기</button>
+</body>
+</html>
