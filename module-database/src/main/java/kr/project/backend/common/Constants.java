@@ -88,8 +88,9 @@ public class Constants {
     /** 알람 디테일 구분 */
     public static final class ALARM_DETAIL_KIND {
         public static final String CODE = "ALARM_DETAIL_KIND";
+        public static final String NONE = "00"; //알람 리스트에서 이동 없는 알림
         public static final String REPLY = "01"; //문의하기 답변 알림
-        public static final String NOTICE = "02"; //공지사항 알림 
+        public static final String NOTICE = "02"; //공지사항 알림
     }
 
 }

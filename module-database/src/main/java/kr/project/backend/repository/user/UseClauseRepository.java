@@ -35,5 +35,5 @@ public interface UseClauseRepository extends JpaRepository<UseClause, String> {
 
     Optional<UseClause> findByUseClauseKindAndUseClauseState(String advertisementPush, String apply);
 
-    List<UseClause> findByUseClauseKindAndUseClauseStateOrderByCreatedDateDesc(String useClauseKind, String useClauseState);
+    List<UseClause> findByUseClauseKindOrderByCreatedDateDesc(String useClauseKind);
 }

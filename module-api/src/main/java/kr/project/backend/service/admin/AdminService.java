@@ -16,6 +16,7 @@ import kr.project.backend.repository.user.*;
 import kr.project.backend.utils.TimeRestriction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,7 +107,7 @@ public class AdminService {
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
             if (!targetUser.getUser().getUserPushToken().isBlank()) {
-                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo));
+                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo, pushRequestDto.getAlarmDetailKind(),null));
                 long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
                 firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent(),alarmCnt));
             }else{
@@ -136,7 +137,7 @@ public class AdminService {
 
                     if ( userAlarmSet != null && (!targetUser.getUser().getUserPushToken().isBlank()) ) {
                         //알람 DB 저장.
-                        alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser()));
+                        alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser(), pushsRequestDto.getAlarmDetailKind(), null));
                         //읽지 않은 알람 조회
                         long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(targetUser.getUser(),Constants.YN.N);
                         targetUserAlarmCnt.add((int) alarmCnt);
@@ -154,7 +155,7 @@ public class AdminService {
 
                     if ( userAlarmSet != null) {
                         //알람 DB 저장.
-                        alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser));
+                        alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser, pushsRequestDto.getAlarmDetailKind(), null));
                         //읽지 않은 알람 조회
                         long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(targetUser,Constants.YN.N);
                         targetUserAlarmCnt.add((int) alarmCnt);
@@ -174,11 +175,13 @@ public class AdminService {
         List<Questions> questions = questionRepository.findAll();
         List<QuestionResponseDto> responses = new ArrayList<>();
         questions.forEach(question -> {
-            List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
             List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
-            commonFiles.forEach(file -> {
-                questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
-            });
+            if(!ObjectUtils.isEmpty(question.getCommonGroupFile())){
+                List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
+                commonFiles.forEach(file -> {
+                    questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
+                });
+            }
             boolean replyCheck = replyRepository.existsByQuestions(question);
             responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, replyCheck ? String.valueOf(question.getReply().isReplyYn()) : "N"));
         });
@@ -193,6 +196,12 @@ public class AdminService {
             Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
             User userInfo = questionInfo.getUser();
+
+            //문의 : 답변 (1:1 이므로 이미 답변되었는지 체크)
+            boolean replyCheck = replyRepository.existsByQuestions(questionInfo);
+            if(replyCheck){
+                throw new CommonException(CommonErrorCode.ALREADY_REPLY.getCode(), CommonErrorCode.ALREADY_REPLY.getMessage());
+            }
 
             //답변 DB 저장.
             String replyId = replyRepository.save(new Reply(replyRequestDto,questionInfo)).getReplyId();

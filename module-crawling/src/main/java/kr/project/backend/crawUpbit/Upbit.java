@@ -112,7 +112,7 @@ public class Upbit {
                 miniAndFeeIndex++;
             }
             //거래소 저장
-            saveDto.setCoinMarketType(CoinMarketType.upbit);
+            saveDto.setCoinMarketType(CoinMarketType.업비트);
             String stakingId = stakingInfoRepository.save(new StakingInfo(saveDto)).getStakingId();
             System.out.println("saveDto :::::" + saveDto);
 
