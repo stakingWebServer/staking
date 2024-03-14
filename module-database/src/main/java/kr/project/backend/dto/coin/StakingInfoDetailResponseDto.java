@@ -61,7 +61,22 @@ public class StakingInfoDetailResponseDto implements Serializable {
         this.coinName = stakingInfo.getCoinName();
         this.coinImageUrl = stakingInfo.getCoinImageUrl() == null ? "" : stakingInfo.getCoinImageUrl();
         this.unit = stakingInfo.getUnit();
-        this.prevClosingPrice = stakingInfo.getPrevClosingPrice();
+        //prevClosingPrice 자릿수 표출
+        String formattedAmount = "0";
+        if(stakingInfo.getPrevClosingPrice() != null){
+            double prevClosingPrice = Double.parseDouble(stakingInfo.getPrevClosingPrice());
+            if (prevClosingPrice >= 100) {
+                //100원 이상인 경우 소수점 없이 표현
+                formattedAmount = String.valueOf(prevClosingPrice).substring(0,(String.valueOf(prevClosingPrice).indexOf(".")));
+            } else if (prevClosingPrice >= 1) {
+                //100원 미만이면서 1원 이상인 경우 소수점 두 자리까지 표현
+                formattedAmount = String.valueOf(prevClosingPrice).substring(0,(String.valueOf(prevClosingPrice).indexOf(".") + 3));
+            } else {
+                //1원 미만인 경우 소수점 네 자리까지 표현
+                formattedAmount = String.valueOf(prevClosingPrice).substring(0,(String.valueOf(prevClosingPrice).indexOf(".") + 5));
+            }
+        }
+        this.prevClosingPrice = formattedAmount;
         this.minAnnualRewardRate = stakingInfo.getMinAnnualRewardRate();
         this.maxAnnualRewardRate = String.format("%.1f", Double.parseDouble(stakingInfo.getMaxAnnualRewardRate().replaceAll("[^0-9.]", ""))).concat("%");
         this.coinMarketType = stakingInfo.getCoinMarketType();
