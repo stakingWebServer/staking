@@ -66,6 +66,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://admin.s2it.kro.kr"); // https://s2it.kro.kr 에서 시작하는 요청은 여기서 설정한 CORS 규칙을 따릅니다.
         //configuration.addAllowedOrigin("*"); // https://s2it.kro.kr 에서 시작하는 요청은 여기서 설정한 CORS 규칙을 따릅니다.
         configuration.addAllowedOrigin("http://localhost:3001"); // http://localhost:3001 에서 시작하는 요청은 여기서 설정한 CORS 규칙을 따릅니다.
+        configuration.addAllowedOrigin("https://api.s2it.kro.kr"); // http://localhost:3001 에서 시작하는 요청은 여기서 설정한 CORS 규칙을 따릅니다.
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
 
