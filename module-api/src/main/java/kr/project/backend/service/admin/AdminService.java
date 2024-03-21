@@ -210,7 +210,7 @@ public class AdminService {
 
             //알람 DB 저장.
             alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
-            if(StringUtils.isBlank(userInfo.getUserPushToken())){
+            if(!StringUtils.isBlank(userInfo.getUserPushToken())){
                 //push 발송
                 long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
                 firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent(),alarmCnt));
