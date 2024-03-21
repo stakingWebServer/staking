@@ -11,5 +11,6 @@ public class QuestionResponseDto {
     private String title;
     private String content;
     private List<QuestionFileInfoDto> fileInfos;
+    private String replyContent;
     private String replyYn;
 }

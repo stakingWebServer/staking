@@ -182,8 +182,9 @@ public class AdminService {
                     questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
                 });
             }
-            boolean replyCheck = replyRepository.existsByQuestions(question);
-            responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, replyCheck ? String.valueOf(question.getReply().isReplyYn()) : "N"));
+            Reply reply = replyRepository.findByQuestions(question).orElse(null);
+
+            responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, reply == null ? null : reply.getContent() ,reply != null ? "Y" : "N"));
         });
         return responses;
     }
