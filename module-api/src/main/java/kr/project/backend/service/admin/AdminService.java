@@ -17,6 +17,7 @@ import kr.project.backend.utils.TimeRestriction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -209,7 +210,7 @@ public class AdminService {
 
             //알람 DB 저장.
             alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
-            if(userInfo.getUserPushToken() != null){
+            if(StringUtils.isBlank(userInfo.getUserPushToken())){
                 //push 발송
                 long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
                 firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent(),alarmCnt));
