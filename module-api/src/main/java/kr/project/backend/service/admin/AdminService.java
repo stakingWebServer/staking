@@ -111,8 +111,6 @@ public class AdminService {
                 alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo, pushRequestDto.getAlarmDetailKind(),null));
                 long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
                 firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent(),alarmCnt));
-            }else{
-                throw new CommonException(CommonErrorCode.FAIL_PUSH.getCode(), CommonErrorCode.FAIL_PUSH.getMessage());
             }
         }
     }
@@ -214,8 +212,6 @@ public class AdminService {
                 //push 발송
                 long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
                 firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent(),alarmCnt));
-            }else{
-                throw new CommonException(CommonErrorCode.FAIL_PUSH.getCode(), CommonErrorCode.FAIL_PUSH.getMessage());
             }
 
         }
