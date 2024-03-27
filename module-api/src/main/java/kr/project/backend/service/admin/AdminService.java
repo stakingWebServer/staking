@@ -171,20 +171,22 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public List<QuestionResponseDto> getQuestions() {
-        List<Questions> questions = questionRepository.findAll();
+        List<Questions> questions = questionRepository.findAllByOrderByCreatedDateDesc().orElse(null);
         List<QuestionResponseDto> responses = new ArrayList<>();
-        questions.forEach(question -> {
-            List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
-            if(!ObjectUtils.isEmpty(question.getCommonGroupFile())){
-                List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
-                commonFiles.forEach(file -> {
-                    questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
-                });
-            }
-            Reply reply = replyRepository.findByQuestions(question).orElse(null);
+        if(questions.size() > 0){
+            questions.forEach(question -> {
+                List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
+                if(!ObjectUtils.isEmpty(question.getCommonGroupFile())){
+                    List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
+                    commonFiles.forEach(file -> {
+                        questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
+                    });
+                }
+                Reply reply = replyRepository.findByQuestions(question).orElse(null);
 
-            responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, reply == null ? null : reply.getContent() ,reply != null ? "Y" : "N"));
-        });
+                responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, reply == null ? null : reply.getContent() ,reply != null ? "Y" : "N"));
+            });
+        }
         return responses;
     }
 
