@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Questions,String> {
 
-    Optional<List<Questions>> findAllByOrderByCreatedDateDesc();
+    List<Questions> findAllByOrderByCreatedDateDesc();
 }

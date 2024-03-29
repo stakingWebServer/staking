@@ -171,9 +171,8 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public List<QuestionResponseDto> getQuestions() {
-        List<Questions> questions = questionRepository.findAllByOrderByCreatedDateDesc().orElse(null);
+        List<Questions> questions = questionRepository.findAllByOrderByCreatedDateDesc();
         List<QuestionResponseDto> responses = new ArrayList<>();
-        if(questions.size() > 0){
             questions.forEach(question -> {
                 List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
                 if(!ObjectUtils.isEmpty(question.getCommonGroupFile())){
@@ -186,7 +185,6 @@ public class AdminService {
 
                 responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, reply == null ? null : reply.getContent() ,reply != null ? "Y" : "N"));
             });
-        }
         return responses;
     }
 
