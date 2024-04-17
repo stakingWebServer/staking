@@ -10,8 +10,11 @@ import kr.project.backend.dto.admin.request.ReplyRequestDto;
 import kr.project.backend.dto.admin.response.*;
 import kr.project.backend.dto.common.request.PushRequestDto;
 import kr.project.backend.dto.common.request.PushsRequestDto;
+import kr.project.backend.dto.push.PushResponseDto;
 import kr.project.backend.entity.common.CommonFile;
+import kr.project.backend.entity.push.Push;
 import kr.project.backend.entity.user.*;
+import kr.project.backend.repository.push.PushRepository;
 import kr.project.backend.repository.user.*;
 import kr.project.backend.utils.TimeRestriction;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static kr.project.backend.common.PushContent.*;
 import static kr.project.backend.utils.AesUtil.encryptAES256;
@@ -58,6 +63,7 @@ public class AdminService {
     private final ReplyRepository replyRepository;
     private final AlarmRepository alarmRepository;
     private final UserAlarmSetRepository userAlarmSetRepository;
+    private final PushRepository pushRepository;
 
 
     @Transactional(readOnly = true)
@@ -90,16 +96,26 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
-    public List<PageViewDto> getPageView() {
-        return moveViewRepository.getPageViewInfo();
+    public List<PageViewDto> getPageView(String type) {
+        switch (type){
+            case "month" -> {
+                List<Object[]> value = moveViewRepository.getPageViewInfoForMonth();
+                return value.stream().map(result -> new PageViewDto((String) result[0], (String)result[1],(Long) result[2])).collect(Collectors.toList());
+            }
+            case "day" -> {
+                List<Object[]> value = moveViewRepository.getPageViewInfoForDay();
+                return value.stream().map(result -> new PageViewDto((String) result[0],(String)result[1] ,(Long) result[2])).collect(Collectors.toList());
+            }
+        }
+        return null;
     }
 
 
     @Transactional
     public void sendPush(PushRequestDto pushRequestDto) throws FirebaseMessagingException {
-        if (TimeRestriction.checkTimeRestriction()) {
+  /*      if (TimeRestriction.checkTimeRestriction()) {
             throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
-        } else {
+        } else {*/
             //유저 정보 조회
             User userInfo = userRepository.findByUserEmail(pushRequestDto.getUserEmail())
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
@@ -111,14 +127,15 @@ public class AdminService {
                 alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo, pushRequestDto.getAlarmDetailKind(),null));
                 long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
                 firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent(),alarmCnt));
+                pushRepository.save(new Push(pushRequestDto.getTitle(),pushRequestDto.getContent()));
             }
-        }
+        //}
     }
     @Transactional
     public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
-        if (TimeRestriction.checkTimeRestriction()) {
+   /*     if (TimeRestriction.checkTimeRestriction()) {
             throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
-        } else {
+        } else {*/
             //push data list
             List<String> targetUserTokens = new ArrayList<>();
             List<Integer> targetUserAlarmCnt = new ArrayList<>();
@@ -166,7 +183,11 @@ public class AdminService {
             //단체 푸시 전송.
             //FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens));
             firebaseMessaging.sendEachAsync(makeMessageSendAll(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens,targetUserAlarmCnt));
-        }
+
+            //푸시 내역 저장
+        pushRepository.save(new Push(pushsRequestDto.getTitle(), pushsRequestDto.getContent()));
+
+//        }
     }
 
     @Transactional(readOnly = true)
@@ -215,7 +236,6 @@ public class AdminService {
             }
 
         }
-   // }
 
     public AccessKeyResponseDto getApikey(AdminLoginRequestDto adminLoginRequestDto) throws Exception {
         if (adminLoginRequestDto.getLoginId().equals(loginId) && adminLoginRequestDto.getPassword().equals(password)) {
@@ -224,4 +244,11 @@ public class AdminService {
         throw new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage());
     }
 
+    @Transactional(readOnly = true)
+    public List<PushResponseDto> getPushs() {
+        List<Push> pushList = pushRepository.findAll();
+        return pushList.stream()
+                .map(PushResponseDto::new)
+                .collect(Collectors.toList());
+    }
 }

@@ -43,9 +43,9 @@ public class AdminController {
     }
 
     @Operation(summary = "페이지 별 조회 수", description = "패아자 별 조회 수를 구한다.")
-    @GetMapping("/page-view")
-    public ResponseEntity<?> getPageView() {
-        return ListResult.build(adminService.getPageView());
+    @GetMapping("/page-view/{type}")
+    public ResponseEntity<?> getPageView(@PathVariable(value = "type")String type) {
+        return ListResult.build(adminService.getPageView(type));
     }
 
     @Operation(summary = "단일 푸시 토큰 발송", description = "단일 푸시 토큰 발송을 한다.<br><br>" +
@@ -83,5 +83,10 @@ public class AdminController {
     public ResponseEntity<?> post(@Valid @RequestBody ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {
         adminService.replyAboutQuestion(replyRequestDto);
         return ObjectResult.ok();
+    }
+    @Operation(summary = "푸시 전송 내역리스트", description = "푸시 전송 내역리스트를 조회 합니다.")
+    @GetMapping("/pushs")
+    public ResponseEntity<?> pushs(){
+        return ListResult.build(adminService.getPushs());
     }
 }

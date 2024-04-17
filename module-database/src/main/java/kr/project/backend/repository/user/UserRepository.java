@@ -20,4 +20,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findAllByUserEmailNotNull();
 
     List<User> findByUserPushTokenNot(String userPushToken);
+
 }
