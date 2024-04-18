@@ -86,7 +86,7 @@ public class AdminController {
     }
     @Operation(summary = "푸시 전송 내역리스트", description = "푸시 전송 내역리스트를 조회 합니다.")
     @GetMapping("/pushs")
-    public ResponseEntity<?> pushs(){
+    public ResponseEntity<?> pushList(){
         return ListResult.build(adminService.getPushs());
     }
 }

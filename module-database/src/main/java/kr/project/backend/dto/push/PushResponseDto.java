@@ -10,10 +10,12 @@ import java.io.Serializable;
 public class PushResponseDto implements Serializable {
     private String pushTitle;
     private String pushContent;
+    private String createDatetime;
 
     public PushResponseDto(Push push) {
         this.pushTitle = push.getPushTitle();
         this.pushContent = push.getPushContent();
+        this.createDatetime = push.getCreatedDate();
     }
 
 }
