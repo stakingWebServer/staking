@@ -47,7 +47,7 @@ public class FileService {
         List<FileResponseDto> fileResponseDtoList = new ArrayList<>();
 
         //허용 파일
-        List<String> allowFileType = Arrays.asList("gif", "png", "jpeg", "bmp", "pdf");
+        List<String> allowFileType = Arrays.asList("gif", "png", "jpeg", "bmp", "pdf", "html");
 
         //파라미터 이름을 키로 파라미터에 해당하는 파일 정보를 값으로 하는 Map
         Map<String, MultipartFile> files = multipartHttpServletRequest.getFileMap();
