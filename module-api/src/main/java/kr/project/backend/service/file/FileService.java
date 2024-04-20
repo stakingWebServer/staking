@@ -3,11 +3,16 @@ package kr.project.backend.service.file;
 import jakarta.transaction.Transactional;
 import kr.project.backend.common.CommonErrorCode;
 import kr.project.backend.common.CommonException;
+import kr.project.backend.common.Constants;
 import kr.project.backend.dto.common.response.FileResponseDto;
+import kr.project.backend.entity.common.CommonCode;
 import kr.project.backend.entity.common.CommonFile;
 import kr.project.backend.entity.common.CommonGroupFile;
+import kr.project.backend.entity.user.UseClause;
+import kr.project.backend.repository.common.CommonCodeRepository;
 import kr.project.backend.repository.common.CommonFileRepository;
 import kr.project.backend.repository.common.CommonGroupFileRepository;
+import kr.project.backend.repository.user.UseClauseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -39,6 +44,7 @@ public class FileService {
 
     private final CommonFileRepository commonFileRepository;
     private final CommonGroupFileRepository commonGroupFileRepository;
+    private final CommonCodeRepository commonCodeRepository;
 
     @Transactional
     public List<FileResponseDto> uploadImage(MultipartHttpServletRequest multipartHttpServletRequest) throws Exception{
@@ -189,22 +195,28 @@ public class FileService {
         return result;
     }
 
-    /*@Transactional
-    public ResponseEntity<Resource> showImage(String fileId, HttpServletResponse response) throws Exception{
-        CommonFile commonFile = fileRepository.findById(fileId)
+    @Transactional
+    public ResponseEntity<byte[]> getPrivacyClause() throws Exception{
+
+        CommonCode commonCode = commonCodeRepository.findByGrpCommonCodeAndCommonCode(Constants.USE_CLAUSE_KIND.CODE, Constants.USE_CLAUSE_KIND.PRIVACY_WEB)
                 .orElseThrow(() -> new CommonException(CommonErrorCode.NULL_DATA.getCode(), CommonErrorCode.NULL_DATA.getMessage()));
+        ;
 
-        Resource resource = new FileSystemResource(commonFile.getFilePath()+File.separator+commonFile.getFileName());
+        CommonFile commonFile = commonFileRepository.findById(commonCode.getCommonCodeName())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FILE.getCode(), CommonErrorCode.NOT_FOUND_FILE.getMessage()));
 
-        if(!resource.exists()){
-            throw new CommonException(CommonErrorCode.NOT_ALLOW_FILE.getCode(), CommonErrorCode.NOT_FOUND_FILE.getMessage());
+        File file = new File(commonFile.getFilePath()+File.separator+commonFile.getFileName());
+
+        if(!file.isFile()){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_FILE.getCode(), CommonErrorCode.NOT_FOUND_FILE.getMessage());
         }
 
+        ResponseEntity<byte[]> result = null;
+
         HttpHeaders header = new HttpHeaders();
-        Path filePath = Paths.get(commonFile.getFilePath()+File.separator+commonFile.getFileName());
-        header.add("Content-Type", Files.probeContentType(filePath));
+        header.add("Content-type", Files.probeContentType(file.toPath()));
+        result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 
-        return new ResponseEntity<>(resource,header, HttpStatus.OK);
-
-    }*/
+        return result;
+    }
 }
