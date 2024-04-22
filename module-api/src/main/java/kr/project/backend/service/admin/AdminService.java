@@ -140,9 +140,9 @@ public class AdminService {
 
     @Transactional
     public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
-        if (TimeRestriction.checkTimeRestriction()) {
-            throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
-        } else {
+       // if (TimeRestriction.checkTimeRestriction()) {
+        //    throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
+       // } else {
             //push data list
             List<String> targetUserTokens = new ArrayList<>();
             List<Integer> targetUserAlarmCnt = new ArrayList<>();
@@ -199,7 +199,7 @@ public class AdminService {
                 noticeRepository.save(new Notice(pushsRequestDto.getTitle(), pushsRequestDto.getContent()));
             }
 
-        }
+       // }
     }
 
     @Transactional(readOnly = true)
@@ -223,30 +223,30 @@ public class AdminService {
 
     @Transactional
     public void replyAboutQuestion(ReplyRequestDto replyRequestDto) throws FirebaseMessagingException {
-  /*      if (TimeRestriction.checkTimeRestriction()) {
-            throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
-        } else {*/
-        Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
-                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
-        User userInfo = questionInfo.getUser();
+       // if (TimeRestriction.checkTimeRestriction()) {
+        //    throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
+      //  } else {
+            Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
+                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
+            User userInfo = questionInfo.getUser();
 
-        //문의 : 답변 (1:1 이므로 이미 답변되었는지 체크)
-        boolean replyCheck = replyRepository.existsByQuestions(questionInfo);
-        if (replyCheck) {
-            throw new CommonException(CommonErrorCode.ALREADY_REPLY.getCode(), CommonErrorCode.ALREADY_REPLY.getMessage());
-        }
+            //문의 : 답변 (1:1 이므로 이미 답변되었는지 체크)
+            boolean replyCheck = replyRepository.existsByQuestions(questionInfo);
+            if (replyCheck) {
+                throw new CommonException(CommonErrorCode.ALREADY_REPLY.getCode(), CommonErrorCode.ALREADY_REPLY.getMessage());
+            }
 
-        //답변 DB 저장.
-        String replyId = replyRepository.save(new Reply(replyRequestDto, questionInfo)).getReplyId();
+            //답변 DB 저장.
+            String replyId = replyRepository.save(new Reply(replyRequestDto, questionInfo)).getReplyId();
 
-        //알람 DB 저장.
-        alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
-        if (!StringUtils.isBlank(userInfo.getUserPushToken())) {
-            //push 발송
-            long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo, Constants.YN.N);
-            firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent(), alarmCnt));
-        }
-
+            //알람 DB 저장.
+            alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
+            if (!StringUtils.isBlank(userInfo.getUserPushToken())) {
+                //push 발송
+                long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo, Constants.YN.N);
+                firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent(), alarmCnt));
+            }
+      //  }
     }
 
     public AccessKeyResponseDto getApikey(AdminLoginRequestDto adminLoginRequestDto) throws Exception {
