@@ -97,14 +97,14 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public List<PageViewDto> getPageView(String type) {
-        switch (type){
+        switch (type) {
             case "month" -> {
                 List<Object[]> value = moveViewRepository.getPageViewInfoForMonth();
-                return value.stream().map(result -> new PageViewDto((String) result[0], (String)result[1],(Long) result[2])).collect(Collectors.toList());
+                return value.stream().map(result -> new PageViewDto((String) result[0], (String) result[1], (Long) result[2])).collect(Collectors.toList());
             }
             case "day" -> {
                 List<Object[]> value = moveViewRepository.getPageViewInfoForDay();
-                return value.stream().map(result -> new PageViewDto((String) result[0],(String)result[1] ,(Long) result[2])).collect(Collectors.toList());
+                return value.stream().map(result -> new PageViewDto((String) result[0], (String) result[1], (Long) result[2])).collect(Collectors.toList());
             }
         }
         return null;
@@ -113,34 +113,35 @@ public class AdminService {
 
     @Transactional
     public void sendPush(PushRequestDto pushRequestDto) throws FirebaseMessagingException {
-  /*      if (TimeRestriction.checkTimeRestriction()) {
+        if (TimeRestriction.checkTimeRestriction()) {
             throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
-        } else {*/
+        } else {
             //유저 정보 조회
             User userInfo = userRepository.findByUserEmail(pushRequestDto.getUserEmail())
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
             //푸시 전송
-            UserAlarmSet targetUser = userAlarmSetRepository.findByUserAndAlarmKindAndAlarmSetYn(userInfo,Constants.ALARM_KIND.APP_IN_PUSH,Constants.YN.Y)
+            UserAlarmSet targetUser = userAlarmSetRepository.findByUserAndAlarmKindAndAlarmSetYn(userInfo, Constants.ALARM_KIND.APP_IN_PUSH, Constants.YN.Y)
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
 
             if (!targetUser.getUser().getUserPushToken().isBlank()) {
-                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo, pushRequestDto.getAlarmDetailKind(),null));
-                long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
-                firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent(),alarmCnt));
-                pushRepository.save(new Push(pushRequestDto.getTitle(),pushRequestDto.getContent()));
+                alarmRepository.save(new Alarm(pushRequestDto.getTitle(), pushRequestDto.getContent(), userInfo, pushRequestDto.getAlarmDetailKind(), null));
+                long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo, Constants.YN.N);
+                firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent(), alarmCnt));
+                pushRepository.save(new Push(pushRequestDto.getTitle(), pushRequestDto.getContent()));
             }
-        //}
+        }
     }
+
     @Transactional
     public void sendPushs(PushsRequestDto pushsRequestDto) throws FirebaseMessagingException {
-   /*     if (TimeRestriction.checkTimeRestriction()) {
+        if (TimeRestriction.checkTimeRestriction()) {
             throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
-        } else {*/
+        } else {
             //push data list
             List<String> targetUserTokens = new ArrayList<>();
             List<Integer> targetUserAlarmCnt = new ArrayList<>();
             //광고성 push
-            if(pushsRequestDto.getAdvertisementPushYn().equals(Constants.YN.Y)){
+            if (pushsRequestDto.getAdvertisementPushYn().equals(Constants.YN.Y)) {
                 //마케팅동의 약관ID 조회
                 UseClause useClause = useClauseRepository.findByUseClauseKindAndUseClauseState(Constants.USE_CLAUSE_KIND.ADVERTISEMENT_PUSH, Constants.USE_CLAUSE_STATE.APPLY)
                         .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USE_CLAUSE.getCode(), CommonErrorCode.NOT_FOUND_USE_CLAUSE.getMessage()));
@@ -148,32 +149,32 @@ public class AdminService {
                 List<UserUseClause> userUseClauses = userUseClauseRepository.findAllByUseClauseAndAgreeYn(useClause, Constants.YN.Y);
                 //앱 알림 동의자 조회
                 userUseClauses.forEach(targetUser -> {
-                    UserAlarmSet userAlarmSet = userAlarmSetRepository.findByUserAndAlarmKindAndAlarmSetYn(targetUser.getUser(),Constants.ALARM_KIND.APP_IN_PUSH,Constants.YN.Y)
+                    UserAlarmSet userAlarmSet = userAlarmSetRepository.findByUserAndAlarmKindAndAlarmSetYn(targetUser.getUser(), Constants.ALARM_KIND.APP_IN_PUSH, Constants.YN.Y)
                             .orElse(null);
 
-                    if ( userAlarmSet != null && (!targetUser.getUser().getUserPushToken().isBlank()) ) {
+                    if (userAlarmSet != null && (!targetUser.getUser().getUserPushToken().isBlank())) {
                         //알람 DB 저장.
                         alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser.getUser(), pushsRequestDto.getAlarmDetailKind(), null));
                         //읽지 않은 알람 조회
-                        long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(targetUser.getUser(),Constants.YN.N);
+                        long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(targetUser.getUser(), Constants.YN.N);
                         targetUserAlarmCnt.add((int) alarmCnt);
                         targetUserTokens.add(targetUser.getUser().getUserPushToken());
                     }
                 });
 
-            //비광고성 push
-            }else{
+                //비광고성 push
+            } else {
                 //앱 알림 동의자 조회
                 List<User> user = userRepository.findByUserPushTokenNot("");
                 user.forEach(targetUser -> {
-                    UserAlarmSet userAlarmSet = userAlarmSetRepository.findByUserAndAlarmKindAndAlarmSetYn(targetUser,Constants.ALARM_KIND.APP_IN_PUSH,Constants.YN.Y)
+                    UserAlarmSet userAlarmSet = userAlarmSetRepository.findByUserAndAlarmKindAndAlarmSetYn(targetUser, Constants.ALARM_KIND.APP_IN_PUSH, Constants.YN.Y)
                             .orElse(null);
 
-                    if ( userAlarmSet != null) {
+                    if (userAlarmSet != null) {
                         //알람 DB 저장.
                         alarmRepository.save(new Alarm(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUser, pushsRequestDto.getAlarmDetailKind(), null));
                         //읽지 않은 알람 조회
-                        long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(targetUser,Constants.YN.N);
+                        long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(targetUser, Constants.YN.N);
                         targetUserAlarmCnt.add((int) alarmCnt);
                         targetUserTokens.add(targetUser.getUserPushToken());
                     }
@@ -182,30 +183,30 @@ public class AdminService {
 
             //단체 푸시 전송.
             //FirebaseMessaging.getInstance().sendEachForMulticast(makeMessages(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens));
-            firebaseMessaging.sendEachAsync(makeMessageSendAll(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens,targetUserAlarmCnt));
+            firebaseMessaging.sendEachAsync(makeMessageSendAll(pushsRequestDto.getTitle(), pushsRequestDto.getContent(), targetUserTokens, targetUserAlarmCnt));
 
             //푸시 내역 저장
-        pushRepository.save(new Push(pushsRequestDto.getTitle(), pushsRequestDto.getContent()));
+            pushRepository.save(new Push(pushsRequestDto.getTitle(), pushsRequestDto.getContent()));
 
-//        }
+        }
     }
 
     @Transactional(readOnly = true)
     public List<QuestionResponseDto> getQuestions() {
         List<Questions> questions = questionRepository.findAllByOrderByCreatedDateDesc();
         List<QuestionResponseDto> responses = new ArrayList<>();
-            questions.forEach(question -> {
-                List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
-                if(!ObjectUtils.isEmpty(question.getCommonGroupFile())){
-                    List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
-                    commonFiles.forEach(file -> {
-                        questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
-                    });
-                }
-                Reply reply = replyRepository.findByQuestions(question).orElse(null);
+        questions.forEach(question -> {
+            List<QuestionFileInfoDto> questionFileInfoDtos = new ArrayList<>();
+            if (!ObjectUtils.isEmpty(question.getCommonGroupFile())) {
+                List<CommonFile> commonFiles = question.getCommonGroupFile().getCommonFileList();
+                commonFiles.forEach(file -> {
+                    questionFileInfoDtos.add(new QuestionFileInfoDto(file.getFileName(), file.getFileUrl()));
+                });
+            }
+            Reply reply = replyRepository.findByQuestions(question).orElse(null);
 
-                responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, reply == null ? null : reply.getContent() ,reply != null ? "Y" : "N"));
-            });
+            responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, reply == null ? null : reply.getContent(), reply != null ? "Y" : "N"));
+        });
         return responses;
     }
 
@@ -214,28 +215,28 @@ public class AdminService {
   /*      if (TimeRestriction.checkTimeRestriction()) {
             throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
         } else {*/
-            Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
-                    .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
-            User userInfo = questionInfo.getUser();
+        Questions questionInfo = questionRepository.findById(replyRequestDto.getQuestionId())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_QUESTION.getCode(), CommonErrorCode.NOT_FOUND_QUESTION.getMessage()));
+        User userInfo = questionInfo.getUser();
 
-            //문의 : 답변 (1:1 이므로 이미 답변되었는지 체크)
-            boolean replyCheck = replyRepository.existsByQuestions(questionInfo);
-            if(replyCheck){
-                throw new CommonException(CommonErrorCode.ALREADY_REPLY.getCode(), CommonErrorCode.ALREADY_REPLY.getMessage());
-            }
-
-            //답변 DB 저장.
-            String replyId = replyRepository.save(new Reply(replyRequestDto,questionInfo)).getReplyId();
-
-            //알람 DB 저장.
-            alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
-            if(!StringUtils.isBlank(userInfo.getUserPushToken())){
-                //push 발송
-                long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo,Constants.YN.N);
-                firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent(),alarmCnt));
-            }
-
+        //문의 : 답변 (1:1 이므로 이미 답변되었는지 체크)
+        boolean replyCheck = replyRepository.existsByQuestions(questionInfo);
+        if (replyCheck) {
+            throw new CommonException(CommonErrorCode.ALREADY_REPLY.getCode(), CommonErrorCode.ALREADY_REPLY.getMessage());
         }
+
+        //답변 DB 저장.
+        String replyId = replyRepository.save(new Reply(replyRequestDto, questionInfo)).getReplyId();
+
+        //알람 DB 저장.
+        alarmRepository.save(new Alarm("[문의] 답변 도착", replyRequestDto.getContent(), userInfo, Constants.ALARM_DETAIL_KIND.REPLY, replyId));
+        if (!StringUtils.isBlank(userInfo.getUserPushToken())) {
+            //push 발송
+            long alarmCnt = alarmRepository.countByUserAndAlarmReadYn(userInfo, Constants.YN.N);
+            firebaseMessaging.send(makeMessage(userInfo.getUserPushToken(), "[문의] 답변 도착", replyRequestDto.getContent(), alarmCnt));
+        }
+
+    }
 
     public AccessKeyResponseDto getApikey(AdminLoginRequestDto adminLoginRequestDto) throws Exception {
         if (adminLoginRequestDto.getLoginId().equals(loginId) && adminLoginRequestDto.getPassword().equals(password)) {
