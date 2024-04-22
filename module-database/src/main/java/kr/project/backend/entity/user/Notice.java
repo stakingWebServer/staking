@@ -40,6 +40,6 @@ public class Notice extends BaseTimeEntity implements Serializable {
     public Notice(String noticeTitle, String noticeContent){
         this.noticeTitle = noticeTitle;
         this.noticeContent = noticeContent;
-    }
+    }  
 
 }
