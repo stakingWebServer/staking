@@ -205,7 +205,7 @@ public class AdminService {
             }
             Reply reply = replyRepository.findByQuestions(question).orElse(null);
 
-            responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(), questionFileInfoDtos, reply == null ? null : reply.getContent(), reply != null ? "Y" : "N"));
+            responses.add(new QuestionResponseDto(question.getQuestionId(), question.getTitle(), question.getContent(),question.getCreatedDate() ,questionFileInfoDtos, reply == null ? null : reply.getContent(), reply != null ? "Y" : "N", reply != null ? reply.getCreatedDate() : ""));
         });
         return responses;
     }
