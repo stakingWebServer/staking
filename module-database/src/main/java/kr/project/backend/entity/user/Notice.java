@@ -37,4 +37,9 @@ public class Notice extends BaseTimeEntity implements Serializable {
     @OneToMany(mappedBy = "notice")
     private List<UserNoticeRead> userNoticeReads;
 
+    public Notice(String noticeTitle, String noticeContent){
+        this.noticeTitle = noticeTitle;
+        this.noticeContent = noticeContent;
+    }
+
 }

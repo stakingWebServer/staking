@@ -64,6 +64,7 @@ public class AdminService {
     private final AlarmRepository alarmRepository;
     private final UserAlarmSetRepository userAlarmSetRepository;
     private final PushRepository pushRepository;
+    private final NoticeRepository noticeRepository;
 
 
     @Transactional(readOnly = true)
@@ -129,6 +130,11 @@ public class AdminService {
                 firebaseMessaging.send(makeMessage(targetUser.getUser().getUserPushToken(), pushRequestDto.getTitle(), pushRequestDto.getContent(),alarmCnt));
                 pushRepository.save(new Push(pushRequestDto.getTitle(),pushRequestDto.getContent()));
             }
+
+            //공지사항 푸시전송이면 공지사항 테이블에 추가
+            if(pushRequestDto.getAlarmDetailKind().equals(Constants.ALARM_DETAIL_KIND.NOTICE)){
+                noticeRepository.save(new Notice(pushRequestDto.getTitle(), pushRequestDto.getContent()));
+            }
         //}
     }
     @Transactional
@@ -186,6 +192,11 @@ public class AdminService {
 
             //푸시 내역 저장
         pushRepository.save(new Push(pushsRequestDto.getTitle(), pushsRequestDto.getContent()));
+
+            //공지사항 푸시전송이면 공지사항 테이블에 추가
+            if(pushsRequestDto.getAlarmDetailKind().equals(Constants.ALARM_DETAIL_KIND.NOTICE)){
+                noticeRepository.save(new Notice(pushsRequestDto.getTitle(), pushsRequestDto.getContent()));
+            }
 
 //        }
     }
