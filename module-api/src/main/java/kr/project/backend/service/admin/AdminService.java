@@ -114,9 +114,9 @@ public class AdminService {
 
     @Transactional
     public void sendPush(PushRequestDto pushRequestDto) throws FirebaseMessagingException {
-        if (TimeRestriction.checkTimeRestriction()) {
-            throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
-        } else {
+       // if (TimeRestriction.checkTimeRestriction()) {
+       //     throw new CommonException(CommonErrorCode.NOT_SEND_TIME.getCode(), CommonErrorCode.NOT_SEND_TIME.getMessage());
+       // } else {
             //유저 정보 조회
             User userInfo = userRepository.findByUserEmail(pushRequestDto.getUserEmail())
                     .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_USER.getCode(), CommonErrorCode.NOT_FOUND_USER.getMessage()));
@@ -135,7 +135,7 @@ public class AdminService {
             if(pushRequestDto.getAlarmDetailKind().equals(Constants.ALARM_DETAIL_KIND.NOTICE)){
                 noticeRepository.save(new Notice(pushRequestDto.getTitle(), pushRequestDto.getContent()));
             }
-        }
+       // }
     }
 
     @Transactional
