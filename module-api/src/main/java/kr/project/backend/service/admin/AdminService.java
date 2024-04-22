@@ -247,7 +247,7 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public List<PushResponseDto> getPushs() {
-        List<Push> pushList = pushRepository.findAll();
+        List<Push> pushList = pushRepository.findAllByOrderByCreatedDateDesc();
         return pushList.stream()
                 .map(PushResponseDto::new)
                 .collect(Collectors.toList());
