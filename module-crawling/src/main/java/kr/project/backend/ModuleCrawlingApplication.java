@@ -20,6 +20,7 @@ public class ModuleCrawlingApplication {
                 .properties(APPLICATION_LOCATIONS)
                 .run(args);
 
+        //test
     }
 
 }
