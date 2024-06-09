@@ -28,7 +28,7 @@ public class AesUtil {
 
         //암호화 적용
         cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParamSpec);
-
+//test
         //암호화 실행
         byte[] encrypted = cipher.doFinal(planinText.getBytes(StandardCharsets.UTF_8));
 
