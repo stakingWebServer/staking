@@ -40,7 +40,24 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        String[] permitAll = {swaggerPath+"/**","/oauth/login/kakao-page","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/api/v1/user/login", "/api/v1/user/join", "/api/v1/user/refresh/authorize", "/api/v1/user/use-clauses", "/api/v1/user/use-clauses/before", "/api/v1/user/app-version", "/api/v1/admin/account/accessKey/**", "/api/v1/common/file/image/**", "/api/v1/admin/auth", "/error", "/", "/api/v1/common/file/privacy-clause"};
+        String[] permitAll = {swaggerPath+"/**"
+                , "/oauth/login/kakao-page"
+                , "/swagger-ui/**"
+                , "/swagger-resources/**"
+                , "/v3/api-docs/**"
+                , "/api/v1/user/login"
+                , "/api/v1/user/join"
+                , "/api/v1/user/refresh/authorize"
+                , "/api/v1/user/use-clauses"
+                , "/api/v1/user/use-clauses/before"
+                , "/api/v1/user/app-version"
+                , "/api/v1/admin/account/accessKey/**"
+                , "/api/v1/common/file/image/**"
+                , "/api/v1/admin/auth"
+                , "/error"
+                , "/"
+                , "/api/v1/common/file/privacy-clause"
+                , "/api/v1/common/file/farm/privacy-clause"};
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)

@@ -219,4 +219,29 @@ public class FileService {
 
         return result;
     }
+
+    @Transactional
+    public ResponseEntity<byte[]> getFarmPrivacyClause() throws Exception{
+
+        CommonCode commonCode = commonCodeRepository.findByGrpCommonCodeAndCommonCode(Constants.USE_CLAUSE_KIND.CODE, Constants.USE_CLAUSE_KIND.FARM_PRIVACY_WEB)
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NULL_DATA.getCode(), CommonErrorCode.NULL_DATA.getMessage()));
+        ;
+
+        CommonFile commonFile = commonFileRepository.findById(commonCode.getCommonCodeName())
+                .orElseThrow(() -> new CommonException(CommonErrorCode.NOT_FOUND_FILE.getCode(), CommonErrorCode.NOT_FOUND_FILE.getMessage()));
+
+        File file = new File(commonFile.getFilePath()+File.separator+commonFile.getFileName());
+
+        if(!file.isFile()){
+            throw new CommonException(CommonErrorCode.NOT_FOUND_FILE.getCode(), CommonErrorCode.NOT_FOUND_FILE.getMessage());
+        }
+
+        ResponseEntity<byte[]> result = null;
+
+        HttpHeaders header = new HttpHeaders();
+        header.add("Content-type", Files.probeContentType(file.toPath()));
+        result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+
+        return result;
+    }
 }

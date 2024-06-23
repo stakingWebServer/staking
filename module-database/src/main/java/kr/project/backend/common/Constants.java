@@ -71,6 +71,7 @@ public class Constants {
         public static final String ADVERTISEMENT_PUSH = "03"; //마케팅 정보 수신 동의
 
         public static final String PRIVACY_WEB = "04"; //개인정보처리방침(고시용)
+        public static final String FARM_PRIVACY_WEB = "05"; //개인정보처리방침(고시용)
     }
 
     /** 상수 YN */

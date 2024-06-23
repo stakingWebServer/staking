@@ -38,10 +38,16 @@ public class FileController {
         return fileService.showImage(fileId);
     }
 
-    @Operation(summary = "개인정보 이용약관", description = "현재 적용중인 개인정보 이용약관을 조회 합니다.")
+    @Operation(summary = "스테이킹 개인정보 이용약관", description = "스테이킹 개인정보 이용약관을 조회 합니다.(앱심사용)")
     @GetMapping("/privacy-clause")
     public ResponseEntity<byte[]> getPrivacyClause() throws Exception {
         return fileService.getPrivacyClause();
+    }
+
+    @Operation(summary = "위팜 개인정보 이용약관", description = "위팜 개인정보 이용약관을 조회 합니다.(앱심사용)")
+    @GetMapping("/farm/privacy-clause")
+    public ResponseEntity<byte[]> getFarmPrivacyClause() throws Exception {
+        return fileService.getFarmPrivacyClause();
     }
 
 }
